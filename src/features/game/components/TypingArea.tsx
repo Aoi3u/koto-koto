@@ -74,12 +74,11 @@ export default function TypingArea({
                 {/* Render remaining target */}
                 {remainingTarget && (
                     <>
-                        {/* Current Character (Brightest + Glow + Caret) */}
+                        {/* Current Character (Same color as future characters) */}
                         <motion.span
-                            className="text-off-white relative mx-px font-bold transition-all duration-1000"
+                            className="text-zinc-300 relative mx-px font-bold transition-all duration-1000"
                             style={{
                                 textShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}`,
-                                color: seasonalTheme.adjustedColors.primary,
                             }}
                             animate={{
                                 textShadow: [
