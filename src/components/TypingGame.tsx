@@ -8,6 +8,7 @@ import GameHeader from "../features/game/components/GameHeader";
 import ResultScreen from "../features/result/components/ResultScreen";
 import MobileBlocker from "./MobileBlocker";
 import SeasonalParticles from "./SeasonalParticles";
+import SoundSwitcher from "./SoundSwitcher";
 import {
     SeasonalProvider,
     useSeasonalTheme,
@@ -34,6 +35,9 @@ function TypingGameInner() {
         maxCombo,
         currentWordIndex,
         totalSentences,
+        currentProfile,
+        changeProfile,
+        availableProfiles,
     } = useGameController();
 
     return (
@@ -123,6 +127,13 @@ function TypingGameInner() {
             {/* Background Ambience */}
             <div
                 className={`absolute inset-0 pointer-events-none bg-linear-to-b ${seasonalTheme.atmosphere.gradient} z-0 transition-opacity duration-1000`}
+            />
+
+            {/* Sound Switcher */}
+            <SoundSwitcher
+                currentProfile={currentProfile}
+                onProfileChange={changeProfile}
+                availableProfiles={availableProfiles}
             />
         </div>
     );

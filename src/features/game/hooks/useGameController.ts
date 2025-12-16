@@ -29,6 +29,9 @@ export default function useGameController() {
     handleInput,
     setTarget,
     resetEngine,
+    currentProfile,
+    changeProfile,
+    availableProfiles,
   } = useTypingEngine();
 
   // Sync Engine with Session Word
@@ -105,5 +108,10 @@ export default function useGameController() {
     errorCount,
     currentCombo,
     maxCombo,
+
+    // Sound
+    currentProfile,
+    changeProfile,
+    availableProfiles,
   };
 }
