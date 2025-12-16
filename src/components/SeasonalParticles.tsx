@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 interface SeasonalParticle {
@@ -38,9 +38,13 @@ export default function SeasonalParticles({
     color,
     count = 15,
 }: SeasonalParticlesProps) {
-    const [particles] = useState<SeasonalParticle[]>(() =>
-        generateParticles(count)
-    );
+    // SSR と CSR の初期出力差分を避けるため、初期は空配列を描画し、
+    // クライアントマウント後にランダム生成する
+    const [particles, setParticles] = useState<SeasonalParticle[]>([]);
+
+    useEffect(() => {
+        setParticles(generateParticles(count));
+    }, [count]);
 
     return (
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">

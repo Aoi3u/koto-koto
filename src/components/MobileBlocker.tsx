@@ -26,7 +26,7 @@ export default function MobileBlocker() {
   if (!isMobile) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-zen-dark flex flex-col items-center justify-center p-8 text-center text-off-white">
+    <div className="fixed inset-0 z-9999 bg-zen-dark flex flex-col items-center justify-center p-8 text-center text-off-white">
       <Laptop className="w-16 h-16 mb-6 text-matcha opacity-80" />
       <h1 className="text-3xl font-zen-old-mincho font-bold mb-4 tracking-widest">
         PC ONLY
