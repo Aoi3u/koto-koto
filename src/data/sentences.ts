@@ -5,336 +5,304 @@ export type Sentence = {
     meta?: {
         author?: string;
         title?: string;
-        source?: "aozora" | "curated";
     };
 };
 
-const aozoraSentences: Sentence[] = [
+export const sentences: Sentence[] = [
+    // Aozora Bunko - Natsume Soseki
     {
-        id: "soseki_kokoro_01",
+        id: "aozora_soseki_kokoro_01",
         display: "私はその人を常に先生と呼んでいた。",
         reading: "わたしはそのひとをつねにせんせいとよんでいた。",
-        meta: { author: "夏目漱石", title: "こころ", source: "aozora" },
+        meta: { author: "夏目漱石", title: "こころ" },
     },
     {
-        id: "soseki_botchan_01",
+        id: "aozora_soseki_botchan_01",
         display: "親譲りの無鉄砲で小供の時から損ばかりしている。",
         reading: "おやゆずりのむてっぽうでこどものときからそんばかりしている。",
-        meta: { author: "夏目漱石", title: "坊っちゃん", source: "aozora" },
+        meta: { author: "夏目漱石", title: "坊っちゃん" },
     },
     {
-        id: "soseki_kusamakura_01",
+        id: "aozora_soseki_kusamakura_01",
         display: "山路を登りながら、こう考えた。",
         reading: "やまみちをのぼりながら、こうかんがえた。",
-        meta: { author: "夏目漱石", title: "草枕", source: "aozora" },
+        meta: { author: "夏目漱石", title: "草枕" },
     },
     {
-        id: "soseki_sorekara_01",
+        id: "aozora_soseki_sorekara_01",
         display: "恋は罪悪ですか。",
         reading: "こいはざいあくですか。",
-        meta: { author: "夏目漱石", title: "それから", source: "aozora" },
+        meta: { author: "夏目漱石", title: "それから" },
     },
     {
-        id: "dazai_melos_01",
+        id: "aozora_soseki_wagahai_01",
+        display: "吾輩は猫である。名前はまだ無い。",
+        reading: "わがはいはねこである。なまえはまだない。",
+        meta: { author: "夏目漱石", title: "吾輩は猫である" },
+    },
+    {
+        id: "aozora_soseki_kokoro_02",
+        display: "先生は私に何か言いたそうな顔をして、黙って歩いていた。",
+        reading:
+            "せんせいはわたしになにかいいたそうなかおをして、だまってあるいていた。",
+        meta: { author: "夏目漱石", title: "こころ" },
+    },
+    // Aozora Bunko - Dazai Osamu
+    {
+        id: "aozora_dazai_melos_01",
         display: "メロスは激怒した。",
         reading: "めろすはげきどした。",
-        meta: { author: "太宰治", title: "走れメロス", source: "aozora" },
+        meta: { author: "太宰治", title: "走れメロス" },
     },
     {
-        id: "dazai_melos_02",
+        id: "aozora_dazai_melos_02",
         display: "必ず、かの邪智暴虐の王を除かなければならぬと決意した。",
         reading:
             "かならず、かのじゃちぼうぎゃくのおうをのぞかなければならぬとけついした。",
-        meta: { author: "太宰治", title: "走れメロス", source: "aozora" },
+        meta: { author: "太宰治", title: "走れメロス" },
     },
     {
-        id: "dazai_shikkaku_01",
+        id: "aozora_dazai_shikkaku_01",
         display: "恥の多い生涯を送ってきました。",
         reading: "はじのおおいしょうがいをおくってきました。",
-        meta: { author: "太宰治", title: "人間失格", source: "aozora" },
+        meta: { author: "太宰治", title: "人間失格" },
     },
     {
-        id: "dazai_shikkaku_02",
+        id: "aozora_dazai_shikkaku_02",
         display: "生まれて、すみません。",
         reading: "うまれて、すみません。",
-        meta: { author: "太宰治", title: "人間失格", source: "aozora" },
+        meta: { author: "太宰治", title: "人間失格" },
     },
+    // Aozora Bunko - Miyazawa Kenji
     {
-        id: "miyazawa_ginga_01",
+        id: "aozora_miyazawa_ginga_01",
         display: "ジョバンニは、学校の帰りに活版所へ行きました。",
         reading: "じょばんには、がっこうのかえりにかっぱんじょへいきました。",
-        meta: { author: "宮沢賢治", title: "銀河鉄道の夜", source: "aozora" },
+        meta: { author: "宮沢賢治", title: "銀河鉄道の夜" },
     },
     {
-        id: "miyazawa_cello_01",
+        id: "aozora_miyazawa_cello_01",
         display: "ゴーシュは町の活動写真館でセロを弾く係でした。",
         reading:
             "ごーしゅはまちのかつどうしゃしんかんでせろをひくかかりでした。",
         meta: {
             author: "宮沢賢治",
             title: "セロ弾きのゴーシュ",
-            source: "aozora",
         },
     },
     {
-        id: "miyazawa_ame_01",
+        id: "aozora_miyazawa_ame_01",
         display: "雨ニモマケズ、風ニモマケズ、雪ニモ夏ノ暑サニモマケヌ。",
         reading:
             "あめにもまけず、かぜにもまけず、ゆきにもなつのあつさにもまけぬ。",
-        meta: { author: "宮沢賢治", title: "雨ニモマケズ", source: "aozora" },
+        meta: { author: "宮沢賢治", title: "雨ニモマケズ" },
     },
     {
-        id: "miyazawa_yodaka_01",
+        id: "aozora_miyazawa_yodaka_01",
         display:
             "よだかは、もう、どうしても空へ飛び上がらなければならないと思いました。",
         reading:
-            "よだかは、もう、どうしてもそらへとびあがらなければならないとおもいました。",
-        meta: { author: "宮沢賢治", title: "よだかの星", source: "aozora" },
+            "よだかは、もう、どうしても、そらへ、とびあがらなければならないとおもいました。",
+        meta: { author: "宮沢賢治", title: "よだかの星" },
     },
     {
-        id: "miyazawa_matasaburo_01",
-        display: "どっどど　どどうど　どどうど　どどう。",
-        reading: "どっどど　どどうど　どどうど　どどう。",
-        meta: { author: "宮沢賢治", title: "風の又三郎", source: "aozora" },
-    },
-];
-
-const curatedSentences: Sentence[] = [
-    {
-        id: "curated_lit_01",
-        display: "吾輩は猫である。名前はまだ無い。",
-        reading: "わがはいはねこである。なまえはまだない。",
-        meta: {
-            author: "夏目漱石",
-            title: "吾輩は猫である",
-            source: "curated",
-        },
+        id: "aozora_miyazawa_matasaburo_01",
+        display: "どっどど、どどうど、どどうど、どどう。",
+        reading: "どっどど、どどうど、どどうど、どどう。",
+        meta: { author: "宮沢賢治", title: "風の又三郎" },
     },
     {
-        id: "curated_lit_02",
-        display: "国境の長いトンネルを抜けると雪国であった。",
-        reading: "こっきょうのながいとんねるをぬけるとゆきぐにであった。",
-        meta: { author: "川端康成", title: "雪国", source: "curated" },
+        id: "aozora_miyazawa_choki_01",
+        display: "実は私達二人は旅人ではなく、狩人なのだ。",
+        reading: "じつはわたしたちふたりはたびびとではなく、かりゅうどなのだ。",
+        meta: { author: "宮沢賢治", title: "注文の多い料理店" },
     },
     {
-        id: "curated_lit_03",
-        display: "雨ニモマケズ、風ニモマケズ。",
-        reading: "あめにもまけず、かぜにもまけず。",
-        meta: { author: "宮沢賢治", title: "雨ニモマケズ", source: "curated" },
+        id: "aozora_miyazawa_tsugihagi_01",
+        display: "そういう記録が今まで誰によって作られたでしょうか。",
+        reading: "そういうきろくがいままだれによってつくられたでしょうか。",
+        meta: { author: "宮沢賢治", title: "よく利く薬と虎ノ巻" },
     },
+    // Aozora Bunko - Akutagawa Ryunosuke
     {
-        id: "curated_lit_04",
-        display: "祇園精舎の鐘の声、諸行無常の響きあり。",
-        reading:
-            "ぎおんしょうじゃのかねのこえ、しょぎょうむじょうのひびきあり。",
-        meta: { author: "鴨長明", title: "方丈記", source: "curated" },
-    },
-    {
-        id: "curated_lit_05",
-        display: "春はあけぼの。やうやう白くなりゆく山際。",
-        reading: "はるはあけぼの。ようようしろくなりゆくやまぎわ。",
-        meta: { author: "清少納言", title: "枕草子", source: "curated" },
-    },
-    {
-        id: "curated_lit_06",
-        display: "ゆく河の流れは絶えずして、しかももとの水にあらず。",
-        reading: "ゆくかわのながれはたえずして、しかももとのみずにあらず。",
-        meta: { author: "鴨長明", title: "方丈記", source: "curated" },
-    },
-    {
-        id: "curated_lit_07",
-        display: "蜘蛛の糸は、静かに垂れ下がっていた。",
-        reading: "くものいとは、しずかにたれさがっていた。",
-        meta: { author: "芥川龍之介", title: "蜘蛛の糸", source: "curated" },
-    },
-    {
-        id: "curated_lit_08",
-        display: "待てど暮らせど来ぬ人を。",
-        reading: "まてどくらせどこぬひとを。",
-        meta: { author: "和泉式部", source: "curated" },
-    },
-    {
-        id: "curated_lit_09",
+        id: "aozora_akutagawa_rashoumon_01",
         display:
-            "ある日の暮方の事である。一人の下人が、羅生門の下で雨やみを待っていた。",
+            "ある日の暮方の事である。一人の下人が羅生門の下で雨やみを待っていた。",
         reading:
-            "あるひのくれがたのことである。ひとりのげにんが、らしょうもんのしたであまやみをまっていた。",
-        meta: { author: "芥川龍之介", title: "羅生門", source: "curated" },
+            "あるひのくれがたのことである。ひとりのげにんがらしょうもんのしたであまやみをまっていた。",
+        meta: { author: "芥川龍之介", title: "羅生門" },
     },
     {
-        id: "curated_lit_10",
+        id: "aozora_akutagawa_kumo_01",
+        display: "蜘蛛の糸は、靴の爪の先ほどの太さに見えた。",
+        reading: "くものいとは、くつのつめのさきほどのぶさにみえた。",
+        meta: { author: "芥川龍之介", title: "蜘蛛の糸" },
+    },
+    {
+        id: "aozora_akutagawa_toshisyun_01",
+        display: "唐の末の世です。",
+        reading: "とうのすえのよです。",
+        meta: { author: "芥川龍之介", title: "杜子春" },
+    },
+    // Aozora Bunko - Nakajima Atsushi
+    {
+        id: "aozora_nakajima_sanyatsuki_01",
+        display: "我が輩のこの仕儀となったのは、都て自分のさたりとする所なり。",
+        reading:
+            "わがはいのこのしぎとなったのは、ことごとくじぶんのさたりとするところなり。",
+        meta: { author: "中島敦", title: "山月記" },
+    },
+    // Aozora Bunko - Shimizaki Toson
+    {
+        id: "aozora_shimazaki_yoakemai_01",
+        display: "木曽路はすべて山のうち。",
+        reading: "きそじはすべてやまのうち。",
+        meta: { author: "島崎藤村", title: "夜明け前" },
+    },
+    // Aozora Bunko - Higuchi Ichiyo
+    {
+        id: "aozora_higuchi_takekurabe_01",
+        display: "下谷の玉姫の稲荷の、門前の娘たちが、月の晴れた晩など。",
+        reading:
+            "したやのたまひめのいなりの、もんぜんのむすめたちが、つきのはれたばんなど。",
+        meta: { author: "樋口一葉", title: "たけくらべ" },
+    },
+    // Additional Aozora entries
+    // Natsume Soseki - Yume Juya
+    {
+        id: "aozora_soseki_yumejuya_01",
+        display: "こんな夢を見た。",
+        reading: "こんなゆめをみた。",
+        meta: { author: "夏目漱石", title: "夢十夜" },
+    },
+    // Natsume Soseki - Kusamakura famous lines
+    {
+        id: "aozora_soseki_kusamakura_02",
         display: "智に働けば角が立つ。情に棹させば流される。",
         reading: "ちにはたらけばかどがたつ。じょうにさおさせばながされる。",
-        meta: { author: "夏目漱石", title: "草枕", source: "curated" },
+        meta: { author: "夏目漱石", title: "草枕" },
     },
     {
-        id: "curated_lit_11",
-        display:
-            "銀河の岸を、一列の光の柱が、どこまでも走って行くのが見えました。",
-        reading:
-            "ぎんがのきしを、いちれつのひかりのはしらが、どこまでもはしっていくのがみえました。",
-        meta: { author: "宮沢賢治", title: "銀河鉄道の夜", source: "curated" },
+        id: "aozora_soseki_kokoro_03",
+        display: "私が先生と知り合いになったのは鎌倉であった。",
+        reading: "わたしがせんせいとしりあいになったのはかまくらであった。",
+        meta: { author: "夏目漱石", title: "こころ" },
     },
     {
-        id: "curated_zen_01",
-        display: "古い寺の鐘の音が、夕暮れの空に静かに響き渡っている。",
-        reading:
-            "ふるいてらのかねのねが、ゆうぐれのそらにしずかにひびきわたっている。",
-        meta: { source: "curated" },
+        id: "aozora_soseki_wagahai_02",
+        display: "どこで生れたかとんと見当がつかぬ。",
+        reading: "どこでうまれたかとんとけんとうがつかぬ。",
+        meta: { author: "夏目漱石", title: "吾輩は猫である" },
+    },
+    // Mori Ogai
+    {
+        id: "aozora_ogai_maihime_01",
+        display: "石炭をば早や積み果てつ。",
+        reading: "せきたんをばはやつみはてつ。",
+        meta: { author: "森鴎外", title: "舞姫" },
     },
     {
-        id: "curated_zen_02",
-        display: "静寂の中に、水の滴る音が響く。",
-        reading: "せいじゃくのなかに、みずのしたたるおとがひびく。",
-        meta: { source: "curated" },
+        id: "aozora_ogai_takasebune_01",
+        display: "この国には高瀬舟というものがある。",
+        reading: "このくににはたかせぶねというものがある。",
+        meta: { author: "森鴎外", title: "高瀬舟" },
+    },
+    // Dazai Osamu - more
+    {
+        id: "aozora_dazai_melos_03",
+        display: "メロスは村の牧人であった。",
+        reading: "めろすはむらのぼくじんであった。",
+        meta: { author: "太宰治", title: "走れメロス" },
+    },
+    // Miyazawa Kenji - more
+    {
+        id: "aozora_miyazawa_ginga_02",
+        display: "カムパネルラはそっと笑いました。",
+        reading: "かむぱねるらはそっとわらいました。",
+        meta: { author: "宮沢賢治", title: "銀河鉄道の夜" },
     },
     {
-        id: "curated_zen_03",
-        display: "風が竹林を通り抜ける音が聞こえる。",
-        reading: "かぜがちくりんをとおりぬけるおとがきこえる。",
-        meta: { source: "curated" },
+        id: "aozora_miyazawa_chuumon_02",
+        display: "二人は山猫の看板を見た。",
+        reading: "ふたりはやまねこのかんばんをみた。",
+        meta: { author: "宮沢賢治", title: "注文の多い料理店" },
+    },
+    // Akutagawa Ryunosuke - more
+    {
+        id: "aozora_akutagawa_rashoumon_02",
+        display: "下人の行方は、誰も知らない。",
+        reading: "げにんのゆくえは、だれもしらない。",
+        meta: { author: "芥川龍之介", title: "羅生門" },
     },
     {
-        id: "curated_zen_04",
-        display: "心を無にして、ただ指先の動きに集中する。",
-        reading: "こころをむにして、ただゆびさきのうごきにしゅうちゅうする。",
-        meta: { source: "curated" },
+        id: "aozora_akutagawa_kappa_01",
+        display: "ある日、私は河童の国へ行った。",
+        reading: "あるひ、わたしはかっぱのくにへいった。",
+        meta: { author: "芥川龍之介", title: "河童" },
+    },
+    // Nakajima Atsushi - more
+    {
+        id: "aozora_nakajima_meijinden_01",
+        display: "荘子に、弓の名人の伝がある。",
+        reading: "そうしに、ゆみのめいじんのでんがある。",
+        meta: { author: "中島敦", title: "名人伝" },
+    },
+    // Shimizaki Toson - poem
+    {
+        id: "aozora_shimazaki_hatsukoi_01",
+        display: "まだあげ初めし前髪の。",
+        reading: "まだあげそめしまえがみの。",
+        meta: { author: "島崎藤村", title: "初恋" },
+    },
+    // Higuchi Ichiyo - more
+    {
+        id: "aozora_higuchi_nigorie_01",
+        display: "去年の暮れのことでございます。",
+        reading: "きょねんのくれのことでございます。",
+        meta: { author: "樋口一葉", title: "にごりえ" },
     },
     {
-        id: "curated_zen_05",
-        display: "桜の花びらが、風に乗って舞い散る。",
-        reading: "さくらのはなびらが、かぜにのってまいちる。",
-        meta: { source: "curated" },
+        id: "aozora_higuchi_juusanya_01",
+        display: "十月の十三夜のことであった。",
+        reading: "じゅうがつのじゅうさんやのことであった。",
+        meta: { author: "樋口一葉", title: "十三夜" },
     },
+    // Fukuzawa Yukichi
     {
-        id: "curated_zen_06",
-        display: "秋の夜長に、虫の声が心地よく響く。",
-        reading: "あきのよながに、むしのこえがここちよくひびく。",
-        meta: { source: "curated" },
+        id: "aozora_fukuzawa_gakumon_01",
+        display: "天は人の上に人を造らず人の下に人を造らず。",
+        reading: "てんはひとのうえにひとをつくらずひとのしたにひとをつくらず。",
+        meta: { author: "福澤諭吉", title: "学問のすゝめ" },
     },
+    // Kunikida Doppo
     {
-        id: "curated_zen_07",
-        display: "雪が降り積もり、世界は白一色に染まる。",
-        reading: "ゆきがふりつもり、せかいはしろいっしょくにそまる。",
-        meta: { source: "curated" },
+        id: "aozora_kunikida_musashino_01",
+        display: "武蔵野は広い。",
+        reading: "むさしのはひろい。",
+        meta: { author: "国木田独歩", title: "武蔵野" },
     },
+    // Koda Rohan
     {
-        id: "curated_zen_08",
-        display: "波の音が、心を洗い流してくれる。",
-        reading: "なみのおとが、こころをあらいながしてくれる。",
-        meta: { source: "curated" },
+        id: "aozora_koda_gojoutou_01",
+        display: "ある日、町に大風が吹いた。",
+        reading: "あるひ、まちにおおかぜがふいた。",
+        meta: { author: "幸田露伴", title: "五重塔" },
     },
+    // Matsuo Basho (Haiku)
     {
-        id: "curated_zen_09",
-        display: "木漏れ日が、苔むした岩を照らしている。",
-        reading: "こもれびが、こけむしたいわをてらしている。",
-        meta: { source: "curated" },
+        id: "aozora_basho_haiku_01",
+        display: "古池や蛙飛び込む水の音。",
+        reading: "ふるいけや、かわずとびこむ、みずのおと。",
+        meta: { author: "松尾芭蕉", title: "俳句" },
     },
+    // Masaoka Shiki (Haiku)
     {
-        id: "curated_zen_10",
-        display: "お茶の香りが、部屋いっぱいに広がる。",
-        reading: "おちゃのかおりが、へやいっぱいにひろがる。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_zen_11",
-        display: "遠くで聞こえる雷の音が、夏の訪れを告げる。",
-        reading: "とおくできこえるかみなりのねが、なつのおとずれをつげる。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_zen_12",
-        display: "枯山水の庭で、砂の模様を眺める。",
-        reading: "かれさんすいのにわで、すなのもようをながめる。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_zen_13",
-        display: "夜空を見上げると、満天の星が輝いていた。",
-        reading: "よぞらをみあげると、まんてんのほしがかがやいていた。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_zen_14",
-        display: "朝霧が晴れて、山々の稜線が姿を現す。",
-        reading: "あさぎりがはれて、やまやまのりょうせんがすがたをあらわす。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_zen_15",
-        display: "暖炉の火が、ぱちぱちと音を立てて燃えている。",
-        reading: "だんろのひが、ぱちぱちとおとをたててもえている。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_long_01",
-        display: "深い森の奥で、数百年も生き続ける大木に出会った。",
-        reading:
-            "ふかいもりのおくで、すうひゃくねんもいきつづけるたいぼくにであった。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_long_02",
-        display: "静寂な湖面に、満月が鏡のように映し出されている。",
-        reading:
-            "せいじゃくなこめんに、まんげつがかがみのようにうつしだされている。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_long_03",
-        display: "新しい知識を学ぶことは、未知の世界への扉を開くことだ。",
-        reading:
-            "あたらしいちしきをまなぶことは、みちのせかいへのとびらをひらくことだ。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_long_04",
-        display: "創造性とは、既存の要素を新しい組み合わせで繋げる能力である。",
-        reading:
-            "そうぞうせいとは、きぞんのようそをあたらしいくみあわせでつなげるのうりょくである。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_long_05",
-        display: "美しいコードは、まるで詩のように読むことができる。",
-        reading: "うつくしいこーどは、まるでうたのようによむことができる。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_long_06",
-        display: "困難に直面した時こそ、人間の真価が問われる。",
-        reading:
-            "こんなんにちょくめんしたときこそ、にんげんのしんかがとわれる。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_long_07",
-        display: "過去にとらわれず、未来を恐れず、今この瞬間を生きる。",
-        reading:
-            "かこにとらわれず、みらいをおそれず、いまこのしゅんかんをいきる。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_long_08",
-        display: "言葉は時として、刃物よりも鋭く心をえぐる。",
-        reading: "ことばはときとして、はものよりもするどくこころをえぐる。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_long_09",
-        display: "優しさとは、弱さではなく、強さの証明である。",
-        reading: "やさしさとは、よわさではなく、つよさのしょうめいである。",
-        meta: { source: "curated" },
-    },
-    {
-        id: "curated_long_10",
-        display: "真のリーダーは、フォロワーを鼓舞し、成長させる。",
-        reading: "しんのりーだーは、ふぉろわーをこぶし、せいちょうさせる。",
-        meta: { source: "curated" },
+        id: "aozora_shiki_haiku_01",
+        display: "柿くへば鐘が鳴るなり法隆寺。",
+        reading: "かきくえばかねがなるなりほうりゅうじ。",
+        meta: { author: "正岡子規", title: "俳句" },
     },
 ];
-
-export const sentences: Sentence[] = [...aozoraSentences, ...curatedSentences];
 
 export function getRandomSentences(count: number): Sentence[] {
     const shuffled = [...sentences].sort(() => Math.random() - 0.5);
