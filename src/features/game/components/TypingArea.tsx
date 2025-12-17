@@ -49,20 +49,18 @@ export default function TypingArea({
             transition={{ duration: 0.3 }}
         >
             {/* KANJI / VISUAL DISPLAY */}
-            <div className="inline-block max-w-5xl text-left">
-                <motion.div
-                    key={currentWord.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`${textSizeClass} font-zen-old-mincho font-bold tracking-widest leading-relaxed wrap-break-word whitespace-pre-wrap transition-all duration-1000`}
-                    style={{
-                        color: seasonalTheme.colors.text,
-                        textShadow: `0 0 30px ${seasonalTheme.adjustedColors.glow}`,
-                    }}
-                >
-                    {display}
-                </motion.div>
-            </div>
+            <motion.div
+                key={currentWord.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`${textSizeClass} font-zen-old-mincho font-bold tracking-widest leading-relaxed wrap-break-word whitespace-pre-wrap transition-all duration-1000`}
+                style={{
+                    color: seasonalTheme.colors.text,
+                    textShadow: `0 0 30px ${seasonalTheme.adjustedColors.glow}`,
+                }}
+            >
+                {display}
+            </motion.div>
 
             {/* Kana reading with progress */}
             <div
