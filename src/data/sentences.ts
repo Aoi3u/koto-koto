@@ -305,6 +305,16 @@ export const sentences: Sentence[] = [
 ];
 
 export function getRandomSentences(count: number): Sentence[] {
-    const shuffled = [...sentences].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, Math.min(count, sentences.length));
+    // const shuffled = [...sentences].sort(() => Math.random() - 0.5);
+    // return shuffled.slice(0, Math.min(count, sentences.length));
+    const arr = [...sentences];
+    const n = arr.length;
+    count = Math.min(count, n);
+
+    for (let i = 0; i < count; i++) {
+        const j = i + Math.floor(Math.random() * (n - i));
+        console.log(`i: ${i} j: ${j}`);
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr.slice(0, count);
 }
