@@ -48,7 +48,7 @@ export default function TypingArea({
             animate={shake ? { x: [-10, 10, -10, 10, 0] } : {}}
             transition={{ duration: 0.3 }}
         >
-            {/* KANJI / VISUAL DISPLAY + Source */}
+            {/* KANJI / VISUAL DISPLAY */}
             <div className="inline-block max-w-5xl text-left">
                 <motion.div
                     key={currentWord.id}
@@ -62,19 +62,6 @@ export default function TypingArea({
                 >
                     {display}
                 </motion.div>
-
-                {/* Source / Citation aligned to bottom-right of the text */}
-                {currentWord.meta && (
-                    <div className="mt-2 text-right text-xs md:text-sm text-white/60">
-                        出典:{" "}
-                        {currentWord.meta.author && (
-                            <span className="mr-1">{currentWord.meta.author}</span>
-                        )}
-                        {currentWord.meta.title && (
-                            <span>『{currentWord.meta.title}』</span>
-                        )}
-                    </div>
-                )}
             </div>
 
             {/* Kana reading with progress */}
@@ -129,6 +116,19 @@ export default function TypingArea({
                     </>
                 )}
             </div>
+
+            {/* Source / Citation */}
+            {currentWord.meta && (
+                <div className="mt-1 max-w-4xl w-full mx-auto text-right text-[10px] md:text-xs text-white/40">
+                    出典:{" "}
+                    {currentWord.meta.author && (
+                        <span className="mr-1">{currentWord.meta.author}</span>
+                    )}
+                    {currentWord.meta.title && (
+                        <span>『{currentWord.meta.title}』</span>
+                    )}
+                </div>
+            )}
 
             {/* Romaji Input Display - Minimalist below */}
             <div className="h-6 font-inter text-subtle-gray text-opacity-50 tracking-wide">
