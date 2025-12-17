@@ -120,7 +120,7 @@ export const sentences: Sentence[] = [
     {
         id: "aozora_miyazawa_tsugihagi_01",
         display: "そういう記録が今まで誰によって作られたでしょうか。",
-        reading: "そういうきろくがいままだれによってつくられたでしょうか。",
+        reading: "そういうきろくがいままでだれによってつくられたでしょうか。",
         meta: { author: "宮沢賢治", title: "よく利く薬と虎ノ巻" },
     },
     // Aozora Bunko - Akutagawa Ryunosuke
