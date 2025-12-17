@@ -49,7 +49,7 @@ export default function TypingArea({
             transition={{ duration: 0.3 }}
         >
             {/* KANJI / VISUAL DISPLAY + Source */}
-            <div className="w-full max-w-5xl">
+            <div className="inline-block max-w-5xl text-left">
                 <motion.div
                     key={currentWord.id}
                     initial={{ opacity: 0, y: 10 }}
