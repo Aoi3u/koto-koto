@@ -249,7 +249,12 @@ export function checkRomaji(
       // C-2: "n" + Character ...
       // Check next char in INPUT
       const nextChar = input[1];
-      if (isConsonant(nextChar) && nextChar !== "y") {
+
+      if (!isConsonant(nextChar) || nextChar === "y") {
+        return null;
+      }
+
+      if (isConsonant(nextChar)) {
         const remainingInput = input.slice(1);
         const nextTarget = targetKana.slice(1);
 
