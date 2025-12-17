@@ -16,6 +16,7 @@ src/
 ├── components/             # 共有UIコンポーネント
 │   ├── TypingGame.tsx      # メインゲームコンテナ (SeasonalProvider)
 │   ├── SeasonalParticles.tsx # 季節パーティクルアニメーション
+│   ├── SoundSwitcher.tsx   # キーボードサウンド切り替えUI
 │   └── MobileBlocker.tsx
 │
 ├── contexts/               # React Context (状態管理)
@@ -31,7 +32,7 @@ src/
 │   │       ├── useGameController.ts
 │   │       ├── useGameSession.ts
 │   │       ├── useTypingEngine.ts
-│   │       └── useSound.ts
+│   │       └── useSound.ts         # リアルなキーボードサウンド管理
 │   └── result/
 │       ├── components/
 │       │   └── ResultScreen.tsx
@@ -136,12 +137,66 @@ SEASONAL_THEMES[s]   TIME_THEMES[t]
 -   **Context 分離**: 単一の `CombinedTheme` を共有して再レンダリング最小化
 -   **純粋関数**: `adjustColorBrightness()` と `adjustGlow()` による予測可能な変換
 
+## 🎵 キーボードサウンドシステムアーキテクチャ
+
+### データフロー
+
+```
+useSoun() Hook
+  ├─ AudioContext (Web Audio API)
+  ├─ AudioBuffer Map (13プロファイル × 5バリアント)
+  ├─ currentProfile (状態管理)
+  └─ localStorage (永続化)
+        ↓
+  playKeySound()
+        ↓
+  AudioBufferSourceNode → GainNode → destination
+        ↓
+キーボード音の再生
+```
+
+### サウンドプロファイル
+
+13 種類のメカニカルキーボードスイッチのリアルな音声:
+
+| プロファイル      | 説明                   | フォルダー  |
+| ----------------- | ---------------------- | ----------- |
+| Cherry MX Black   | リニア、静音           | `mxblack`   |
+| Cherry MX Blue    | クリッキー、タクタイル | `mxblue`    |
+| Cherry MX Brown   | タクタイル             | `mxbrown`   |
+| Topre             | 静電容量無接点         | `topre`     |
+| Holy Panda        | タクタイル、ハイエンド | `holypanda` |
+| Gateron Alpaca    | リニア、スムーズ       | `alpaca`    |
+| Gateron Black Ink | リニア、深い音         | `blackink`  |
+| Gateron Red Ink   | リニア、軽量           | `redink`    |
+| Cream             | リニア                 | `cream`     |
+| Blue Alps         | タクタイル、クリッキー | `bluealps`  |
+| Box Navy          | クリッキー、重い       | `boxnavy`   |
+| Buckling Spring   | IBM 風クリッキー       | `buckling`  |
+| Turquoise         | タクタイル             | `turquoise` |
+
+### パフォーマンス最適化
+
+1. **プリロード戦略**: 全サウンドプロファイル（65 ファイル）を初期化時に読み込み
+2. **AudioBuffer 再利用**: デコード済みのバッファを Map に保存し、再利用
+3. **低レイテンシ再生**: Web Audio API の BufferSourceNode で即座に再生
+4. **バリアント**: 各プロファイルに 5 つのバリアントを用意し、ランダム再生で自然な響き
+5. **音量調整**: GainNode で微妙な音量バリエーションを追加
+
+### SoundSwitcher UI
+
+-   **位置**: 左下固定（`fixed bottom-6 left-6`）
+-   **インタラクション**: ドロップダウンメニューでプロファイル選択
+-   **視覚的フィードバック**: 現在選択中のプロファイルにチェックマーク表示
+-   **永続化**: 選択は localStorage に保存され、次回訪問時に復元
+
 ## 📦 コンポーネント依存関係
 
 ```
 TypingGame (Provider)
   ├─ MobileBlocker
   ├─ SeasonalParticles
+  ├─ SoundSwitcher (サウンドプロファイル切り替え)
   ├─ GameHeader (playing時)
   └─ AnimatePresence
       ├─ TitleScreen (waiting)
@@ -164,7 +219,13 @@ TypingGame (Provider)
 -   `gameState`: ゲーム状態
 -   `currentWord`: 現在の単語
 -   `elapsedTime`: 経過時間
+-   `currentProfile`: 現在選択中のキーボードサウンドプロファイル
+-   `isLoading`: サウンドファイルの読み込み状態
 -   その他ゲームロジック
+
+### 永続化 (localStorage)
+
+-   `keyboard-sound-profile`: ユーザーが選択したサウンドプロファイル
 
 ### 純粋関数 (Utils)
 

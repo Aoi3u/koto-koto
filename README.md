@@ -18,7 +18,11 @@ Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it features a 
 -   **Intelligent Typing Engine**:
     -   **Flexible Romaji**: Supports multiple input styles (Hepburn, Kunrei-shiki). Accepts `si`/`shi`, `tu`/`tsu`, `c`/`k`, etc.
     -   **N-Permisiveness**: gracefully handles the tricky `n` vs `nn` logic.
--   **Immersive Audio**: Procedurally generated wooden keystroke sounds using the Web Audio API (no external assets).
+-   **Realistic Keyboard Sounds**:
+    -   **13 Mechanical Switch Profiles**: Choose from authentic keyboard sounds including Cherry MX (Black, Blue, Brown), Topre, Holy Panda, Gateron (Alpaca, Black Ink, Red Ink), Cream, Alps (Blue Alps, Box Navy), Buckling Spring, and Turquoise.
+    -   **Sound Switcher UI**: Easy-to-use dropdown menu (bottom-left corner) to switch between different keyboard sound profiles.
+    -   **Persistent Settings**: Your preferred sound profile is saved to localStorage and automatically restored.
+    -   **Optimized Performance**: Pre-loaded audio buffers with Web Audio API for low-latency, realistic sound playback.
 -   **Strict Grading System**:
     -   **Zen Titles**: Earn ranks from "Novice" to "Koto Master" and special S-Ranks.
     -   **Detailed Stats**: Tracks WPM, Accuracy, KPM, and Max Combo.
@@ -69,7 +73,7 @@ The project follows a **Feature-based Architecture** with **Dynamic Atmosphere S
 ```
 src/
 ├── app/                 # Next.js App Router
-├── components/          # Shared aesthetic components (SeasonalParticles, MobileBlocker)
+├── components/          # Shared aesthetic components (SeasonalParticles, MobileBlocker, SoundSwitcher)
 ├── config/              # Centralized constants
 │   ├── gameConfig.ts    # Scoring thresholds, total sentences
 │   ├── theme.ts         # Color palettes, fonts
@@ -81,7 +85,7 @@ src/
 ├── features/            # Feature-based modules
 │   ├── game/            # Core Game Logic
 │   │   ├── components/  # TitleScreen, GameHeader, TypingArea
-│   │   └── hooks/       # useTypingEngine, useGameSession, useSound
+│   │   └── hooks/       # useTypingEngine, useGameSession, useSound (realistic keyboard sounds)
 │   └── result/          # Result Screen Logic
 │       ├── components/  # ResultScreen
 │       └── utils/       # Rank calculation logic
