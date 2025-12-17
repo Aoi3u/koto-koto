@@ -142,7 +142,7 @@ SEASONAL_THEMES[s]   TIME_THEMES[t]
 ### データフロー
 
 ```
-useSoun() Hook
+useSound() Hook
   ├─ AudioContext (Web Audio API)
   ├─ AudioBuffer Map (13プロファイル × 5バリアント)
   ├─ currentProfile (状態管理)
@@ -157,7 +157,7 @@ useSoun() Hook
 
 ### サウンドプロファイル
 
-13 種類のメカニカルキーボードスイッチのリアルな音声:
+13 種類のメカニカルキーボードスイッチのリアルな音声（press バリアントのみを使用）:
 
 | プロファイル      | 説明                   | フォルダー  |
 | ----------------- | ---------------------- | ----------- |
@@ -231,7 +231,7 @@ TypingGame (Provider)
 
 -   **時間フォーマット**: `formatTime()`, `formatTimeWithMillis()`
 -   **スコア計算**: `calculateWPM()`, `calculateKPM()`, `calculateAccuracy()`
--   **ランク判定**: `calculateRank()`
+-   **ランク判定**: `calculateRank()`（精度 80% 未満は強制的に C ランク）
 -   **色調整**: `adjustColorBrightness()`, `adjustGlow()`
 
 ## 🚀 パフォーマンス考慮事項

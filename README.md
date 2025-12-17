@@ -8,7 +8,7 @@
 
 **Koto-Koto** is a minimalist, zen-inspired Japanese typing game designed to induce a state of flow. Unlike frantic arcade typing games, Koto-Koto focuses on rhythm, aesthetics, and the beauty of the Japanese language.
 
-Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it features a custom-built, feature-rich typing engine that handles the nuances of Romaji-to-Kana conversion (e.g., `si` vs `shi`, `n` flexibility).
+Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it ships a custom typing engine that handles the nuances of Romaji-to-Kana conversion (e.g., `si` vs `shi`, permissive `n` logic) and a season × time-of-day atmosphere system.
 
 ## ✨ Features
 
@@ -24,15 +24,15 @@ Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it features a 
     -   **Persistent Settings**: Your preferred sound profile is saved to localStorage and automatically restored.
     -   **Optimized Performance**: Pre-loaded audio buffers with Web Audio API for low-latency, realistic sound playback.
 -   **Strict Grading System**:
-    -   **Zen Titles**: Earn ranks from "Novice" to "Koto Master" and special S-Ranks.
-    -   **Detailed Stats**: Tracks WPM, Accuracy, KPM, and Max Combo.
+    -   **Ranks from Seed → SSS**: Titles follow the in-game ladder (Seed → Sprout → Wind in Pines … → Nirvana) with S-ranks gated behind accuracy ≥ 80%.
+    -   **Detailed Stats**: Tracks WPM, Accuracy, KPM, Max Combo, keystrokes, and elapsed time, plus a copy-to-clipboard share button.
 -   **Modern Tech Stack**: Fully responsive, strictly typed, and built for performance.
 
 ## 🛠️ Tech Stack
 
 -   **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
 -   **Language**: [TypeScript](https://www.typescriptlang.org/)
--   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+-   **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) via the PostCSS plugin
 -   **Animation**: [Framer Motion](https://www.framer.com/motion/)
 -   **Icons**: [Lucide React](https://lucide.dev/)
 
@@ -40,7 +40,7 @@ Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it features a 
 
 ### Prerequisites
 
--   Node.js 18+
+-   Node.js 18.18+ (Next.js 16 requirement)
 -   npm
 
 ### Installation
@@ -48,7 +48,7 @@ Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it features a 
 1.  Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/koto-koto.git
+    git clone https://github.com/Aoi3u/koto-koto.git
     cd koto-koto
     ```
 
@@ -94,8 +94,7 @@ src/
 │   └── formatters.ts    # Time and score formatters
 ├── hooks/               # Custom hooks
 │   └── useSeason.ts     # Season + Time-of-day detection
-└── data/                # Static content
-    └── sentences.ts     # Literary sentences (Aozora + curated)
+└── public/audio/        # 13 keyboard profiles (press variants only)
 ```
 
 ## 🎨 Design Philosophy
