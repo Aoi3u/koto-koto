@@ -115,6 +115,19 @@ export default function TypingArea({
                 )}
             </div>
 
+            {/* Source / Citation */}
+            {currentWord.meta && (
+                <div className="mt-1 max-w-4xl w-full mx-auto text-right text-[10px] md:text-xs text-white/40">
+                    出典:{" "}
+                    {currentWord.meta.author && (
+                        <span className="mr-1">{currentWord.meta.author}</span>
+                    )}
+                    {currentWord.meta.title && (
+                        <span>『{currentWord.meta.title}』</span>
+                    )}
+                </div>
+            )}
+
             {/* Romaji Input Display - Minimalist below */}
             <div className="h-6 font-inter text-subtle-gray text-opacity-50 tracking-wide">
                 {pendingInput}

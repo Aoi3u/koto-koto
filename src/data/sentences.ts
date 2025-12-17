@@ -135,7 +135,7 @@ export const sentences: Sentence[] = [
     {
         id: "aozora_akutagawa_kumo_01",
         display: "蜘蛛の糸は、靴の爪の先ほどの太さに見えた。",
-        reading: "くものいとは、くつのつめのさきほどのぶさにみえた。",
+        reading: "くものいとは、くつのつめのさきほどのふとさにみえた。",
         meta: { author: "芥川龍之介", title: "蜘蛛の糸" },
     },
     {
