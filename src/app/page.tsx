@@ -1,4 +1,4 @@
-import TypingGame from "@/components/TypingGame";
+import TypingGame from '@/components/TypingGame';
 
 export default function Home() {
   return (
