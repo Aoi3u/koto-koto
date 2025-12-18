@@ -1,5 +1,5 @@
-import { RANK_THRESHOLDS } from "../../../config/gameConfig";
-import { THEME } from "../../../config/theme";
+import { RANK_THRESHOLDS } from '../../../config/gameConfig';
+import { THEME } from '../../../config/theme';
 
 export interface RankResult {
   grade: string;
@@ -15,8 +15,8 @@ export const calculateRank = (wpm: number, acc: number): RankResult => {
   // 2. Safety Net: If accuracy is too low, force low rank.
   if (acc < 80)
     return {
-      grade: "C",
-      title: "Seed (種)",
+      grade: 'C',
+      title: 'Seed (種)',
       color: THEME.rankColors.C, // Fallback or strict C
       score: zenScore,
     };

@@ -7,143 +7,143 @@ export type MatchResult = {
 
 // Map of Kana to all valid Romaji inputs
 export const KANA_MAP: Record<string, string[]> = {
-  あ: ["a"],
-  い: ["i", "yi"],
-  う: ["u", "wu", "whu"],
-  え: ["e"],
-  お: ["o"],
-  か: ["ka", "ca"],
-  き: ["ki"],
-  く: ["ku", "cu", "qu"],
-  け: ["ke"],
-  こ: ["ko", "co"],
-  さ: ["sa"],
-  し: ["shi", "si", "ci"],
-  す: ["su"],
-  せ: ["se", "ce"],
-  そ: ["so"],
-  た: ["ta"],
-  ち: ["chi", "ti"],
-  つ: ["tsu", "tu"],
-  て: ["te"],
-  と: ["to"],
-  な: ["na"],
-  に: ["ni"],
-  ぬ: ["nu"],
-  ね: ["ne"],
-  の: ["no"],
-  は: ["ha"],
-  ひ: ["hi"],
-  ふ: ["fu", "hu"],
-  へ: ["he"],
-  ほ: ["ho"],
+  あ: ['a'],
+  い: ['i', 'yi'],
+  う: ['u', 'wu', 'whu'],
+  え: ['e'],
+  お: ['o'],
+  か: ['ka', 'ca'],
+  き: ['ki'],
+  く: ['ku', 'cu', 'qu'],
+  け: ['ke'],
+  こ: ['ko', 'co'],
+  さ: ['sa'],
+  し: ['shi', 'si', 'ci'],
+  す: ['su'],
+  せ: ['se', 'ce'],
+  そ: ['so'],
+  た: ['ta'],
+  ち: ['chi', 'ti'],
+  つ: ['tsu', 'tu'],
+  て: ['te'],
+  と: ['to'],
+  な: ['na'],
+  に: ['ni'],
+  ぬ: ['nu'],
+  ね: ['ne'],
+  の: ['no'],
+  は: ['ha'],
+  ひ: ['hi'],
+  ふ: ['fu', 'hu'],
+  へ: ['he'],
+  ほ: ['ho'],
 
   // F-series (Modern IME - Added Fix)
-  ふぁ: ["fa"],
-  ふぃ: ["fi"],
-  ふぇ: ["fe"],
-  ふぉ: ["fo"],
+  ふぁ: ['fa'],
+  ふぃ: ['fi'],
+  ふぇ: ['fe'],
+  ふぉ: ['fo'],
 
-  ゔ: ["vu"],
-  ゔぁ: ["va"],
-  ゔぃ: ["vi"],
-  ゔぇ: ["ve"],
-  ゔぉ: ["vo"],
+  ゔ: ['vu'],
+  ゔぁ: ['va'],
+  ゔぃ: ['vi'],
+  ゔぇ: ['ve'],
+  ゔぉ: ['vo'],
 
-  ま: ["ma"],
-  み: ["mi"],
-  む: ["mu"],
-  め: ["me"],
-  も: ["mo"],
-  や: ["ya"],
-  ゆ: ["yu"],
-  よ: ["yo"],
-  ら: ["ra"],
-  り: ["ri"],
-  る: ["ru"],
-  れ: ["re"],
-  ろ: ["ro"],
-  わ: ["wa"],
-  を: ["wo"],
-  ん: ["nn", "n", "xn"],
+  ま: ['ma'],
+  み: ['mi'],
+  む: ['mu'],
+  め: ['me'],
+  も: ['mo'],
+  や: ['ya'],
+  ゆ: ['yu'],
+  よ: ['yo'],
+  ら: ['ra'],
+  り: ['ri'],
+  る: ['ru'],
+  れ: ['re'],
+  ろ: ['ro'],
+  わ: ['wa'],
+  を: ['wo'],
+  ん: ['nn', 'n', 'xn'],
 
   // Dakuten
-  が: ["ga"],
-  ぎ: ["gi"],
-  ぐ: ["gu"],
-  げ: ["ge"],
-  ご: ["go"],
-  ざ: ["za"],
-  じ: ["ji", "zi"],
-  ず: ["zu"],
-  ぜ: ["ze"],
-  ぞ: ["zo"],
-  だ: ["da"],
-  ぢ: ["ji", "di"],
-  づ: ["zu", "du"],
-  で: ["de"],
-  ど: ["do"],
-  ば: ["ba"],
-  び: ["bi"],
-  ぶ: ["bu"],
-  べ: ["be"],
-  ぼ: ["bo"],
-  ぱ: ["pa"],
-  ぴ: ["pi"],
-  ぷ: ["pu"],
-  ぺ: ["pe"],
-  ぽ: ["po"],
+  が: ['ga'],
+  ぎ: ['gi'],
+  ぐ: ['gu'],
+  げ: ['ge'],
+  ご: ['go'],
+  ざ: ['za'],
+  じ: ['ji', 'zi'],
+  ず: ['zu'],
+  ぜ: ['ze'],
+  ぞ: ['zo'],
+  だ: ['da'],
+  ぢ: ['ji', 'di'],
+  づ: ['zu', 'du'],
+  で: ['de'],
+  ど: ['do'],
+  ば: ['ba'],
+  び: ['bi'],
+  ぶ: ['bu'],
+  べ: ['be'],
+  ぼ: ['bo'],
+  ぱ: ['pa'],
+  ぴ: ['pi'],
+  ぷ: ['pu'],
+  ぺ: ['pe'],
+  ぽ: ['po'],
 
   // Small Kana (independent)
-  ぁ: ["la", "xa"],
-  ぃ: ["li", "xi"],
-  ぅ: ["lu", "xu"],
-  ぇ: ["le", "xe"],
-  ぉ: ["lo", "xo"],
-  っ: ["ltu", "xtu", "ltsu"], // Double consonant handled separately
-  ゃ: ["lya", "xya"],
-  ゅ: ["lyu", "xyu"],
-  ょ: ["lyo", "xyo"],
+  ぁ: ['la', 'xa'],
+  ぃ: ['li', 'xi'],
+  ぅ: ['lu', 'xu'],
+  ぇ: ['le', 'xe'],
+  ぉ: ['lo', 'xo'],
+  っ: ['ltu', 'xtu', 'ltsu'], // Double consonant handled separately
+  ゃ: ['lya', 'xya'],
+  ゅ: ['lyu', 'xyu'],
+  ょ: ['lyo', 'xyo'],
 
   // Yoon (Contracted sounds)
-  きゃ: ["kya"],
-  きゅ: ["kyu"],
-  きょ: ["kyo"],
-  しゃ: ["sha", "sya"],
-  しゅ: ["shu", "syu"],
-  しょ: ["sho", "syo"],
-  ちゃ: ["cha", "tya"],
-  ちゅ: ["chu", "tyu"],
-  ちょ: ["cho", "tyo"],
-  にゃ: ["nya"],
-  にゅ: ["nyu"],
-  にょ: ["nyo"],
-  ひゃ: ["hya"],
-  ひゅ: ["hyu"],
-  ひょ: ["hyo"],
-  みゃ: ["mya"],
-  みゅ: ["myu"],
-  みょ: ["myo"],
-  りゃ: ["rya"],
-  りゅ: ["ryu"],
-  りょ: ["ryo"],
-  ぎゃ: ["gya"],
-  ぎゅ: ["gyu"],
-  ぎょ: ["gyo"],
-  じゃ: ["ja", "jya", "zya"],
-  じゅ: ["ju", "jyu", "zyu"],
-  じょ: ["jo", "jyo", "zyo"],
-  びゃ: ["bya"],
-  びゅ: ["byu"],
-  びょ: ["byo"],
-  ぴゃ: ["pya"],
-  ぴゅ: ["pyu"],
-  ぴょ: ["pyo"],
+  きゃ: ['kya'],
+  きゅ: ['kyu'],
+  きょ: ['kyo'],
+  しゃ: ['sha', 'sya'],
+  しゅ: ['shu', 'syu'],
+  しょ: ['sho', 'syo'],
+  ちゃ: ['cha', 'tya'],
+  ちゅ: ['chu', 'tyu'],
+  ちょ: ['cho', 'tyo'],
+  にゃ: ['nya'],
+  にゅ: ['nyu'],
+  にょ: ['nyo'],
+  ひゃ: ['hya'],
+  ひゅ: ['hyu'],
+  ひょ: ['hyo'],
+  みゃ: ['mya'],
+  みゅ: ['myu'],
+  みょ: ['myo'],
+  りゃ: ['rya'],
+  りゅ: ['ryu'],
+  りょ: ['ryo'],
+  ぎゃ: ['gya'],
+  ぎゅ: ['gyu'],
+  ぎょ: ['gyo'],
+  じゃ: ['ja', 'jya', 'zya'],
+  じゅ: ['ju', 'jyu', 'zyu'],
+  じょ: ['jo', 'jyo', 'zyo'],
+  びゃ: ['bya'],
+  びゅ: ['byu'],
+  びょ: ['byo'],
+  ぴゃ: ['pya'],
+  ぴゅ: ['pyu'],
+  ぴょ: ['pyo'],
 
   // Special Symbols
-  ー: ["-"],
-  "、": [","],
-  "。": ["."],
+  ー: ['-'],
+  '、': [','],
+  '。': ['.'],
 };
 
 // Check if a character is a consonant
@@ -153,7 +153,7 @@ const isConsonant = (char: string) => /^[bcdfghjklmnpqrstvwxyz]$/.test(char);
 function getRomajiOptions(kana: string): string[] {
   if (KANA_MAP[kana]) return KANA_MAP[kana];
   // Fallbacks or empty
-  return [""];
+  return [''];
 }
 
 /**
@@ -161,24 +161,21 @@ function getRomajiOptions(kana: string): string[] {
  * targetKana: The full remaining target string (e.g. "かんに").
  * input: The user's current input buffer (e.g. "k").
  */
-export function checkRomaji(
-  targetKana: string,
-  input: string
-): MatchResult | null {
+export function checkRomaji(targetKana: string, input: string): MatchResult | null {
   if (!targetKana) return null;
   if (!input) return null;
 
   // 1. Check for Double Consonant (Small Tsu)
-  if (targetKana.startsWith("っ")) {
+  if (targetKana.startsWith('っ')) {
     const nextKana = targetKana[1];
     // Check direct entry for っ (xtu, ltu)
-    const directOptions = ["xtu", "ltu", "ltsu"];
+    const directOptions = ['xtu', 'ltu', 'ltsu'];
     for (const opt of directOptions) {
       if (input.startsWith(opt)) {
         return {
           isMatch: true,
           consumedInput: opt,
-          consumedTarget: "っ",
+          consumedTarget: 'っ',
           remainingTarget: targetKana.slice(1),
         };
       }
@@ -198,7 +195,7 @@ export function checkRomaji(
         return {
           isMatch: true,
           consumedInput: input.charAt(0), // Consume just the first char
-          consumedTarget: "っ",
+          consumedTarget: 'っ',
           remainingTarget: targetKana.slice(1),
         };
       }
@@ -206,39 +203,39 @@ export function checkRomaji(
   }
 
   // 2. Check for "N" (ん) - PERMISSIVE LOGIC
-  if (targetKana.startsWith("ん")) {
+  if (targetKana.startsWith('ん')) {
     // Case A: "nn" -> Always match
-    if (input.startsWith("nn")) {
+    if (input.startsWith('nn')) {
       return {
         isMatch: true,
-        consumedInput: "nn",
-        consumedTarget: "ん",
+        consumedInput: 'nn',
+        consumedTarget: 'ん',
         remainingTarget: targetKana.slice(1),
       };
     }
 
     // Case B: "xn" -> Always match
-    if (input.startsWith("xn")) {
+    if (input.startsWith('xn')) {
       return {
         isMatch: true,
-        consumedInput: "xn",
-        consumedTarget: "ん",
+        consumedInput: 'xn',
+        consumedTarget: 'ん',
         remainingTarget: targetKana.slice(1),
       };
     }
 
     // Case C: Single "n" logic
-    if (input.startsWith("n")) {
+    if (input.startsWith('n')) {
       // C-1: "n" at End of Input (Potential Pending)
-      if (input === "n") {
+      if (input === 'n') {
         // If this is the LAST character of the target, we accept 'n' as complete.
         // e.g. "Riron" -> "りろん". 'ん' is last. 'n' is valid.
         if (targetKana.length === 1) {
           return {
             isMatch: true,
-            consumedInput: "n",
-            consumedTarget: "ん",
-            remainingTarget: "",
+            consumedInput: 'n',
+            consumedTarget: 'ん',
+            remainingTarget: '',
           };
         }
         // Otherwise, it's just "pending". Return NULL.
@@ -249,7 +246,7 @@ export function checkRomaji(
       // C-2: "n" + Character ...
       // Check next char in INPUT
       const nextChar = input[1];
-      if (isConsonant(nextChar) && nextChar !== "y") {
+      if (isConsonant(nextChar) && nextChar !== 'y') {
         const remainingInput = input.slice(1);
         const nextTarget = targetKana.slice(1);
 
@@ -258,8 +255,8 @@ export function checkRomaji(
         }
         return {
           isMatch: true,
-          consumedInput: "n",
-          consumedTarget: "ん",
+          consumedInput: 'n',
+          consumedTarget: 'ん',
           remainingTarget: nextTarget,
         };
       }
@@ -302,10 +299,10 @@ export function isValidPrefix(targetKana: string, input: string): boolean {
   if (!input) return true;
 
   // 1. Check for Double Consonant (Small Tsu)
-  if (targetKana.startsWith("っ")) {
+  if (targetKana.startsWith('っ')) {
     const nextKana = targetKana[1];
     // Check direct entry options
-    const directOptions = ["xtu", "ltu", "ltsu"];
+    const directOptions = ['xtu', 'ltu', 'ltsu'];
     for (const opt of directOptions) {
       if (opt.startsWith(input)) return true;
     }
@@ -320,12 +317,12 @@ export function isValidPrefix(targetKana: string, input: string): boolean {
   }
 
   // 2. Check N
-  if (targetKana.startsWith("ん")) {
+  if (targetKana.startsWith('ん')) {
     // "n", "nn", "xn"
-    if ("nn".startsWith(input)) return true;
-    if ("xn".startsWith(input)) return true;
+    if ('nn'.startsWith(input)) return true;
+    if ('xn'.startsWith(input)) return true;
     // Single 'n' is always valid prefix
-    if (input === "n") return true;
+    if (input === 'n') return true;
   }
 
   // 3. Normal Kana
