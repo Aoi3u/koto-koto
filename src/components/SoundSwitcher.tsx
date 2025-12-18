@@ -1,6 +1,6 @@
 "use client";
 
-import { Volume2 } from "lucide-react";
+import { Volume2, VolumeX } from "lucide-react";
 import { useState } from "react";
 import type { KeyboardSoundProfile } from "@/features/game/hooks/useSound";
 
@@ -11,12 +11,14 @@ interface SoundSwitcherProps {
         KeyboardSoundProfile,
         { name: string; folder: string; variants: number }
     >;
+    hasAudioSupport?: boolean;
 }
 
 export default function SoundSwitcher({
     currentProfile,
     onProfileChange,
     availableProfiles,
+    hasAudioSupport = true,
 }: SoundSwitcherProps) {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -61,10 +63,28 @@ export default function SoundSwitcher({
                     onClick={() => setIsOpen(!isOpen)}
                     className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900/90 backdrop-blur-sm border border-zinc-700/50 rounded-lg shadow-lg hover:bg-zinc-800/90 hover:border-zinc-600/50 transition-all duration-200 group"
                     aria-label="Change keyboard sound"
+                    disabled={!hasAudioSupport}
+                    title={
+                        !hasAudioSupport
+                            ? "Audio is not supported in this browser"
+                            : undefined
+                    }
                 >
-                    <Volume2 className="w-4 h-4 text-zinc-400 group-hover:text-zinc-300 transition-colors" />
-                    <span className="text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">
-                        {availableProfiles[currentProfile].name}
+                    {hasAudioSupport ? (
+                        <Volume2 className="w-4 h-4 text-zinc-400 group-hover:text-zinc-300 transition-colors" />
+                    ) : (
+                        <VolumeX className="w-4 h-4 text-red-400" />
+                    )}
+                    <span
+                        className={`text-xs transition-colors ${
+                            hasAudioSupport
+                                ? "text-zinc-400 group-hover:text-zinc-300"
+                                : "text-red-400"
+                        }`}
+                    >
+                        {hasAudioSupport
+                            ? availableProfiles[currentProfile].name
+                            : "No Audio"}
                     </span>
                 </button>
             </div>
