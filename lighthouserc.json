@@ -1,9 +1,12 @@
 {
   "ci": {
     "collect": {
-      "numberOfRuns": 1,
+      "numberOfRuns": 2,
       "url": ["http://localhost:3000"],
-      "startServerCommand": "npm start"
+      "startServerCommand": "npm start",
+      "settings": {
+        "preset": "desktop"
+      }
     },
     "upload": {
       "target": "temporary-public-storage"
