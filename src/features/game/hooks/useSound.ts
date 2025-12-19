@@ -57,12 +57,14 @@ export default function useSound() {
       return;
     }
 
-    // Load saved profile from localStorage
+    // Resolve initial profile (from localStorage) without depending on state
+    let initialProfile: KeyboardSoundProfile = 'topre';
     try {
       const savedProfile = localStorage.getItem(
         'keyboard-sound-profile'
       ) as KeyboardSoundProfile | null;
       if (savedProfile && SOUND_PROFILES[savedProfile]) {
+        initialProfile = savedProfile;
         setCurrentProfile(savedProfile);
       }
     } catch (error) {
@@ -106,9 +108,9 @@ export default function useSound() {
         return;
       }
 
-      // 1) Load current profile only for initial interactivity
+      // 1) Load initial profile only for initial interactivity
       try {
-        await loadProfileAudio(currentProfile);
+        await loadProfileAudio(initialProfile);
       } catch (error) {
         console.error('Error loading current profile audio:', error);
       } finally {
@@ -117,15 +119,21 @@ export default function useSound() {
 
       // 2) Defer loading of other profiles until idle (won't affect LCP)
       const loadRest = () => {
-        const others = Object.keys(SOUND_PROFILES).filter((k) => k !== currentProfile);
+        const others = Object.keys(SOUND_PROFILES).filter((k) => k !== initialProfile);
         others.reduce<Promise<void>>(async (prev, key) => {
           await prev;
           await loadProfileAudio(key);
         }, Promise.resolve());
       };
 
-      if ('requestIdleCallback' in window) {
-        (window as any).requestIdleCallback(loadRest);
+      // Prefer requestIdleCallback when available with safe type narrowing
+      const ric = (
+        window as Window & {
+          requestIdleCallback?: (cb: IdleRequestCallback, options?: IdleRequestOptions) => number;
+        }
+      ).requestIdleCallback;
+      if (typeof ric === 'function') {
+        ric(() => loadRest());
       } else {
         setTimeout(loadRest, 0);
       }
