@@ -295,3 +295,17 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
 - **ユーティリティ**: camelCase (`formatters.ts`)
 - **定数**: UPPER_SNAKE_CASE (`SEASONAL_THEMES`)
 - **型**: PascalCase (`SeasonalTheme`)
+
+## ✅ テスト戦略（Jest）
+
+- **テスト基盤**: Next.js 16 対応の `next/jest` + `jsdom`。セットアップは [jest.config.ts](jest.config.ts) / [jest.setup.ts](jest.setup.ts)。
+- **配置**: すべてのユニットテストは [src/**tests**/](src/__tests__) に配置（core utils / hooks を優先）。
+- **重点領域**:
+  - コアロジック（[src/lib/romaji.ts](src/lib/romaji.ts), [src/lib/formatters.ts](src/lib/formatters.ts)）
+  - タイピングエンジン（[src/features/game/hooks/useTypingEngine.ts](src/features/game/hooks/useTypingEngine.ts)）
+  - ランク判定（[src/features/result/utils/rankLogic.ts](src/features/result/utils/rankLogic.ts)）
+- **カバレッジ閾値**:
+  - `lib` 行カバレッジ ≥ 85%
+  - `useTypingEngine` 行カバレッジ ≥ 70%
+- **方針**: 大きな一括テストではなく、短く明確なケースを多数用意しエッジを網羅（例: `nn/xn/n` の「ん」、促音の直入力/子音重ね、`shi/si/ci` 等の揺らぎ）。
+- **備考**: jsdom では AudioContext がないため、`useSound` はテスト中に警告を出すが機能上の問題はなし（必要ならモック可能）。

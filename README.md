@@ -101,6 +101,7 @@ src/
 ├── lib/                 # Core utilities
 │   ├── romaji.ts        # Romaji parser
 │   └── formatters.ts    # Time and score formatters
+├── __tests__/           # Jest unit tests (core logic, hooks)
 ├── hooks/               # Custom hooks
 │   └── useSeason.ts     # Season + Time-of-day detection
 └── public/audio/        # 13 keyboard profiles (press variants only)
@@ -115,3 +116,26 @@ src/
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 🧪 Testing
+
+Koto-Koto ships a Jest setup tailored for Next.js 16 and focuses on high-density tests for the core typing logic.
+
+- Framework: Jest + Testing Library (jsdom)
+- Config: see [jest.config.ts](jest.config.ts) and [jest.setup.ts](jest.setup.ts)
+- Tests live under [src/**tests**/](src/__tests__)
+
+### Commands
+
+```bash
+npm test          # run once
+npm run test:watch
+npm run test:cov  # with coverage report
+```
+
+### Coverage thresholds
+
+- lib: lines ≥ 85% (e.g. [src/lib/romaji.ts](src/lib/romaji.ts), [src/lib/formatters.ts](src/lib/formatters.ts))
+- hooks (focused): lines ≥ 70% for [src/features/game/hooks/useTypingEngine.ts](src/features/game/hooks/useTypingEngine.ts)
+
+Note: jsdom environment lacks Web Audio API; `useSound` warns about AudioContext support during tests but does not affect behavior.
