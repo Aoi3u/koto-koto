@@ -57,12 +57,14 @@ export default function useSound() {
       return;
     }
 
-    // Load saved profile from localStorage
+    // Resolve initial profile (from localStorage) without depending on state
+    let initialProfile: KeyboardSoundProfile = 'topre';
     try {
       const savedProfile = localStorage.getItem(
         'keyboard-sound-profile'
       ) as KeyboardSoundProfile | null;
       if (savedProfile && SOUND_PROFILES[savedProfile]) {
+        initialProfile = savedProfile;
         setCurrentProfile(savedProfile);
       }
     } catch (error) {
@@ -70,51 +72,70 @@ export default function useSound() {
       // Continue with default profile
     }
 
-    // Preload audio files for all profiles
+    // Helper: load audio buffers for a single profile
+    const loadProfileAudio = async (profileKey: string) => {
+      if (!audioContextRef.current) return;
+      const ctx = audioContextRef.current;
+      const config = SOUND_PROFILES[profileKey as KeyboardSoundProfile];
+      if (!config) return;
+
+      const buffers: AudioBuffer[] = [];
+      const promises: Promise<void>[] = [];
+      for (let i = 0; i < config.variants; i++) {
+        const path = `/audio/${config.folder}/press/GENERIC_R${i}.mp3`;
+        const p = fetch(path)
+          .then((response) => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.arrayBuffer();
+          })
+          .then((arrayBuffer) => ctx.decodeAudioData(arrayBuffer))
+          .then((audioBuffer) => {
+            buffers[i] = audioBuffer;
+          })
+          .catch((error) => {
+            console.warn(`Failed to load ${path}:`, error);
+          });
+        promises.push(p);
+      }
+      await Promise.allSettled(promises);
+      audioBuffersRef.current.set(profileKey, buffers);
+    };
+
+    // Preload audio files lazily: current profile first, others after idle
     const loadAudioFiles = async () => {
       if (!audioContextRef.current) {
         setIsLoading(false);
         return;
       }
 
-      const ctx = audioContextRef.current;
-      const loadPromises: Promise<void>[] = [];
-
-      for (const [profileKey, config] of Object.entries(SOUND_PROFILES)) {
-        const buffers: AudioBuffer[] = [];
-
-        for (let i = 0; i < config.variants; i++) {
-          const path = `/audio/${config.folder}/press/GENERIC_R${i}.mp3`;
-
-          const promise = fetch(path)
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-              }
-              return response.arrayBuffer();
-            })
-            .then((arrayBuffer) => ctx.decodeAudioData(arrayBuffer))
-            .then((audioBuffer) => {
-              buffers[i] = audioBuffer;
-            })
-            .catch((error) => {
-              console.warn(`Failed to load ${path}:`, error);
-              // Continue without this audio file - graceful degradation
-            });
-
-          loadPromises.push(promise);
-        }
-
-        audioBuffersRef.current.set(profileKey, buffers);
-      }
-
+      // 1) Load initial profile only for initial interactivity
       try {
-        await Promise.all(loadPromises);
+        await loadProfileAudio(initialProfile);
       } catch (error) {
-        console.error('Error loading audio files:', error);
-        // Continue even if some files fail to load
+        console.error('Error loading current profile audio:', error);
       } finally {
         setIsLoading(false);
+      }
+
+      // 2) Defer loading of other profiles until idle (won't affect LCP)
+      const loadRest = () => {
+        const others = Object.keys(SOUND_PROFILES).filter((k) => k !== initialProfile);
+        others.reduce<Promise<void>>(async (prev, key) => {
+          await prev;
+          await loadProfileAudio(key);
+        }, Promise.resolve());
+      };
+
+      // Prefer requestIdleCallback when available with safe type narrowing
+      const ric = (
+        window as Window & {
+          requestIdleCallback?: (cb: IdleRequestCallback, options?: IdleRequestOptions) => number;
+        }
+      ).requestIdleCallback;
+      if (typeof ric === 'function') {
+        ric(() => loadRest());
+      } else {
+        setTimeout(loadRest, 0);
       }
     };
 

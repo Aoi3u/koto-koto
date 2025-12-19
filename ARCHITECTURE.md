@@ -311,3 +311,120 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
   - `useTypingEngine` 行カバレッジ ≥ 70%
 - **方針**: 大きな一括テストではなく、短く明確なケースを多数用意しエッジを網羅（例: `nn/xn/n` の「ん」、促音の直入力/子音重ね、`shi/si/ci` 等の揺らぎ）。
 - **備考**: jsdom では AudioContext がないため、`useSound` はテスト中に警告を出すが機能上の問題はなし（必要ならモック可能）。
+
+## 🚀 CI/CD パイプラインアーキテクチャ
+
+### ワークフロー構成（GitHub Actions）
+
+すべての `main` ブランチへの push と pull request で自動実行される品質ゲート:
+
+```yaml
+.github/workflows/ci.yml
+├── lint (ESLint)              # コード品質チェック
+├── test (Jest)                # ユニットテスト + カバレッジ
+├── build (Next.js)            # プロダクションビルド検証
+└── lighthouse (Lighthouse CI) # パフォーマンス計測
+```
+
+### Lighthouse CI パフォーマンス監視
+
+**目的**: パフォーマンス劣化を自動検知し、後から重い機能を追加する際の安全弁とする。
+
+**データフロー**:
+
+```
+GitHub Actions トリガー
+        ↓
+npm ci (依存関係インストール)
+        ↓
+npm run build (本番ビルド)
+        ↓
+npm start (localhost:3000 起動)
+        ↓
+Lighthouse CI 計測
+  ├─ Performance
+  ├─ Accessibility
+  ├─ Best Practices
+  ├─ SEO
+  └─ Core Web Vitals
+        ↓
+基準値チェック (lighthouserc.json)
+        ↓
+結果を PR コメントに投稿
+        ↓
+基準値未達 → CI FAIL（マージブロック）
+基準値達成 → CI PASS
+```
+
+### パフォーマンス基準値（Quality Gates）
+
+**Core Web Vitals（Error レベル - マージブロック）**:
+
+- First Contentful Paint (FCP) ≤ 1500ms
+- Largest Contentful Paint (LCP) ≤ 2500ms
+- Cumulative Layout Shift (CLS) ≤ 0.1
+- Speed Index ≤ 3000ms
+
+**Lighthouse Categories（Warn/Error レベル）**:
+
+- Performance ≥ 90 (error)
+- Accessibility ≥ 85 (warn)
+- Best Practices ≥ 80 (warn)
+- SEO ≥ 80 (warn)
+
+### 設定ファイル
+
+**[.github/workflows/ci.yml](.github/workflows/ci.yml)**:
+
+- トリガー: `push` (main) + `pull_request`
+- 4 つの並列ジョブ（lint/test/build/lighthouse）
+- Node.js 18 環境
+- Lighthouse CI Action (`treosh/lighthouse-ci-action@v12`)
+
+**[lighthouserc.json](lighthouserc.json)**:
+
+- 計測対象: `http://localhost:3000`
+- 実行回数: 1 回（安定性重視）
+- アップロード先: `temporary-public-storage`（結果の一時公開）
+- アサーション: カテゴリスコア + Core Web Vitals の閾値
+
+### ローカル検証
+
+```bash
+# Lighthouse CI をローカルで実行
+npx @lhci/cli@latest autorun
+```
+
+**用途**:
+
+- PR 前のパフォーマンスチェック
+- 最適化効果の検証
+- 基準値調整のシミュレーション
+
+### パフォーマンス最適化の方針
+
+1. **初期ロード最適化**:
+   - Code Splitting（Next.js の自動最適化）
+   - 画像最適化（存在する場合）
+   - フォント最適化（`Zen Old Mincho` の効率的なロード）
+
+2. **ランタイムパフォーマンス**:
+   - Framer Motion の GPU 加速アニメーション
+   - Context の最小化（Season × TimeOfDay のみ）
+   - 純粋関数による予測可能な動作
+
+3. **Web Audio API**:
+   - サウンドファイルのプリロード（13 プロファイル × 5 バリアント）
+   - AudioBuffer の再利用
+   - 低レイテンシ再生
+
+4. **レイアウト安定性**:
+   - CLS 対策（明示的な width/height、fixed positioning）
+   - アニメーションの transform/opacity 使用（reflow 回避）
+
+### 継続的改善
+
+- **スコア履歴の追跡**: PR コメントでトレンドを可視化
+- **基準値の段階的引き上げ**: プロジェクト成熟に応じて厳格化
+- **複数ページの計測**: 将来的にゲーム画面や結果画面も追加可能
+- **パフォーマンスバジェット**: 機能追加時の指針として活用
