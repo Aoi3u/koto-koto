@@ -142,3 +142,41 @@ npm run test:cov  # with coverage report
 - hooks (focused): lines ≥ 70% for [src/features/game/hooks/useTypingEngine.ts](src/features/game/hooks/useTypingEngine.ts)
 
 Note: jsdom environment lacks Web Audio API; `useSound` warns about AudioContext support during tests but does not affect behavior.
+
+## 🚀 CI/CD Pipeline
+
+### GitHub Actions Workflow
+
+Every push to `main` and pull request triggers automated quality checks:
+
+- **lint**: ESLint code quality check
+- **test**: Jest unit tests with coverage report
+- **build**: Next.js production build verification
+- **lighthouse**: Lighthouse CI performance monitoring
+
+### Performance Monitoring (Lighthouse CI)
+
+Automated performance benchmarking with strict quality gates:
+
+| Metric                   | Threshold | Level |
+| ------------------------ | --------- | ----- |
+| Performance              | ≥ 90      | error |
+| Accessibility            | ≥ 85      | warn  |
+| Best Practices           | ≥ 80      | warn  |
+| SEO                      | ≥ 80      | warn  |
+| First Contentful Paint   | ≤ 1500ms  | error |
+| Largest Contentful Paint | ≤ 2500ms  | error |
+| Cumulative Layout Shift  | ≤ 0.1     | error |
+| Speed Index              | ≤ 3000ms  | error |
+
+**Features:**
+
+- Automatic performance regression detection
+- PR comments with Lighthouse scores
+- Quality gate to prevent performance degradation
+- Local testing: `npx @lhci/cli@latest autorun`
+
+**Config Files:**
+
+- [.github/workflows/ci.yml](.github/workflows/ci.yml) - GitHub Actions workflow
+- [lighthouserc.json](lighthouserc.json) - Lighthouse CI configuration
