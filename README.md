@@ -27,6 +27,7 @@ Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it ships a cus
   - **Ranks from Seed → SSS**: Titles follow the in-game ladder (Seed → Sprout → Wind in Pines … → Nirvana) with S-ranks gated behind accuracy ≥ 80%.
   - **Detailed Stats**: Tracks WPM, Accuracy, KPM, Max Combo, keystrokes, and elapsed time, plus a copy-to-clipboard share button.
 - **Modern Tech Stack**: Fully responsive, strictly typed, and built for performance.
+- **Code Quality**: ESLint + Prettier integrated for consistent linting/formatting.
 
 ## 🛠️ Tech Stack
 
@@ -35,6 +36,7 @@ Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it ships a cus
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) via the PostCSS plugin
 - **Animation**: [Framer Motion](https://www.framer.com/motion/)
 - **Icons**: [Lucide React](https://lucide.dev/)
+- **Lint/Format**: ESLint (with Next.js rules) + Prettier
 
 ## 🚀 Getting Started
 
@@ -65,6 +67,13 @@ Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it ships a cus
     ```
 
 4.  Open [http://localhost:3000](http://localhost:3000) with your browser.
+
+### Linting & Formatting
+
+- Lint: `npm run lint`
+- Lint (auto-fix): `npm run lint:fix`
+- Format: `npm run format`
+- Format check (no write): `npm run format:check`
 
 ## 📂 Project Structure
 
@@ -100,7 +109,7 @@ src/
 ## 🎨 Design Philosophy
 
 - **Visuals**: High contrast text with glowing carets against a noisy, deep-dark background.
-- **Typography**: `Zen Old Mincho` for Japanese text, `Inter` for UI elements.
+- **Typography**: `Zen Old Mincho` for both UI and body (with sans-serif fallback).
 - **Feedback**: Subtle ripples and camera shakes (optional) provide physical feedback without breaking focus.
 
 ## 🤝 Contributing
