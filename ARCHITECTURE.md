@@ -47,7 +47,8 @@ src/
 │
 ├── lib/                    # ユーティリティ関数
 │   ├── formatters.ts       # フォーマッター関数 (WPM, KPM, 時間)
-│   └── romaji.ts           # ローマ字変換
+│   ├── romaji-trie.ts      # Trie/DFA 型ローマ字→かなエンジン（最長一致・ヒント）
+│   └── romaji.ts           # 公開APIラッパー（checkRomaji/isValidPrefix）
 │
 ├── data/                   # 静的データ
 │   └── sentences.ts        # 文リスト（青空文庫由来＋キュレーション）
@@ -86,11 +87,12 @@ src/
 
 ### 4. ユーティリティ関数の再利用
 
-共通処理は`lib/formatters.ts`に集約:
+共通処理は`lib/formatters.ts`やローマ字エンジン系に集約:
 
 - `formatTime()`: 時間フォーマット
 - `calculateWPM()`: WPM 計算
 - `calculateAccuracy()`: 精度計算
+- `match()/isValidPrefix()`: Trie ベースのローマ字→かな判定（最長一致、促音・ん 特殊処理、ヒント出力）
 
 ## 🎨 季節 × 時間帯システムアーキテクチャ (Kacho-Fugetsu × Utsuroi)
 
@@ -301,7 +303,7 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
 - **テスト基盤**: Next.js 16 対応の `next/jest` + `jsdom`。セットアップは [jest.config.ts](jest.config.ts) / [jest.setup.ts](jest.setup.ts)。
 - **配置**: すべてのユニットテストは [src/**tests**/](src/__tests__) に配置（core utils / hooks を優先）。
 - **重点領域**:
-  - コアロジック（[src/lib/romaji.ts](src/lib/romaji.ts), [src/lib/formatters.ts](src/lib/formatters.ts)）
+  - コアロジック（[src/lib/romaji.ts](src/lib/romaji.ts), [src/lib/romaji-trie.ts](src/lib/romaji-trie.ts), [src/lib/formatters.ts](src/lib/formatters.ts)）
   - タイピングエンジン（[src/features/game/hooks/useTypingEngine.ts](src/features/game/hooks/useTypingEngine.ts)）
   - ランク判定（[src/features/result/utils/rankLogic.ts](src/features/result/utils/rankLogic.ts)）
 - **カバレッジ閾値**:

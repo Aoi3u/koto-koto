@@ -16,8 +16,10 @@ Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it ships a cus
 - **Time-of-Day System** (移ろい - Utsuroi): Visual atmosphere changes throughout the day (Morning/Day/Sunset/Night) with brightness and saturation adjustments.
 - **Zen Aesthetics**: A Deep Zen Dark theme with dynamic color adjustment based on time. Use of Mincho typography for a literary feel.
 - **Intelligent Typing Engine**:
+  - **Trie-based Romaji Matcher**: Longest-match DFA/Trie that covers small-tsu, ん の保留/確定、拗音、F/ヴ系列、揺らぎ (`shi/si/ci`, `chi/ti`, `tsu/tu`, `ku/cu/qu`).
   - **Flexible Romaji**: Supports multiple input styles (Hepburn, Kunrei-shiki). Accepts `si`/`shi`, `tu`/`tsu`, `c`/`k`, etc.
-  - **N-Permisiveness**: gracefully handles the tricky `n` vs `nn` logic.
+  - **N-Permisiveness**: gracefully handles the tricky `n` vs `nn` logic with position-aware resolution.
+  - **UI Hints**: `getNextChars` exposes next valid keystrokes for visual guidance.
 - **Realistic Keyboard Sounds**:
   - **13 Mechanical Switch Profiles**: Choose from authentic keyboard sounds including Cherry MX (Black, Blue, Brown), Topre, Holy Panda, Gateron (Alpaca, Black Ink, Red Ink), Cream, Alps (Blue Alps, Box Navy), Buckling Spring, and Turquoise.
   - **Sound Switcher UI**: Easy-to-use dropdown menu (bottom-left corner) to switch between different keyboard sound profiles.
@@ -99,7 +101,8 @@ src/
 │       ├── components/  # ResultScreen
 │       └── utils/       # Rank calculation logic
 ├── lib/                 # Core utilities
-│   ├── romaji.ts        # Romaji parser
+│   ├── romaji.ts        # Public API delegating to trie matcher
+│   ├── romaji-trie.ts   # Trie/DFA romaji-to-kana engine (longest-match, hints)
 │   └── formatters.ts    # Time and score formatters
 ├── __tests__/           # Jest unit tests (core logic, hooks)
 ├── hooks/               # Custom hooks
@@ -135,7 +138,7 @@ npm run test:cov  # with coverage report
 
 ### Coverage thresholds
 
-- lib: lines ≥ 85% (e.g. [src/lib/romaji.ts](src/lib/romaji.ts), [src/lib/formatters.ts](src/lib/formatters.ts))
+- lib: lines ≥ 85% (e.g. [src/lib/romaji.ts](src/lib/romaji.ts), [src/lib/romaji-trie.ts](src/lib/romaji-trie.ts), [src/lib/formatters.ts](src/lib/formatters.ts))
 - hooks (focused): lines ≥ 70% for [src/features/game/hooks/useTypingEngine.ts](src/features/game/hooks/useTypingEngine.ts)
 
 Note: jsdom environment lacks Web Audio API; `useSound` warns about AudioContext support during tests but does not affect behavior.

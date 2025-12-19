@@ -1,4 +1,6 @@
-import { checkRomaji, isValidPrefix, KANA_MAP, MatchResult } from '../lib/romaji';
+import { performance } from 'perf_hooks';
+import { checkRomaji, getNextChars, isValidPrefix, KANA_MAP, MatchResult } from '../lib/romaji';
+import { match as trieMatch } from '../lib/romaji-trie';
 
 describe('romaji.ts core mapping and matching', () => {
   describe('ん (n) handling', () => {
@@ -41,6 +43,10 @@ describe('romaji.ts core mapping and matching', () => {
       expect(r.consumedInput).toBe('n');
       expect(r.consumedTarget).toBe('ん');
       expect(r.remainingTarget).toBe('か');
+    });
+
+    test('n before unrelated consonant is rejected', () => {
+      expect(checkRomaji('んあ', 'nb')).toBeNull();
     });
 
     test('n before vowel does not match ん (delegates to next kana)', () => {
@@ -185,6 +191,224 @@ describe('romaji.ts core mapping and matching', () => {
       ) as MatchResult;
       expect(r2.isMatch).toBe(true);
       expect(r1.consumedTarget + r2.consumedTarget).toBe(target);
+    });
+  });
+
+  describe('longest-match preference', () => {
+    test('does not prematurely accept shorter prefix', () => {
+      const r = checkRomaji('し', 's');
+      expect(r).toBeNull();
+      expect(isValidPrefix('し', 's')).toBe(true);
+    });
+
+    test('prefers longer romaji when available', () => {
+      const target = 'しゃ';
+      const r = checkRomaji(target, 'sha') as MatchResult;
+      expect(r.consumedInput).toBe('sha');
+      expect(r.consumedTarget).toBe('しゃ');
+      expect(r.remainingTarget).toBe('');
+    });
+  });
+
+  describe('getNextChars helpers', () => {
+    test('suggests next consonant for っ', () => {
+      expect(getNextChars('っか', '')).toEqual(new Set(['l', 'x', 'k', 'c']));
+    });
+
+    test('suggests continuing characters for prefixes', () => {
+      expect(getNextChars('く', '')).toEqual(new Set(['k', 'c', 'q']));
+      expect(getNextChars('し', 's')).toEqual(new Set(['h', 'i']));
+      expect(getNextChars('ん', '')).toEqual(new Set(['n', 'x']));
+    });
+  });
+
+  describe('performance parity', () => {
+    type Case = { target: string; input: string };
+
+    const cases: Case[] = [
+      { target: 'っか', input: 'kka' },
+      { target: 'んか', input: 'nka' },
+      { target: 'しゃ', input: 'sha' },
+      { target: 'ふぁ', input: 'fa' },
+      { target: 'ゔぁ', input: 'va' },
+      { target: 'ち', input: 'chi' },
+      { target: 'つ', input: 'tsu' },
+      { target: 'せ', input: 'se' },
+      { target: 'きゅ', input: 'kyu' },
+      { target: 'ん', input: 'n' },
+      { target: 'き', input: 'ki' },
+      { target: 'く', input: 'qu' },
+    ];
+
+    for (let i = cases.length; i < 10000; i += 1) {
+      const base = cases[i % cases.length];
+      cases.push(base);
+    }
+
+    const isConsonant = (char: string) => /^[bcdfghjklmnpqrstvwxyz]$/.test(char);
+    const legacyIsValidPrefix = (targetKana: string, input: string): boolean => {
+      if (!targetKana) return false;
+      if (!input) return true;
+
+      if (targetKana.startsWith('っ')) {
+        for (const opt of ['xtu', 'ltu', 'ltsu']) {
+          if (opt.startsWith(input)) return true;
+        }
+
+        const nextKana = targetKana[1];
+        if (nextKana) {
+          const nextOpts = KANA_MAP[nextKana] || [];
+          for (const opt of nextOpts) {
+            if (opt.startsWith(input)) return true;
+          }
+        }
+      }
+
+      if (targetKana.startsWith('ん')) {
+        if ('nn'.startsWith(input)) return true;
+        if ('xn'.startsWith(input)) return true;
+        if (input === 'n') return true;
+      }
+
+      let options = KANA_MAP[targetKana.slice(0, 2)] || [];
+      if (options.length === 0) {
+        options = KANA_MAP[targetKana.slice(0, 1)] || [];
+      }
+
+      for (const opt of options) {
+        if (opt.startsWith(input)) return true;
+      }
+
+      return false;
+    };
+
+    const legacyCheckRomaji = (targetKana: string, input: string): MatchResult | null => {
+      if (!targetKana) return null;
+      if (!input) return null;
+
+      if (targetKana.startsWith('っ')) {
+        const directOptions = ['xtu', 'ltu', 'ltsu'];
+        for (const opt of directOptions) {
+          if (input.startsWith(opt)) {
+            return {
+              isMatch: true,
+              consumedInput: opt,
+              consumedTarget: 'っ',
+              remainingTarget: targetKana.slice(1),
+            };
+          }
+        }
+
+        const nextKana = targetKana[1];
+        if (nextKana) {
+          const nextRomajiOptions = KANA_MAP[nextKana] || [];
+          const matchingNext = nextRomajiOptions.some((r) => r.startsWith(input));
+
+          if (matchingNext && isConsonant(input.charAt(0))) {
+            return {
+              isMatch: true,
+              consumedInput: input.charAt(0),
+              consumedTarget: 'っ',
+              remainingTarget: targetKana.slice(1),
+            };
+          }
+        }
+      }
+
+      if (targetKana.startsWith('ん')) {
+        if (input.startsWith('nn')) {
+          return {
+            isMatch: true,
+            consumedInput: 'nn',
+            consumedTarget: 'ん',
+            remainingTarget: targetKana.slice(1),
+          };
+        }
+
+        if (input.startsWith('xn')) {
+          return {
+            isMatch: true,
+            consumedInput: 'xn',
+            consumedTarget: 'ん',
+            remainingTarget: targetKana.slice(1),
+          };
+        }
+
+        if (input.startsWith('n')) {
+          if (input === 'n') {
+            if (targetKana.length === 1) {
+              return {
+                isMatch: true,
+                consumedInput: 'n',
+                consumedTarget: 'ん',
+                remainingTarget: '',
+              };
+            }
+            return null;
+          }
+
+          const nextChar = input[1];
+
+          if (!isConsonant(nextChar) || nextChar === 'y') {
+            return null;
+          }
+
+          const remainingInput = input.slice(1);
+          const nextTarget = targetKana.slice(1);
+
+          if (remainingInput.length > 0 && !legacyIsValidPrefix(nextTarget, remainingInput)) {
+            return null;
+          }
+
+          return {
+            isMatch: true,
+            consumedInput: 'n',
+            consumedTarget: 'ん',
+            remainingTarget: nextTarget,
+          };
+        }
+      }
+
+      let testedLength = 2;
+      let targetSubstring = targetKana.slice(0, 2);
+      let options = KANA_MAP[targetSubstring];
+
+      if (!options) {
+        testedLength = 1;
+        targetSubstring = targetKana.slice(0, 1);
+        options = KANA_MAP[targetSubstring];
+      }
+
+      if (options) {
+        for (const opt of options) {
+          if (input.startsWith(opt)) {
+            return {
+              isMatch: true,
+              consumedInput: opt,
+              consumedTarget: targetSubstring,
+              remainingTarget: targetKana.slice(testedLength),
+            };
+          }
+        }
+      }
+
+      return null;
+    };
+
+    test('trie match is not slower than linear baseline', () => {
+      const startLegacy = performance.now();
+      for (const c of cases) {
+        legacyCheckRomaji(c.target, c.input);
+      }
+      const legacyTime = performance.now() - startLegacy;
+
+      const startTrie = performance.now();
+      for (const c of cases) {
+        trieMatch(c.target, c.input);
+      }
+      const trieTime = performance.now() - startTrie;
+
+      expect(trieTime).toBeLessThanOrEqual(legacyTime * 1.2 + 0.5);
     });
   });
 
