@@ -62,9 +62,9 @@ src/
 
 各コンポーネントは 1 つの責任のみを持つ:
 
--   `TitleScreen`: タイトル画面の表示のみ
--   `GameHeader`: ゲーム中のヘッダー情報のみ
--   `TypingArea`: タイピング領域の表示のみ
+- `TitleScreen`: タイトル画面の表示のみ
+- `GameHeader`: ゲーム中のヘッダー情報のみ
+- `TypingArea`: タイピング領域の表示のみ
 
 ### 2. Context API による状態共有
 
@@ -72,7 +72,7 @@ src/
 
 ```tsx
 <SeasonalProvider>
-    <TypingGameInner />
+  <TypingGameInner />
 </SeasonalProvider>
 ```
 
@@ -80,17 +80,17 @@ src/
 
 ビジネスロジックはカスタムフックに分離:
 
--   `useGameController`: ゲーム全体の制御
--   `useTypingEngine`: タイピングエンジン
--   `useSeason`: 季節検出
+- `useGameController`: ゲーム全体の制御
+- `useTypingEngine`: タイピングエンジン
+- `useSeason`: 季節検出
 
 ### 4. ユーティリティ関数の再利用
 
 共通処理は`lib/formatters.ts`に集約:
 
--   `formatTime()`: 時間フォーマット
--   `calculateWPM()`: WPM 計算
--   `calculateAccuracy()`: 精度計算
+- `formatTime()`: 時間フォーマット
+- `calculateWPM()`: WPM 計算
+- `calculateAccuracy()`: 精度計算
 
 ## 🎨 季節 × 時間帯システムアーキテクチャ (Kacho-Fugetsu × Utsuroi)
 
@@ -125,17 +125,17 @@ SEASONAL_THEMES[s]   TIME_THEMES[t]
 
 **時間帯による調整**:
 
--   **朝 (05-09)**: 明度 70%, 彩度 60% - 目覚めのような柔らかさ
--   **昼 (10-15)**: 明度 100%, 彩度 80% - 完全な明瞭さ
--   **黄昏 (16-18)**: 明度 50%, 彩度 100% - 劇的な影と彩色
--   **夜 (19-04)**: 明度 30%, 彩度 40% - 深い暗闇と集中
+- **朝 (05-09)**: 明度 70%, 彩度 60% - 目覚めのような柔らかさ
+- **昼 (10-15)**: 明度 100%, 彩度 80% - 完全な明瞭さ
+- **黄昏 (16-18)**: 明度 50%, 彩度 100% - 劇的な影と彩色
+- **夜 (19-04)**: 明度 30%, 彩度 40% - 深い暗闇と集中
 
 ### パフォーマンス最適化
 
--   **遅延初期化**: `useState(() => getCombinedTheme())`で初回のみ計算
--   **インターバル更新**: 10 分ごとに季節・時間帯をチェック
--   **Context 分離**: 単一の `CombinedTheme` を共有して再レンダリング最小化
--   **純粋関数**: `adjustColorBrightness()` と `adjustGlow()` による予測可能な変換
+- **遅延初期化**: `useState(() => getCombinedTheme())`で初回のみ計算
+- **インターバル更新**: 10 分ごとに季節・時間帯をチェック
+- **Context 分離**: 単一の `CombinedTheme` を共有して再レンダリング最小化
+- **純粋関数**: `adjustColorBrightness()` と `adjustGlow()` による予測可能な変換
 
 ## 🎵 キーボードサウンドシステムアーキテクチャ
 
@@ -185,10 +185,10 @@ useSound() Hook
 
 ### SoundSwitcher UI
 
--   **位置**: 左下固定（`fixed bottom-6 left-6`）
--   **インタラクション**: ドロップダウンメニューでプロファイル選択
--   **視覚的フィードバック**: 現在選択中のプロファイルにチェックマーク表示
--   **永続化**: 選択は localStorage に保存され、次回訪問時に復元
+- **位置**: 左下固定（`fixed bottom-6 left-6`）
+- **インタラクション**: ドロップダウンメニューでプロファイル選択
+- **視覚的フィードバック**: 現在選択中のプロファイルにチェックマーク表示
+- **永続化**: 選択は localStorage に保存され、次回訪問時に復元
 
 ## 📦 コンポーネント依存関係
 
@@ -208,31 +208,31 @@ TypingGame (Provider)
 
 ### グローバル状態 (Context)
 
--   `CombinedTheme`: 季節+時間帯テーマ（全体で共有）
-    -   季節情報（spring/summer/autumn/winter）
-    -   時間帯情報（morning/day/sunset/night）
-    -   調整済みの色（background/primary/glow）
-    -   時間帯オーバーレイ（atmosphere）
+- `CombinedTheme`: 季節+時間帯テーマ（全体で共有）
+  - 季節情報（spring/summer/autumn/winter）
+  - 時間帯情報（morning/day/sunset/night）
+  - 調整済みの色（background/primary/glow）
+  - 時間帯オーバーレイ（atmosphere）
 
 ### ローカル状態 (useState/Custom Hooks)
 
--   `gameState`: ゲーム状態
--   `currentWord`: 現在の単語
--   `elapsedTime`: 経過時間
--   `currentProfile`: 現在選択中のキーボードサウンドプロファイル
--   `isLoading`: サウンドファイルの読み込み状態
--   その他ゲームロジック
+- `gameState`: ゲーム状態
+- `currentWord`: 現在の単語
+- `elapsedTime`: 経過時間
+- `currentProfile`: 現在選択中のキーボードサウンドプロファイル
+- `isLoading`: サウンドファイルの読み込み状態
+- その他ゲームロジック
 
 ### 永続化 (localStorage)
 
--   `keyboard-sound-profile`: ユーザーが選択したサウンドプロファイル
+- `keyboard-sound-profile`: ユーザーが選択したサウンドプロファイル
 
 ### 純粋関数 (Utils)
 
--   **時間フォーマット**: `formatTime()`, `formatTimeWithMillis()`
--   **スコア計算**: `calculateWPM()`, `calculateKPM()`, `calculateAccuracy()`
--   **ランク判定**: `calculateRank()`（精度 80% 未満は強制的に C ランク）
--   **色調整**: `adjustColorBrightness()`, `adjustGlow()`
+- **時間フォーマット**: `formatTime()`, `formatTimeWithMillis()`
+- **スコア計算**: `calculateWPM()`, `calculateKPM()`, `calculateAccuracy()`
+- **ランク判定**: `calculateRank()`（精度 80% 未満は強制的に C ランク）
+- **色調整**: `adjustColorBrightness()`, `adjustGlow()`
 
 ## 🚀 パフォーマンス考慮事項
 
@@ -249,18 +249,18 @@ TypingGame (Provider)
 
 ```typescript
 export const SEASONAL_THEMES: Record<Season, SeasonalTheme> = {
-    // 既存の季節...
-    newSeason: {
-        season: "newSeason",
-        name: { ja: "新季節", en: "New Season" },
-        colors: {
-            /* ... */
-        },
-        atmosphere: {
-            /* ... */
-        },
-        haiku: "新季節の俳句",
+  // 既存の季節...
+  newSeason: {
+    season: 'newSeason',
+    name: { ja: '新季節', en: 'New Season' },
+    colors: {
+      /* ... */
     },
+    atmosphere: {
+      /* ... */
+    },
+    haiku: '新季節の俳句',
+  },
 };
 ```
 
@@ -290,8 +290,8 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
 
 ## 📝 命名規則
 
--   **コンポーネント**: PascalCase (`TitleScreen.tsx`)
--   **フック**: camelCase with `use` prefix (`useSeason.ts`)
--   **ユーティリティ**: camelCase (`formatters.ts`)
--   **定数**: UPPER_SNAKE_CASE (`SEASONAL_THEMES`)
--   **型**: PascalCase (`SeasonalTheme`)
+- **コンポーネント**: PascalCase (`TitleScreen.tsx`)
+- **フック**: camelCase with `use` prefix (`useSeason.ts`)
+- **ユーティリティ**: camelCase (`formatters.ts`)
+- **定数**: UPPER_SNAKE_CASE (`SEASONAL_THEMES`)
+- **型**: PascalCase (`SeasonalTheme`)

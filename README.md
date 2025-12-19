@@ -12,36 +12,36 @@ Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it ships a cus
 
 ## ✨ Features
 
--   **Dynamic Seasonal Atmosphere** (花鳥風月 - Kacho-Fugetsu): Real-time visual themes based on Japan's 4 seasons with seasonal particle animations (🌸💧🍂❄️).
--   **Time-of-Day System** (移ろい - Utsuroi): Visual atmosphere changes throughout the day (Morning/Day/Sunset/Night) with brightness and saturation adjustments.
--   **Zen Aesthetics**: A Deep Zen Dark theme with dynamic color adjustment based on time. Use of Mincho typography for a literary feel.
--   **Intelligent Typing Engine**:
-    -   **Flexible Romaji**: Supports multiple input styles (Hepburn, Kunrei-shiki). Accepts `si`/`shi`, `tu`/`tsu`, `c`/`k`, etc.
-    -   **N-Permisiveness**: gracefully handles the tricky `n` vs `nn` logic.
--   **Realistic Keyboard Sounds**:
-    -   **13 Mechanical Switch Profiles**: Choose from authentic keyboard sounds including Cherry MX (Black, Blue, Brown), Topre, Holy Panda, Gateron (Alpaca, Black Ink, Red Ink), Cream, Alps (Blue Alps, Box Navy), Buckling Spring, and Turquoise.
-    -   **Sound Switcher UI**: Easy-to-use dropdown menu (bottom-left corner) to switch between different keyboard sound profiles.
-    -   **Persistent Settings**: Your preferred sound profile is saved to localStorage and automatically restored.
-    -   **Optimized Performance**: Pre-loaded audio buffers with Web Audio API for low-latency, realistic sound playback.
--   **Strict Grading System**:
-    -   **Ranks from Seed → SSS**: Titles follow the in-game ladder (Seed → Sprout → Wind in Pines … → Nirvana) with S-ranks gated behind accuracy ≥ 80%.
-    -   **Detailed Stats**: Tracks WPM, Accuracy, KPM, Max Combo, keystrokes, and elapsed time, plus a copy-to-clipboard share button.
--   **Modern Tech Stack**: Fully responsive, strictly typed, and built for performance.
+- **Dynamic Seasonal Atmosphere** (花鳥風月 - Kacho-Fugetsu): Real-time visual themes based on Japan's 4 seasons with seasonal particle animations (🌸💧🍂❄️).
+- **Time-of-Day System** (移ろい - Utsuroi): Visual atmosphere changes throughout the day (Morning/Day/Sunset/Night) with brightness and saturation adjustments.
+- **Zen Aesthetics**: A Deep Zen Dark theme with dynamic color adjustment based on time. Use of Mincho typography for a literary feel.
+- **Intelligent Typing Engine**:
+  - **Flexible Romaji**: Supports multiple input styles (Hepburn, Kunrei-shiki). Accepts `si`/`shi`, `tu`/`tsu`, `c`/`k`, etc.
+  - **N-Permisiveness**: gracefully handles the tricky `n` vs `nn` logic.
+- **Realistic Keyboard Sounds**:
+  - **13 Mechanical Switch Profiles**: Choose from authentic keyboard sounds including Cherry MX (Black, Blue, Brown), Topre, Holy Panda, Gateron (Alpaca, Black Ink, Red Ink), Cream, Alps (Blue Alps, Box Navy), Buckling Spring, and Turquoise.
+  - **Sound Switcher UI**: Easy-to-use dropdown menu (bottom-left corner) to switch between different keyboard sound profiles.
+  - **Persistent Settings**: Your preferred sound profile is saved to localStorage and automatically restored.
+  - **Optimized Performance**: Pre-loaded audio buffers with Web Audio API for low-latency, realistic sound playback.
+- **Strict Grading System**:
+  - **Ranks from Seed → SSS**: Titles follow the in-game ladder (Seed → Sprout → Wind in Pines … → Nirvana) with S-ranks gated behind accuracy ≥ 80%.
+  - **Detailed Stats**: Tracks WPM, Accuracy, KPM, Max Combo, keystrokes, and elapsed time, plus a copy-to-clipboard share button.
+- **Modern Tech Stack**: Fully responsive, strictly typed, and built for performance.
 
 ## 🛠️ Tech Stack
 
--   **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
--   **Language**: [TypeScript](https://www.typescriptlang.org/)
--   **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) via the PostCSS plugin
--   **Animation**: [Framer Motion](https://www.framer.com/motion/)
--   **Icons**: [Lucide React](https://lucide.dev/)
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) via the PostCSS plugin
+- **Animation**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [Lucide React](https://lucide.dev/)
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
--   Node.js 18.18+ (Next.js 16 requirement)
--   npm
+- Node.js 18.18+ (Next.js 16 requirement)
+- npm
 
 ### Installation
 
@@ -99,9 +99,9 @@ src/
 
 ## 🎨 Design Philosophy
 
--   **Visuals**: High contrast text with glowing carets against a noisy, deep-dark background.
--   **Typography**: `Zen Old Mincho` for Japanese text, `Inter` for UI elements.
--   **Feedback**: Subtle ripples and camera shakes (optional) provide physical feedback without breaking focus.
+- **Visuals**: High contrast text with glowing carets against a noisy, deep-dark background.
+- **Typography**: `Zen Old Mincho` for Japanese text, `Inter` for UI elements.
+- **Feedback**: Subtle ripples and camera shakes (optional) provide physical feedback without breaking focus.
 
 ## 🤝 Contributing
 

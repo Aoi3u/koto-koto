@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import React, { createContext, useContext, ReactNode } from "react";
-import { useSeason } from "../hooks/useSeason";
-import type { CombinedTheme } from "../config/seasons";
+import React, { createContext, useContext, ReactNode } from 'react';
+import { useSeason } from '../hooks/useSeason';
+import type { CombinedTheme } from '../config/seasons';
 
 interface SeasonalContextValue {
-    theme: CombinedTheme;
+  theme: CombinedTheme;
 }
 
 const SeasonalContext = createContext<SeasonalContextValue | null>(null);
 
 interface SeasonalProviderProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 /**
@@ -19,13 +19,9 @@ interface SeasonalProviderProps {
  * Prevents unnecessary re-fetching of seasonal data across the component tree
  */
 export function SeasonalProvider({ children }: SeasonalProviderProps) {
-    const theme = useSeason();
+  const theme = useSeason();
 
-    return (
-        <SeasonalContext.Provider value={{ theme }}>
-            {children}
-        </SeasonalContext.Provider>
-    );
+  return <SeasonalContext.Provider value={{ theme }}>{children}</SeasonalContext.Provider>;
 }
 
 /**
@@ -33,11 +29,9 @@ export function SeasonalProvider({ children }: SeasonalProviderProps) {
  * Must be used within SeasonalProvider
  */
 export function useSeasonalTheme(): CombinedTheme {
-    const context = useContext(SeasonalContext);
-    if (!context) {
-        throw new Error(
-            "useSeasonalTheme must be used within SeasonalProvider"
-        );
-    }
-    return context.theme;
+  const context = useContext(SeasonalContext);
+  if (!context) {
+    throw new Error('useSeasonalTheme must be used within SeasonalProvider');
+  }
+  return context.theme;
 }

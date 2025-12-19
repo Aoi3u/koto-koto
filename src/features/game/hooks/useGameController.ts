@@ -1,6 +1,6 @@
-import { useEffect, useCallback } from "react";
-import useGameSession from "./useGameSession";
-import useTypingEngine from "./useTypingEngine";
+import { useEffect, useCallback } from 'react';
+import useGameSession from './useGameSession';
+import useTypingEngine from './useTypingEngine';
 
 export default function useGameController() {
   const {
@@ -32,13 +32,14 @@ export default function useGameController() {
     currentProfile,
     changeProfile,
     availableProfiles,
+    hasAudioSupport,
   } = useTypingEngine();
 
   // Sync Engine with Session Word
   useEffect(() => {
-    if (gameState === "playing" && currentWord) {
+    if (gameState === 'playing' && currentWord) {
       setTarget(currentWord.reading);
-    } else if (gameState === "waiting") {
+    } else if (gameState === 'waiting') {
       resetEngine();
     }
   }, [gameState, currentWord, setTarget, resetEngine]);
@@ -46,14 +47,14 @@ export default function useGameController() {
   // Input Handler Wrapper
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (gameState === "waiting") {
-        if (e.key === "Enter") {
+      if (gameState === 'waiting') {
+        if (e.key === 'Enter') {
           startGame();
         }
         return;
       }
 
-      if (gameState !== "playing") return;
+      if (gameState !== 'playing') return;
 
       if (e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
       e.preventDefault();
@@ -70,21 +71,13 @@ export default function useGameController() {
         }
       }
     },
-    [
-      gameState,
-      startGame,
-      handleInput,
-      nextWord,
-      endGame,
-      currentWordIndex,
-      wordList.length,
-    ]
+    [gameState, startGame, handleInput, nextWord, endGame, currentWordIndex, wordList.length]
   );
 
   // Attach Listeners
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
   return {
@@ -113,5 +106,6 @@ export default function useGameController() {
     currentProfile,
     changeProfile,
     availableProfiles,
+    hasAudioSupport,
   };
 }

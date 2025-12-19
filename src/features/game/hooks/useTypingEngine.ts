@@ -1,12 +1,12 @@
-import { useState, useCallback } from "react";
-import { checkRomaji, isValidPrefix } from "../../../lib/romaji";
-import useSound from "./useSound";
+import { useState, useCallback } from 'react';
+import { checkRomaji, isValidPrefix } from '../../../lib/romaji';
+import useSound from './useSound';
 
 export default function useTypingEngine() {
-  const [matchedRomaji, setMatchedRomaji] = useState("");
-  const [pendingInput, setPendingInput] = useState("");
-  const [remainingTarget, setRemainingTarget] = useState("");
-  const [matchedKana, setMatchedKana] = useState("");
+  const [matchedRomaji, setMatchedRomaji] = useState('');
+  const [pendingInput, setPendingInput] = useState('');
+  const [remainingTarget, setRemainingTarget] = useState('');
+  const [matchedKana, setMatchedKana] = useState('');
 
   const [shake, setShake] = useState(false);
   const [ripple, setRipple] = useState<{
@@ -20,14 +20,14 @@ export default function useTypingEngine() {
   const [currentCombo, setCurrentCombo] = useState(0);
   const [maxCombo, setMaxCombo] = useState(0);
 
-  const { playKeySound, currentProfile, changeProfile, availableProfiles } =
+  const { playKeySound, currentProfile, changeProfile, availableProfiles, hasAudioSupport } =
     useSound();
 
   const resetEngine = useCallback(() => {
-    setMatchedRomaji("");
-    setPendingInput("");
-    setRemainingTarget("");
-    setMatchedKana("");
+    setMatchedRomaji('');
+    setPendingInput('');
+    setRemainingTarget('');
+    setMatchedKana('');
     setCorrectKeyCount(0);
     setErrorCount(0);
     setCurrentCombo(0);
@@ -37,9 +37,9 @@ export default function useTypingEngine() {
 
   const setTarget = useCallback((newTarget: string) => {
     setRemainingTarget(newTarget);
-    setMatchedKana("");
-    setMatchedRomaji("");
-    setPendingInput("");
+    setMatchedKana('');
+    setMatchedRomaji('');
+    setPendingInput('');
   }, []);
 
   const processInput = useCallback(
@@ -55,8 +55,8 @@ export default function useTypingEngine() {
     } => {
       let pending = currentPending;
       let target = currentTarget;
-      let totalMatchedRomaji = "";
-      let totalMatchedKana = "";
+      let totalMatchedRomaji = '';
+      let totalMatchedKana = '';
       let comboAdd = 0;
 
       while (true) {
@@ -72,7 +72,7 @@ export default function useTypingEngine() {
         } else {
           break;
         }
-        if (target === "" || pending === "") break;
+        if (target === '' || pending === '') break;
       }
 
       return {
@@ -92,8 +92,10 @@ export default function useTypingEngine() {
 
       const nextInput = pendingInput + key;
 
-      const { newPending, newTarget, matched, kanaMatched, comboIncrement } =
-        processInput(nextInput, remainingTarget);
+      const { newPending, newTarget, matched, kanaMatched, comboIncrement } = processInput(
+        nextInput,
+        remainingTarget
+      );
 
       if (comboIncrement > 0) {
         setCorrectKeyCount((c) => c + 1);
@@ -107,7 +109,7 @@ export default function useTypingEngine() {
         setRemainingTarget(newTarget);
         setPendingInput(newPending);
 
-        return { isWordComplete: newTarget === "" };
+        return { isWordComplete: newTarget === '' };
       } else {
         if (isValidPrefix(remainingTarget, nextInput)) {
           setCorrectKeyCount((c) => c + 1);
@@ -142,5 +144,6 @@ export default function useTypingEngine() {
     currentProfile,
     changeProfile,
     availableProfiles,
+    hasAudioSupport,
   };
 }
