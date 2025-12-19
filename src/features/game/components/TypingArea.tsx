@@ -36,9 +36,21 @@ export default function TypingArea({
   else if (displayLength > 12) textSizeClass = 'text-3xl';
   else if (displayLength > 8) textSizeClass = 'text-4xl';
 
-  // Dynamic Reading Size
-  const kanaSizeClass = displayLength > 15 ? 'text-lg' : 'text-xl';
-  // const romajiSizeClass = displayLength > 15 ? "text-base" : "text-xl";
+  // Dynamic Reading Size (use reading length so short kanji with long readings scale down)
+  const readingLength = currentWord.reading?.length ?? displayLength;
+  const kanaSizeClass =
+    readingLength > 55
+      ? 'text-sm'
+      : readingLength > 45
+        ? 'text-base'
+        : readingLength > 35
+          ? 'text-lg'
+          : readingLength > 25
+            ? 'text-xl'
+            : 'text-2xl';
+  const kanaMaxWidthClass = readingLength > 45 ? 'max-w-6xl' : 'max-w-5xl';
+  const kanaLineHeightClass = readingLength > 35 ? 'leading-tight' : 'leading-relaxed';
+  const kanaTrackingClass = readingLength > 35 ? 'tracking-wide' : 'tracking-widest';
 
   return (
     <motion.div
@@ -64,7 +76,7 @@ export default function TypingArea({
 
       {/* Kana reading with progress */}
       <div
-        className={`relative flex flex-wrap items-center justify-center ${kanaSizeClass} font-normal max-w-4xl tracking-widest`}
+        className={`relative flex flex-wrap items-center justify-center text-center ${kanaSizeClass} ${kanaLineHeightClass} font-normal ${kanaMaxWidthClass} ${kanaTrackingClass}`}
       >
         {/* Render fully matched Kana (Past - Dimmed) */}
         <span className="text-white/30 transition-colors duration-200">{matchedKana}</span>
