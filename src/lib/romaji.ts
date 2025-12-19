@@ -246,20 +246,24 @@ export function checkRomaji(targetKana: string, input: string): MatchResult | nu
       // C-2: "n" + Character ...
       // Check next char in INPUT
       const nextChar = input[1];
-      if (isConsonant(nextChar) && nextChar !== 'y') {
-        const remainingInput = input.slice(1);
-        const nextTarget = targetKana.slice(1);
 
-        if (remainingInput.length > 0 && !isValidPrefix(nextTarget, remainingInput)) {
-          return null;
-        }
-        return {
-          isMatch: true,
-          consumedInput: 'n',
-          consumedTarget: 'ん',
-          remainingTarget: nextTarget,
-        };
+      if (!isConsonant(nextChar) || nextChar === 'y') {
+        return null;
       }
+
+      const remainingInput = input.slice(1);
+      const nextTarget = targetKana.slice(1);
+
+      if (remainingInput.length > 0 && !isValidPrefix(nextTarget, remainingInput)) {
+        return null;
+      }
+
+      return {
+        isMatch: true,
+        consumedInput: 'n',
+        consumedTarget: 'ん',
+        remainingTarget: nextTarget,
+      };
 
       // "n" + Vowel (e.g. "na") -> "な". Not "ん".
       // Return null (no match for 'ん').
