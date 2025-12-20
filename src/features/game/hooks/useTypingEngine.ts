@@ -20,8 +20,14 @@ export default function useTypingEngine() {
   const [currentCombo, setCurrentCombo] = useState(0);
   const [maxCombo, setMaxCombo] = useState(0);
 
-  const { playKeySound, currentProfile, changeProfile, availableProfiles, hasAudioSupport } =
-    useSound();
+  const {
+    playKeySound,
+    currentProfile,
+    changeProfile,
+    availableProfiles,
+    hasAudioSupport,
+    isProfileLoading,
+  } = useSound();
 
   const resetEngine = useCallback(() => {
     setMatchedRomaji('');
@@ -145,5 +151,6 @@ export default function useTypingEngine() {
     changeProfile,
     availableProfiles,
     hasAudioSupport,
+    isProfileLoading,
   };
 }
