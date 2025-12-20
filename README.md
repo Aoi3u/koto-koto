@@ -169,6 +169,17 @@ Automated performance benchmarking with strict quality gates:
 | Cumulative Layout Shift  | ≤ 0.1     | error |
 | Speed Index              | ≤ 3000ms  | error |
 
+**Config Files:**
+
+- [.github/workflows/ci.yml](.github/workflows/ci.yml) - GitHub Actions workflow
+- [lighthouserc.json](lighthouserc.json) - Lighthouse CI configuration
+
+## 📚 Additional Resources
+
+- **Architecture Documentation**: See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed technical documentation
+- **Testing Strategy**: Comprehensive test coverage with Jest focusing on core typing logic
+- **Performance Standards**: Automated Lighthouse CI monitoring ensures consistent performance
+
 **Features:**
 
 - Automatic performance regression detection
