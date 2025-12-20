@@ -39,7 +39,7 @@ export default function ResultScreen({
   const { grade, title, color } = calculateRank(netWpm, accuracy);
 
   const handleShare = () => {
-    const text = `Koto-Koto Result:\nRank: ${grade} - ${title}\nWPM: ${netWpm}\nAccuracy: ${accuracy}%\n#KotoKoto`;
+    const text = `Koto-Koto Result:\nRank: ${grade} - ${title}\nWPM: ${netWpm}\nAccuracy: ${accuracy}%\n\nhttps://koto-koto.vercel.app/\n#KotoKoto`;
     navigator.clipboard.writeText(text);
     alert('Result copied to clipboard!');
   };
