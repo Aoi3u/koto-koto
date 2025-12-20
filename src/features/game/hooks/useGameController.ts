@@ -33,6 +33,7 @@ export default function useGameController() {
     changeProfile,
     availableProfiles,
     hasAudioSupport,
+    isProfileLoading,
   } = useTypingEngine();
 
   // Sync Engine with Session Word
@@ -107,5 +108,6 @@ export default function useGameController() {
     changeProfile,
     availableProfiles,
     hasAudioSupport,
+    isProfileLoading,
   };
 }

@@ -36,6 +36,7 @@ function TypingGameInner() {
     changeProfile,
     availableProfiles,
     hasAudioSupport,
+    isProfileLoading,
   } = useGameController();
 
   return (
@@ -130,6 +131,7 @@ function TypingGameInner() {
         onProfileChange={changeProfile}
         availableProfiles={availableProfiles}
         hasAudioSupport={hasAudioSupport}
+        isProfileLoading={isProfileLoading}
       />
     </div>
   );

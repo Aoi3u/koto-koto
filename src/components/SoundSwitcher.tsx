@@ -12,6 +12,7 @@ interface SoundSwitcherProps {
     { name: string; folder: string; variants: number }
   >;
   hasAudioSupport?: boolean;
+  isProfileLoading?: boolean;
 }
 
 export default function SoundSwitcher({
@@ -19,6 +20,7 @@ export default function SoundSwitcher({
   onProfileChange,
   availableProfiles,
   hasAudioSupport = true,
+  isProfileLoading = false,
 }: SoundSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -55,22 +57,38 @@ export default function SoundSwitcher({
         {/* Main button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900/90 backdrop-blur-sm border border-zinc-700/50 rounded-lg shadow-lg hover:bg-zinc-800/90 hover:border-zinc-600/50 transition-all duration-200 group"
+          className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900/90 backdrop-blur-sm border border-zinc-700/50 rounded-lg shadow-lg hover:bg-zinc-800/90 hover:border-zinc-600/50 transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Change keyboard sound"
-          disabled={!hasAudioSupport}
-          title={!hasAudioSupport ? 'Audio is not supported in this browser' : undefined}
+          disabled={!hasAudioSupport || isProfileLoading}
+          title={
+            !hasAudioSupport
+              ? 'Audio is not supported in this browser'
+              : isProfileLoading
+                ? 'Loading profile...'
+                : undefined
+          }
         >
           {hasAudioSupport ? (
-            <Volume2 className="w-4 h-4 text-zinc-400 group-hover:text-zinc-300 transition-colors" />
+            <Volume2
+              className={`w-4 h-4 transition-colors ${isProfileLoading ? 'text-yellow-400 animate-spin' : 'text-zinc-400 group-hover:text-zinc-300'}`}
+            />
           ) : (
             <VolumeX className="w-4 h-4 text-red-400" />
           )}
           <span
             className={`text-xs transition-colors ${
-              hasAudioSupport ? 'text-zinc-400 group-hover:text-zinc-300' : 'text-red-400'
+              hasAudioSupport
+                ? isProfileLoading
+                  ? 'text-yellow-400'
+                  : 'text-zinc-400 group-hover:text-zinc-300'
+                : 'text-red-400'
             }`}
           >
-            {hasAudioSupport ? availableProfiles[currentProfile].name : 'No Audio'}
+            {isProfileLoading
+              ? 'Loading...'
+              : hasAudioSupport
+                ? availableProfiles[currentProfile].name
+                : 'No Audio'}
           </span>
         </button>
       </div>
