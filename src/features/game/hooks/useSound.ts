@@ -158,27 +158,30 @@ export default function useSound() {
     };
   }, [loadProfileAudio]);
 
-  const changeProfile = useCallback(async (profile: KeyboardSoundProfile) => {
-    setCurrentProfile(profile);
-    try {
-      localStorage.setItem('keyboard-sound-profile', profile);
-    } catch (error) {
-      console.warn('Failed to save profile to localStorage:', error);
-      // Continue with profile change even if saving fails
-    }
-
-    // Load the profile audio asynchronously if not already loaded
-    if (!loadedProfilesRef.current.has(profile) && audioContextRef.current) {
-      setIsProfileLoading(true);
+  const changeProfile = useCallback(
+    async (profile: KeyboardSoundProfile) => {
+      setCurrentProfile(profile);
       try {
-        await loadProfileAudio(profile);
+        localStorage.setItem('keyboard-sound-profile', profile);
       } catch (error) {
-        console.error('Error loading profile audio:', error);
-      } finally {
-        setIsProfileLoading(false);
+        console.warn('Failed to save profile to localStorage:', error);
+        // Continue with profile change even if saving fails
       }
-    }
-  }, []);
+
+      // Load the profile audio asynchronously if not already loaded
+      if (!loadedProfilesRef.current.has(profile) && audioContextRef.current) {
+        setIsProfileLoading(true);
+        try {
+          await loadProfileAudio(profile);
+        } catch (error) {
+          console.error('Error loading profile audio:', error);
+        } finally {
+          setIsProfileLoading(false);
+        }
+      }
+    },
+    [loadProfileAudio]
+  );
 
   const playKeySound = useCallback(() => {
     if (!audioContextRef.current || isLoading || isProfileLoading || !hasAudioSupport) return;
