@@ -22,8 +22,8 @@ export const modernAuthorsSentences: Sentence[] = [
   },
   {
     id: 'kajii_sakura_01',
-    display: '桜の樹の下には屍体が埋まっている！',
-    reading: 'さくらのきのしたにはしたいがうまっている！',
+    display: '桜の樹の下には屍体が埋まっている。',
+    reading: 'さくらのきのしたにはしたいがうまっている。',
     meta: { author: '梶井基次郎', title: '桜の樹の下には' },
   },
   {

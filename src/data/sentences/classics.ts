@@ -22,8 +22,8 @@ export const classicsSentences: Sentence[] = [
   },
   {
     id: 'kobayashi_kani_01',
-    display: 'おい地獄さ行ぐんだで！',
-    reading: 'おいじごくさいぐんだで！',
+    display: 'おい地獄さ行ぐんだで。',
+    reading: 'おいじごくさいぐんだで。',
     meta: { author: '小林多喜二', title: '蟹工船' },
   },
   {

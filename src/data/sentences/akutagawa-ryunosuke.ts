@@ -23,7 +23,7 @@ export const akutagawaRyunosukeSentences: Sentence[] = [
   {
     id: 'akutagawa_kappa_01',
     display: '僕はある夏の日、穂高山へ登ろうとした。',
-    reading: 'ぼくはあるなつのひ、ほたかやまへののぼろうとした。',
+    reading: 'ぼくはあるなつのひ、ほたかやまへのぼろうとした。',
     meta: { author: '芥川龍之介', title: '河童' },
   },
   {
