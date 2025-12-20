@@ -35,6 +35,41 @@ export default function useSound() {
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [hasAudioSupport, setHasAudioSupport] = useState(true);
 
+  // Helper: load audio buffers for a single profile
+  const loadProfileAudio = useCallback(async (profileKey: string) => {
+    // Skip if already loaded
+    if (loadedProfilesRef.current.has(profileKey)) {
+      return;
+    }
+
+    if (!audioContextRef.current) return;
+    const ctx = audioContextRef.current;
+    const config = SOUND_PROFILES[profileKey as KeyboardSoundProfile];
+    if (!config) return;
+
+    const buffers: AudioBuffer[] = [];
+    const promises: Promise<void>[] = [];
+    for (let i = 0; i < config.variants; i++) {
+      const path = `/audio/${config.folder}/press/GENERIC_R${i}.mp3`;
+      const p = fetch(path)
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          return response.arrayBuffer();
+        })
+        .then((arrayBuffer) => ctx.decodeAudioData(arrayBuffer))
+        .then((audioBuffer) => {
+          buffers[i] = audioBuffer;
+        })
+        .catch((error) => {
+          console.warn(`Failed to load ${path}:`, error);
+        });
+      promises.push(p);
+    }
+    await Promise.allSettled(promises);
+    audioBuffersRef.current.set(profileKey, buffers);
+    loadedProfilesRef.current.add(profileKey);
+  }, []);
+
   useEffect(() => {
     // Initialize AudioContext on mount
     try {
@@ -73,41 +108,6 @@ export default function useSound() {
       console.warn('Failed to access localStorage:', error);
       // Continue with default profile
     }
-
-    // Helper: load audio buffers for a single profile
-    const loadProfileAudio = async (profileKey: string) => {
-      // Skip if already loaded
-      if (loadedProfilesRef.current.has(profileKey)) {
-        return;
-      }
-
-      if (!audioContextRef.current) return;
-      const ctx = audioContextRef.current;
-      const config = SOUND_PROFILES[profileKey as KeyboardSoundProfile];
-      if (!config) return;
-
-      const buffers: AudioBuffer[] = [];
-      const promises: Promise<void>[] = [];
-      for (let i = 0; i < config.variants; i++) {
-        const path = `/audio/${config.folder}/press/GENERIC_R${i}.mp3`;
-        const p = fetch(path)
-          .then((response) => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return response.arrayBuffer();
-          })
-          .then((arrayBuffer) => ctx.decodeAudioData(arrayBuffer))
-          .then((audioBuffer) => {
-            buffers[i] = audioBuffer;
-          })
-          .catch((error) => {
-            console.warn(`Failed to load ${path}:`, error);
-          });
-        promises.push(p);
-      }
-      await Promise.allSettled(promises);
-      audioBuffersRef.current.set(profileKey, buffers);
-      loadedProfilesRef.current.add(profileKey);
-    };
 
     // Preload audio files lazily: current profile first, others after idle
     const loadAudioFiles = async () => {
@@ -156,7 +156,7 @@ export default function useSound() {
         });
       }
     };
-  }, []);
+  }, [loadProfileAudio]);
 
   const changeProfile = useCallback(async (profile: KeyboardSoundProfile) => {
     setCurrentProfile(profile);
