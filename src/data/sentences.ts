@@ -9,11 +9,19 @@ export type Sentence = {
 };
 
 export const sentences: Sentence[] = [
-  // --- 夏目漱石 ---
+  // ---------------------------------------------------------
+  //  夏目漱石 (Natsume Soseki)
+  // ---------------------------------------------------------
   {
     id: 'soseki_kokoro_01',
     display: '私はその人を常に先生と呼んでいた。',
     reading: 'わたしはそのひとをつねにせんせいとよんでいた。',
+    meta: { author: '夏目漱石', title: 'こころ' },
+  },
+  {
+    id: 'soseki_kokoro_02',
+    display: '精神的に向上心のないものは、馬鹿だ。',
+    reading: 'せいしんてきにこうじょうしんのないものはばかだ。',
     meta: { author: '夏目漱石', title: 'こころ' },
   },
   {
@@ -29,43 +37,51 @@ export const sentences: Sentence[] = [
     meta: { author: '夏目漱石', title: '草枕' },
   },
   {
+    id: 'soseki_kusamakura_02',
+    display: '智に働けば角が立つ。',
+    reading: 'ちにはたらけばかどがたつ。',
+    meta: { author: '夏目漱石', title: '草枕' },
+  },
+  {
+    id: 'soseki_kusamakura_03',
+    display: '情に棹させば流される。',
+    reading: 'じょうにさおさせばながされる。',
+    meta: { author: '夏目漱石', title: '草枕' },
+  },
+  {
     id: 'soseki_sorekara_01',
     display: '恋は罪悪ですか。',
     reading: 'こいはざいあくですか。',
     meta: { author: '夏目漱石', title: 'それから' },
   },
   {
+    id: 'soseki_sorekara_02',
+    display: '歩くのは僕の性分でない。',
+    reading: 'あるくのはぼくのしょうぶんでない。',
+    meta: { author: '夏目漱石', title: 'それから' },
+  },
+  {
     id: 'soseki_wagahai_01',
-    display: '吾輩は猫である。名前はまだ無い。',
-    reading: 'わがはいはねこである。なまえはまだない。',
+    display: '吾輩は猫である。',
+    reading: 'わがはいはねこである。',
     meta: { author: '夏目漱石', title: '吾輩は猫である' },
   },
   {
-    id: 'soseki_kokoro_02',
-    display: '先生は私に何か言いたそうな顔をして、黙って歩いていた。',
-    reading: 'せんせいはわたしになにかいいたそうなかおをして、だまってあるいていた。',
-    meta: { author: '夏目漱石', title: 'こころ' },
+    id: 'soseki_wagahai_02',
+    display: '名前はまだ無い。',
+    reading: 'なまえはまだない。',
+    meta: { author: '夏目漱石', title: '吾輩は猫である' },
   },
   {
-    id: 'soseki_kusamakura_02',
-    display: '智に働けば角が立つ。情に棹させば流される。',
-    reading: 'ちにはたらけばかどがたつ。じょうにさおさせばながされる。',
-    meta: { author: '夏目漱石', title: '草枕' },
-  },
-  {
-    id: 'soseki_yumejuya_01',
-    display: 'こんな夢を見た。',
-    reading: 'こんなゆめをみた。',
-    meta: { author: '夏目漱石', title: '夢十夜' },
-  },
-  {
-    id: 'soseki_sorekara_01',
-    display: '歩くのは僕の性分でない。僕は電車へ乗る。',
-    reading: 'あるくのはぼくのしょうぶんでない。ぼくはでんしゃへのる。',
-    meta: { author: '夏目漱石', title: 'それから' },
+    id: 'soseki_tsuki_01',
+    display: '月が綺麗ですね。',
+    reading: 'つきがきれいですね。',
+    meta: { author: '夏目漱石', title: '（逸話）' },
   },
 
-  // --- 太宰治 ---
+  // ---------------------------------------------------------
+  //  太宰治 (Dazai Osamu)
+  // ---------------------------------------------------------
   {
     id: 'dazai_melos_01',
     display: 'メロスは激怒した。',
@@ -74,8 +90,8 @@ export const sentences: Sentence[] = [
   },
   {
     id: 'dazai_melos_02',
-    display: '必ず、かの邪智暴虐の王を除かなければならぬと決意した。',
-    reading: 'かならず、かのじゃちぼうぎゃくのおうをのぞかなければならぬとけついした。',
+    display: 'かの邪智暴虐の王を除かなければならぬ。',
+    reading: 'かのじゃちぼうぎゃくのおうをのぞかなければならぬ。',
     meta: { author: '太宰治', title: '走れメロス' },
   },
   {
@@ -91,25 +107,21 @@ export const sentences: Sentence[] = [
     meta: { author: '太宰治', title: '二十世紀旗手' },
   },
   {
-    id: 'dazai_melos_03',
-    display: 'メロスは村の牧人である。',
-    reading: 'めろすはむらのぼくじんである。',
-    meta: { author: '太宰治', title: '走れメロス' },
-  },
-  {
-    id: 'dazai_shayou_01',
-    display: '人間は、恋と革命のために生れて来たのだ。',
-    reading: 'にんげんは、こいとかくめいのためにうまれてきたのだ。',
-    meta: { author: '太宰治', title: '斜陽' },
+    id: 'dazai_fugaku_01',
+    display: '富士には月見草がよく似合う。',
+    reading: 'ふじにはつきみそうがよくにあう。',
+    meta: { author: '太宰治', title: '富嶽百景' },
   },
   {
     id: 'dazai_goodbye_01',
-    display: '花に嵐のたとえもあるさ。さよならだけが人生だ。',
-    reading: 'はなにあらしのたとえもあるさ。さよならだけがじんせいだ。',
-    meta: { author: '太宰治（井伏鱒二訳）', title: '勧酒' }, // 漢詩の訳として有名
+    display: 'さよならだけが人生だ。',
+    reading: 'さよならだけがじんせいだ。',
+    meta: { author: '太宰治（井伏鱒二訳）', title: '勧酒' },
   },
 
-  // --- 宮沢賢治 ---
+  // ---------------------------------------------------------
+  //  宮沢賢治 (Miyazawa Kenji)
+  // ---------------------------------------------------------
   {
     id: 'miyazawa_ginga_01',
     display: 'ジョバンニは、学校の帰りに活版所へ行きました。',
@@ -121,12 +133,6 @@ export const sentences: Sentence[] = [
     display: 'この切符さえあれば、どこまででも行ける。',
     reading: 'このきっぷさえあれば、どこまででもいける。',
     meta: { author: '宮沢賢治', title: '銀河鉄道の夜' },
-  },
-  {
-    id: 'miyazawa_cello_01',
-    display: 'ゴーシュは町の活動写真館でセロを弾く係でした。',
-    reading: 'ごーしゅはまちのかつどうしゃしんかんでせろをひくかかりでした。',
-    meta: { author: '宮沢賢治', title: 'セロ弾きのゴーシュ' },
   },
   {
     id: 'miyazawa_ame_01',
@@ -147,30 +153,25 @@ export const sentences: Sentence[] = [
     meta: { author: '宮沢賢治', title: '風の又三郎' },
   },
   {
-    id: 'miyazawa_chuumon_01',
-    display: '当軒は注文の多い料理店ですからどうかそこはご承知ください。',
-    reading: 'とうけんはちゅうもんのおおいりょうりてんですからどうかそこはごしょうちください。',
-    meta: { author: '宮沢賢治', title: '注文の多い料理店' },
-  },
-  {
     id: 'miyazawa_yamanashi_01',
     display: 'クラムボンはかぷかぷわらったよ。',
     reading: 'くらむぼんはかぷかぷわらったよ。',
     meta: { author: '宮沢賢治', title: 'やまなし' },
   },
   {
-    id: 'miyazawa_harutosyura_01',
+    id: 'miyazawa_haru_01',
     display: 'おれはひとりの修羅なのだ。',
     reading: 'おれはひとりのしゅらなのだ。',
     meta: { author: '宮沢賢治', title: '春と修羅' },
   },
 
-  // --- 芥川龍之介 ---
+  // ---------------------------------------------------------
+  //  芥川龍之介 (Akutagawa Ryunosuke)
+  // ---------------------------------------------------------
   {
     id: 'akutagawa_rashoumon_01',
-    display: 'ある日の暮方の事である。一人の下人が羅生門の下で雨やみを待っていた。',
-    reading:
-      'あるひのくれがたのことである。ひとりのげにんがらしょうもんのしたであまやみをまっていた。',
+    display: 'ある日の暮方の事である。',
+    reading: 'あるひのくれがたのことである。',
     meta: { author: '芥川龍之介', title: '羅生門' },
   },
   {
@@ -192,17 +193,19 @@ export const sentences: Sentence[] = [
     meta: { author: '芥川龍之介', title: '河童' },
   },
   {
-    id: 'akutagawa_hana_01',
-    display: '人の不幸には、どこかそれを見て喜ぶような心持ちがあるものだ。',
-    reading: 'ひとのふこうには、どこかそれをみてよろこぶようなこころもちがあるものだ。',
-    meta: { author: '芥川龍之介', title: '鼻' },
+    id: 'akutagawa_haguruma_01',
+    display: '人生は地獄よりも地獄的である。',
+    reading: 'じんせいはじごくよりもじごくてきである。',
+    meta: { author: '芥川龍之介', title: '歯車' },
   },
 
-  // --- 中島敦 ---
+  // ---------------------------------------------------------
+  //  中島敦・梶井基次郎・川端康成
+  // ---------------------------------------------------------
   {
     id: 'nakajima_sangetsuki_01',
-    display: '臆病な自尊心と、尊大な羞恥心との所為である。',
-    reading: 'おくびょうなじそんしんと、そんだいなしゅうちしんとのせいである。',
+    display: '臆病な自尊心と、尊大な羞恥心。',
+    reading: 'おくびょうなじそんしんと、そんだいなしゅうちしん。',
     meta: { author: '中島敦', title: '山月記' },
   },
   {
@@ -212,100 +215,120 @@ export const sentences: Sentence[] = [
     meta: { author: '中島敦', title: '山月記' },
   },
   {
-    id: 'nakajima_meijinden_01',
-    display: '古の列子に、その技を学ばんとして関尹子に就いた話がある。',
-    reading: 'いにしえのれっしに、そのわざをまなばんとしてかんいんしについたはなしがある。',
-    meta: { author: '中島敦', title: '名人伝' },
+    id: 'kajii_lemon_01',
+    display: 'えたいの知れない不吉な塊。',
+    reading: 'えたいのしれないふきつなかたまり。',
+    meta: { author: '梶井基次郎', title: '檸檬' },
+  },
+  {
+    id: 'kajii_sakura_01',
+    display: '桜の樹の下には屍体が埋まっている！',
+    reading: 'さくらのきのしたにはしたいがうまっている！',
+    meta: { author: '梶井基次郎', title: '桜の樹の下には' },
+  },
+  {
+    id: 'kawabata_yukiguni_01',
+    display: '国境の長いトンネルを抜けると雪国であった。',
+    reading: 'こっきょうのながいとんねるをぬけるとゆきぐにであった。',
+    meta: { author: '川端康成', title: '雪国' },
   },
 
-  // --- 島崎藤村 ---
+  // ---------------------------------------------------------
+  //  詩歌・俳句 (Poetry - Naturally Short)
+  // ---------------------------------------------------------
   {
-    id: 'shimazaki_yoakemai_01',
+    id: 'nakahara_yogore_01',
+    display: '汚れっちまった悲しみに。',
+    reading: 'よごれっちまったかなしみに。',
+    meta: { author: '中原中也', title: '山羊の歌' },
+  },
+  {
+    id: 'takuboku_uni_01',
+    display: 'はたらけどはたらけど猶わが生活楽にならざり。',
+    reading: 'はたらけどはたらけどなおわがくらしらくにならざり。',
+    meta: { author: '石川啄木', title: '一握の砂' },
+  },
+  {
+    id: 'shiki_haiku_01',
+    display: '柿くへば鐘が鳴るなり法隆寺。',
+    reading: 'かきくえばかねがなるなりほうりゅうじ。',
+    meta: { author: '正岡子規', title: '俳句' },
+  },
+  {
+    id: 'basho_haiku_01',
+    display: '古池や蛙飛び込む水の音。',
+    reading: 'ふるいけやかわずとびこむみずのおと。',
+    meta: { author: '松尾芭蕉', title: '俳句' },
+  },
+  {
+    id: 'yosano_midare_01',
+    display: '柔肌の熱き血潮に触れもみで。',
+    reading: 'やわはだのあつきちしおにふれもみで。',
+    meta: { author: '与謝野晶子', title: 'みだれ髪' },
+  },
+  {
+    id: 'miyoshi_yuki_01',
+    display: '太郎を眠らせ、太郎の屋根に雪ふりつむ。',
+    reading: 'たろうをねむらせ、たろうのやねにゆきふりつむ。',
+    meta: { author: '三好達治', title: '雪' },
+  },
+
+  // ---------------------------------------------------------
+  //  その他・古典 (Others / Classics)
+  // ---------------------------------------------------------
+  {
+    id: 'fukuzawa_gakumon_01',
+    display: '天は人の上に人を造らず。',
+    reading: 'てんはひとのうえにひとをつくらず。',
+    meta: { author: '福澤諭吉', title: '学問のすゝめ' },
+  },
+  {
+    id: 'shimazaki_yoake_01',
     display: '木曽路はすべて山の中である。',
     reading: 'きそじはすべてやまのなかである。',
     meta: { author: '島崎藤村', title: '夜明け前' },
   },
-  {
-    id: 'shimazaki_hatsukoi_01',
-    display: 'まだあげ初めし前髪の。',
-    reading: 'まだあげそめしまえがみの。',
-    meta: { author: '島崎藤村', title: '初恋' },
-  },
-
-  // --- 樋口一葉 ---
-  {
-    id: 'higuchi_takekurabe_01',
-    display: '廻れば大門の見返り柳いと長けれど、お歯ぐろ溝に燈火うつる三階の騒ぎも手に取る如く。',
-    reading:
-      'めぐればおおもんのみかえりやなぎいとながけれど、おはぐろどぶにともしびうつるさんかいのさわぎもてにとるごとく。',
-    meta: { author: '樋口一葉', title: 'たけくらべ' },
-  },
-
-  // --- 福澤諭吉 ---
-  {
-    id: 'fukuzawa_gakumon_01',
-    display: '天は人の上に人を造らず人の下に人を造らずと言えり。',
-    reading: 'てんはひとのうえにひとをつくらずひとのしたにひとをつくらずといえり。',
-    meta: { author: '福澤諭吉', title: '学問のすゝめ' },
-  },
-
-  // --- 国木田独歩 ---
   {
     id: 'kunikida_musashino_01',
     display: '武蔵野の面影は今わずかに入間郡に残っている。',
     reading: 'むさしののおもかげはいまわずかにいるまごおりにのこっている。',
     meta: { author: '国木田独歩', title: '武蔵野' },
   },
-
-  // --- 幸田露伴 ---
   {
-    id: 'koda_gojoutou_01',
-    display: '木屑を焚くのにも、大工の棟梁ともあろうものが、十兵衛は顔を背けて、けむたがっていた。',
-    reading:
-      'きくずをたくのにも、だいくのとうりょうともあろうものが、じゅうべえはかおをそむけて、けむたがっていた。',
-    meta: { author: '幸田露伴', title: '五重塔' },
-  },
-
-  // --- 森鴎外 ---
-  {
-    id: 'ogai_maihime_01',
-    display: '石炭をば早や積み果てつ。',
-    reading: 'せきたんをばはやつみはてつ。',
-    meta: { author: '森鴎外', title: '舞姫' },
+    id: 'kobayashi_kani_01',
+    display: 'おい地獄さ行ぐんだで！',
+    reading: 'おいじごくさいぐんだで！',
+    meta: { author: '小林多喜二', title: '蟹工船' },
   },
   {
-    id: 'ogai_takasebune_01',
-    display: '高瀬舟は京都の高瀬川を上下する小舟である。',
-    reading: 'たかせぶねはきょうとのたかせがわをじょうげするこぶねである。',
-    meta: { author: '森鴎外', title: '高瀬舟' },
+    id: 'ango_daraku_01',
+    display: '生きよ、堕ちよ。',
+    reading: 'いきよ、おちよ。',
+    meta: { author: '坂口安吾', title: '堕落論' },
   },
-
-  // ---------------------------------------------------------
-  //  古典の冒頭 (Classics) - 教養として必須
-  // ---------------------------------------------------------
   {
-    id: 'classic_heike_01',
-    display: '祇園精舎の鐘の声、諸行無常の響きあり。',
-    reading: 'ぎおんしょうじゃのかねのこえ、しょぎょうむじょうのひびきあり。',
+    id: 'heike_01',
+    display: '祇園精舎の鐘の声。',
+    reading: 'ぎおんしょうじゃのかねのこえ。',
     meta: { author: '不詳', title: '平家物語' },
   },
   {
-    id: 'classic_hojoki_01',
-    display: 'ゆく河の流れは絶えずして、しかももとの水にあらず。',
-    reading: 'ゆくかわのながれはたえずして、しかももとのみずにあらず。',
+    id: 'heike_02',
+    display: '諸行無常の響きあり。',
+    reading: 'しょぎょうむじょうのひびきあり。',
+    meta: { author: '不詳', title: '平家物語' },
+  },
+  {
+    id: 'hojoki_01',
+    display: 'ゆく河の流れは絶えずして。',
+    reading: 'ゆくかわのながれはたえずして。',
     meta: { author: '鴨長明', title: '方丈記' },
   },
   {
-    id: 'classic_tsurezure_01',
-    display: 'つれづれなるままに、日暮らし、硯にむかひて。',
-    reading: 'つれづれなるままに、ひぐらし、すずりにむかいて。',
-    meta: { author: '吉田兼好', title: '徒然草' },
-  },
-  {
-    id: 'classic_genji_01',
-    display: 'いづれの御時にか、女御、更衣あまたさぶらひたまひける中に。',
-    reading: 'いずれのおおんときにか、にょうご、こういあまたさぶらいたまいけるなかに。',
-    meta: { author: '紫式部', title: '源氏物語' },
+    id: 'makura_01',
+    display: '春はあけぼの。',
+    reading: 'はるはあけぼの。',
+    meta: { author: '清少納言', title: '枕草子' },
   },
 ];
 
