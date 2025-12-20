@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import useGameSession from './useGameSession';
 import useTypingEngine from './useTypingEngine';
+import { GAME_CONFIG } from '../../../config/gameConfig';
 
 export default function useGameController() {
   const {
@@ -68,7 +69,7 @@ export default function useGameController() {
           endGame();
         } else {
           // Delay for visual smoothness
-          setTimeout(() => nextWord(), 50);
+          setTimeout(() => nextWord(), GAME_CONFIG.WORD_TRANSITION_DELAY_MS);
         }
       }
     },

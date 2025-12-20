@@ -17,7 +17,7 @@ src/
 │   ├── TypingGame.tsx      # メインゲームコンテナ (SeasonalProvider)
 │   ├── SeasonalParticles.tsx # 季節パーティクルアニメーション
 │   ├── SoundSwitcher.tsx   # キーボードサウンド切り替えUI
-│   └── MobileBlocker.tsx
+│   └── MobileBlocker.tsx   # モバイルブロッカー（簡潔化済み）
 │
 ├── contexts/               # React Context (状態管理)
 │   └── SeasonalContext.tsx  # 季節+時間帯テーマの提供
@@ -28,11 +28,15 @@ src/
 │   │   │   ├── TitleScreen.tsx      # タイトル画面
 │   │   │   ├── GameHeader.tsx       # ゲームヘッダー
 │   │   │   └── TypingArea.tsx       # タイピング領域
-│   │   └── hooks/
-│   │       ├── useGameController.ts
-│   │       ├── useGameSession.ts
-│   │       ├── useTypingEngine.ts
-│   │       └── useSound.ts         # リアルなキーボードサウンド管理
+│   │   └── hooks/               # ゲームロジックフック（分割済み）
+│   │       ├── useGameController.ts # ゲーム全体の制御
+│   │       ├── useGameSession.ts    # セッション管理
+│   │       ├── useTypingEngine.ts   # タイピングエンジン
+│   │       ├── useSound.ts          # サウンド統合（Composition Hook）
+│   │       ├── useAudioContext.ts   # AudioContext初期化
+│   │       ├── useSoundProfile.ts   # プロファイル管理
+│   │       ├── useKeySound.ts       # サウンド再生
+│   │       └── sound-profiles.ts    # サウンドプロファイル定数
 │   └── result/
 │       ├── components/
 │       │   └── ResultScreen.tsx
@@ -43,18 +47,32 @@ src/
 │   ├── seasons.ts          # 季節システム定義 (4 seasons)
 │   ├── timeOfDay.ts        # 時間帯システム定義 (Morning/Day/Sunset/Night)
 │   ├── theme.ts            # テーマ設定
-│   └── gameConfig.ts       # ゲーム設定
+│   └── gameConfig.ts       # ゲーム設定（WORD_TRANSITION_DELAY_MS追加）
 │
 ├── lib/                    # ユーティリティ関数
 │   ├── formatters.ts       # フォーマッター関数 (WPM, KPM, 時間)
-│   ├── romaji-trie.ts      # Trie/DFA 型ローマ字→かなエンジン（最長一致・ヒント）
-│   └── romaji.ts           # 公開APIラッパー（checkRomaji/isValidPrefix）
+│   ├── romaji-trie.ts      # Trie/DFA 型ローマ字→かなエンジン
+│   ├── romaji.ts           # 公開APIラッパー
+│   ├── device-detection.ts # デバイス検出ロジック（分離済み）
+│   └── constants/
+│       └── kana-map.ts     # かな→ローマ字マッピング定数
 │
-├── data/                   # 静的データ
-│   └── sentences.ts        # 文リスト（青空文庫由来＋キュレーション）
+├── data/                   # 静的データ（作者別に分割済み）
+│   ├── sentences.ts        # 後方互換性のための再エクスポート
+│   └── sentences/          # 作者別・テーマ別に整理
+│       ├── types.ts              # 型定義
+│       ├── natsume-soseki.ts     # 夏目漱石
+│       ├── dazai-osamu.ts        # 太宰治
+│       ├── miyazawa-kenji.ts     # 宮沢賢治
+│       ├── akutagawa-ryunosuke.ts # 芥川龍之介
+│       ├── modern-authors.ts     # 近代作家
+│       ├── poetry.ts             # 詩歌・俳句
+│       ├── classics.ts           # 古典
+│       └── index.ts              # 統合エクスポート
 │
 └── hooks/                  # カスタムフック
-    └── useSeason.ts        # 季節+時間帯検出フック
+    ├── useSeason.ts        # 季節+時間帯検出フック
+    └── useDeviceType.ts    # デバイスタイプ検出フック（分離済み）
 ```
 
 ## 🎯 設計原則
@@ -84,6 +102,10 @@ src/
 - `useGameController`: ゲーム全体の制御
 - `useTypingEngine`: タイピングエンジン
 - `useSeason`: 季節検出
+- `useSound`: サウンド管理（Composition Pattern で構成）
+  - `useAudioContext`: AudioContext の初期化
+  - `useSoundProfile`: プロファイルの読み込みと管理
+  - `useKeySound`: サウンド再生ロジック
 
 ### 4. ユーティリティ関数の再利用
 
@@ -93,6 +115,25 @@ src/
 - `calculateWPM()`: WPM 計算
 - `calculateAccuracy()`: 精度計算
 - `match()/isValidPrefix()`: Trie ベースのローマ字→かな判定（最長一致、促音・ん 特殊処理、ヒント出力）
+
+### 5. モジュール分割による保守性向上
+
+**データ層の分割**:
+
+- 文章データを作者別ファイルに分割（`sentences/` ディレクトリ）
+- 各ファイルは独立してメンテナンス可能
+- 後方互換性のための再エクスポート層を維持
+
+**定数の分離**:
+
+- かな→ローマ字マッピングを `lib/constants/kana-map.ts` に分離
+- ロジックと定数を分離し、可読性とテスタビリティを向上
+
+**ロジックの抽出**:
+
+- デバイス検出ロジックを `lib/device-detection.ts` に抽出
+- コンポーネントは UI の責務のみに集中
+- 型定義を明示化し、`@ts-expect-error` を削除
 
 ## 🎨 季節 × 時間帯システムアーキテクチャ (Kacho-Fugetsu × Utsuroi)
 
@@ -141,21 +182,56 @@ SEASONAL_THEMES[s]   TIME_THEMES[t]
 
 ## 🎵 キーボードサウンドシステムアーキテクチャ
 
+### Composition Pattern による分割設計
+
+**useSound()** は3つの専門化されたフックを組み合わせた Composition Hook:
+
+```
+useSound() (統合)
+  ├─ useAudioContext()
+  │   ├─ AudioContext 初期化
+  │   ├─ ブラウザ互換性チェック
+  │   └─ クリーンアップ処理
+  │
+  ├─ useSoundProfile()
+  │   ├─ プロファイル読み込み
+  │   ├─ AudioBuffer Map 管理
+  │   ├─ localStorage 連携
+  │   └─ 遅延読み込み戦略
+  │
+  └─ useKeySound()
+      ├─ サウンド再生ロジック
+      ├─ GainNode による音量調整
+      └─ ランダムバリアント選択
+```
+
 ### データフロー
 
 ```
-useSound() Hook
-  ├─ AudioContext (Web Audio API)
+useAudioContext()
+        ↓
+AudioContext 初期化
+        ↓
+useSoundProfile(audioContext)
+  ├─ プロファイル読み込み
   ├─ AudioBuffer Map (13プロファイル × 5バリアント)
-  ├─ currentProfile (状態管理)
-  └─ localStorage (永続化)
+  └─ localStorage から復元
         ↓
-  playKeySound()
+useKeySound(audioContext, audioBuffers)
         ↓
-  AudioBufferSourceNode → GainNode → destination
+playKeySound()
+        ↓
+AudioBufferSourceNode → GainNode → destination
         ↓
 キーボード音の再生
 ```
+
+### 分割による利点
+
+1. **テスタビリティ**: 各フックを独立してテスト可能
+2. **責務の明確化**: AudioContext 管理、プロファイル管理、再生ロジックが分離
+3. **再利用性**: 各フックは他の用途でも再利用可能
+4. **保守性**: 250行超のファイルを4つの小さなモジュールに分割
 
 ### サウンドプロファイル
 
