@@ -27,12 +27,6 @@ export const miyazawaKenjiSentences: Sentence[] = [
     meta: { author: '宮沢賢治', title: 'よだかの星' },
   },
   {
-    id: 'miyazawa_matasaburo_01',
-    display: 'どっどど、どどうど、どどうど、どどう。',
-    reading: 'どっどど、どどうど、どどうど、どどう。',
-    meta: { author: '宮沢賢治', title: '風の又三郎' },
-  },
-  {
     id: 'miyazawa_yamanashi_01',
     display: 'クラムボンはかぷかぷわらったよ。',
     reading: 'くらむぼんはかぷかぷわらったよ。',
