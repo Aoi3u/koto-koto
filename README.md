@@ -93,20 +93,43 @@ src/
 ├── contexts/            # React Context (State Management)
 │   └── SeasonalContext.tsx  # Seasonal + Time-of-day theme provider
 ├── data/                # Sentence lists and content
+│   ├── sentences.ts     # Backward-compatible re-export
+│   └── sentences/       # Organized by author
+│       ├── types.ts           # Sentence type definitions
+│       ├── natsume-soseki.ts  # Natsume Soseki sentences
+│       ├── dazai-osamu.ts     # Dazai Osamu sentences
+│       ├── miyazawa-kenji.ts  # Miyazawa Kenji sentences
+│       ├── akutagawa-ryunosuke.ts  # Akutagawa sentences
+│       ├── modern-authors.ts  # Modern authors
+│       ├── poetry.ts          # Poetry and haiku
+│       ├── classics.ts        # Classical literature
+│       └── index.ts           # Combined exports
 ├── features/            # Feature-based modules
 │   ├── game/            # Core Game Logic
 │   │   ├── components/  # TitleScreen, GameHeader, TypingArea
-│   │   └── hooks/       # useTypingEngine, useGameSession, useSound (realistic keyboard sounds)
+│   │   └── hooks/       # Typing and sound management
+│   │       ├── useGameController.ts   # Game orchestration
+│   │       ├── useGameSession.ts      # Session state
+│   │       ├── useTypingEngine.ts     # Typing logic
+│   │       ├── useSound.ts            # Sound composition hook
+│   │       ├── useAudioContext.ts     # AudioContext management
+│   │       ├── useSoundProfile.ts     # Profile loading
+│   │       ├── useKeySound.ts         # Sound playback
+│   │       └── sound-profiles.ts      # Profile constants
 │   └── result/          # Result Screen Logic
 │       ├── components/  # ResultScreen
 │       └── utils/       # Rank calculation logic
 ├── lib/                 # Core utilities
 │   ├── romaji.ts        # Public API delegating to trie matcher
-│   ├── romaji-trie.ts   # Trie/DFA romaji-to-kana engine (longest-match, hints)
-│   └── formatters.ts    # Time and score formatters
+│   ├── romaji-trie.ts   # Trie/DFA romaji-to-kana engine
+│   ├── formatters.ts    # Time and score formatters
+│   ├── device-detection.ts  # Mobile device detection logic
+│   └── constants/
+│       └── kana-map.ts  # Kana-to-Romaji mappings
 ├── __tests__/           # Jest unit tests (core logic, hooks)
 ├── hooks/               # Custom hooks
-│   └── useSeason.ts     # Season + Time-of-day detection
+│   ├── useSeason.ts     # Season + Time-of-day detection
+│   └── useDeviceType.ts # Device type detection
 └── public/audio/        # 13 keyboard profiles (press variants only)
 ```
 

@@ -2,6 +2,7 @@ export const GAME_CONFIG = {
   TOTAL_SENTENCES: 10,
   TIMER_INTERVAL_MS: 100,
   COMBO_TIMEOUT_MS: 3000, // Implied or future use
+  WORD_TRANSITION_DELAY_MS: 50, // Delay for visual smoothness between words
 };
 
 export const RANK_THRESHOLDS = {
