@@ -6,11 +6,7 @@ import { Laptop } from 'lucide-react';
 const detectMobileDevice = (): boolean => {
   // Factor 1: Touch capability detection (most reliable)
   const hasTouch = () =>
-    !!(
-      navigator.maxTouchPoints > 0 ||
-      navigator.msMaxTouchPoints > 0 ||
-      (matchMedia && matchMedia('(pointer:coarse)').matches)
-    );
+    !!(navigator.maxTouchPoints > 0 || (matchMedia && matchMedia('(pointer:coarse)').matches));
 
   // Factor 2: User Agent analysis
   const isMobileUA = (): boolean => {
@@ -44,7 +40,7 @@ const detectMobileDevice = (): boolean => {
   const hasOrientationLock = (): boolean => {
     return (
       window.screen.orientation !== undefined &&
-      typeof window.screen.orientation.lock === 'function'
+      typeof (window.screen.orientation as unknown as { lock: unknown }).lock === 'function'
     );
   };
 
