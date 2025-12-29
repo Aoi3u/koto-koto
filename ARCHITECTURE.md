@@ -414,11 +414,34 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
 - 接続URLは **schema ではなく** [prisma.config.ts](prisma.config.ts) で管理
 - `db.<project>.supabase.co:5432` が IPv6 のみ解決される環境では P1001 の可能性 → IPv4 を持つ **Session Pooler** を使用
 
-### アプリ連携（予定/方針）
+### アプリ連携
+
+#### NextAuth 統合
+
+- **ライブラリ**: NextAuth v4.24.13 + @auth/prisma-adapter v2.9.3
+- **認証戦略**: JWT（デフォルト）
+- **プロバイダ**: Credentials（bcryptjs でパスワードハッシュ）
+- **ルート**: [src/app/api/auth/[...nextauth]/route.ts](src/app/api/auth/%5B...nextauth%5D/route.ts)
+- **設定**: [src/lib/auth.ts](src/lib/auth.ts)（authOptions エクスポート）
+- **PrismaClient**: [src/lib/prisma.ts](src/lib/prisma.ts)（シングルトン、@prisma/adapter-pg + pg.Pool 使用）
+
+**技術的注意点**:
+
+- Prisma 7 で生成されるクライアント型と NextAuth v4 の PrismaAdapter に型互換性がないため、`as any` キャストが必要（ESLint無効化コメント付き）
+- 将来的に NextAuth v5 (Auth.js) への移行で解消される可能性あり
+
+**利用するモデル**:
+
+- `User` … 認証ユーザー（email, hashedPassword）
+- `Account` … プロバイダアカウント（OAuth用、現在はCredentialsのみ）
+- `Session` … セッショントークン管理
+- `VerificationToken` … メール検証等
+
+#### ビジネスロジック
 
 - Next.js サーバー側（Server Actions/Route Handlers）から PrismaClient を使用
-- 認証（NextAuth）では `User/Account/Session/VerificationToken` モデルを Adapter で利用
 - ビジネスデータ（`GameResult`）は `User` に紐付け（FK, CASCADE）
+- 認証が必要なエンドポイントでは `getServerSession(authOptions)` でセッション取得
 
 ## ✅ テスト戦略（Jest）
 
