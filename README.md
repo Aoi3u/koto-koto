@@ -245,6 +245,14 @@ npx prisma migrate dev --name init
 - POST: 保存対象フィールド（例）`wpm`, `accuracy`, `keystrokes`, `correctKeystrokes?`, `elapsedTime`, `difficulty` → `201`
 - GET: 自分の履歴を新しい順に最大50件返却 → `200`
 
+## 🏆 Rankings API
+
+- Endpoint: `/api/rankings` (GET)
+- Auth: 不要（読み取り専用）
+- Query: `timeframe=all|week|month`（デフォルト all）, `limit`（デフォルト50, 最大200）
+- Sort: `wpm` desc, tie-breaker `accuracy` desc
+- Response: 配列（user表示名, wpm, accuracy, rank, createdAt）
+
 ## 🔐 Authentication (NextAuth)
 
 NextAuth v4 with Prisma adapter for JWT-based authentication.
