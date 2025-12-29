@@ -8,6 +8,15 @@ export const authOptions: NextAuthOptions = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   adapter: PrismaAdapter(prisma as any),
   session: { strategy: 'jwt' },
+  callbacks: {
+    session: async ({ session, token }) => {
+      if (session.user) {
+        (session.user as { id?: string }).id =
+          (token.sub as string | undefined) ?? (token.id as string | undefined);
+      }
+      return session;
+    },
+  },
   providers: [
     CredentialsProvider({
       name: 'Credentials',
