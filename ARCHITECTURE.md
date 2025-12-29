@@ -443,6 +443,13 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
 - ビジネスデータ（`GameResult`）は `User` に紐付け（FK, CASCADE）
 - 認証が必要なエンドポイントでは `getServerSession(authOptions)` でセッション取得
 
+#### Game Results API
+
+- エンドポイント: `/api/game-results`（GET/POST）
+- 認証: NextAuth JWT。未ログインは 401
+- POST: 必須 `wpm/accuracy/keystrokes/elapsedTime`、任意 `correctKeystrokes/difficulty`。`GameResult` に保存（降順ソートのため `createdAt` index を利用）
+- GET: 自分の履歴を新しい順で最大50件返却
+
 ## ✅ テスト戦略（Jest）
 
 - **テスト基盤**: Next.js 16 対応の `next/jest` + `jsdom`。セットアップは [jest.config.ts](jest.config.ts) / [jest.setup.ts](jest.setup.ts)。

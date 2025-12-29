@@ -238,6 +238,13 @@ First-time schema apply (if needed):
 npx prisma migrate dev --name init
 ```
 
+## 🎮 Game Results API
+
+- Endpoint: `/api/game-results` (GET, POST)
+- Auth: NextAuth JWT（未ログインは 401）
+- POST: 保存対象フィールド（例）`wpm`, `accuracy`, `keystrokes`, `correctKeystrokes?`, `elapsedTime`, `difficulty` → `201`
+- GET: 自分の履歴を新しい順に最大50件返却 → `200`
+
 ## 🔐 Authentication (NextAuth)
 
 NextAuth v4 with Prisma adapter for JWT-based authentication.
