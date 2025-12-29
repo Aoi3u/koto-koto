@@ -253,6 +253,12 @@ npx prisma migrate dev --name init
 - Sort: `wpm` desc, tie-breaker `accuracy` desc
 - Response: 配列（user表示名, wpm, accuracy, rank, createdAt）
 
+## 🖥️ Frontend (Auth / Results)
+
+- `/auth`: Credentials での登録/ログインフォーム、サインイン状態表示・サインアウト。
+- `/results`: タブ切替で「My History」（最新50件の自己成績）と「Rankings」（timeframe/limit 切替可）を表示。
+- ゲーム終了時にサインイン済みなら結果を自動保存。未ログイン時はトーストで警告し保存しない。
+
 ## 🔐 Authentication (NextAuth)
 
 NextAuth v4 with Prisma adapter for JWT-based authentication.

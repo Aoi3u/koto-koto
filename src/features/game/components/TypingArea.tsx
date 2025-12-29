@@ -79,15 +79,21 @@ export default function TypingArea({
         className={`relative flex flex-wrap items-center justify-center text-center ${kanaSizeClass} ${kanaLineHeightClass} font-normal ${kanaMaxWidthClass} ${kanaTrackingClass}`}
       >
         {/* Render fully matched Kana (Past - Dimmed) */}
-        <span className="text-white/30 transition-colors duration-200">{matchedKana}</span>
+        <span
+          className="transition-colors duration-200"
+          style={{ color: seasonalTheme.colors.text, opacity: 0.3 }}
+        >
+          {matchedKana}
+        </span>
 
         {/* Render remaining target */}
         {remainingTarget && (
           <>
             {/* Current Character (Same color as future characters) */}
             <motion.span
-              className="text-zinc-300 relative mx-px font-bold transition-all duration-1000"
+              className="relative mx-px font-bold transition-all duration-1000"
               style={{
+                color: seasonalTheme.adjustedColors.primary,
                 textShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}`,
               }}
               animate={{

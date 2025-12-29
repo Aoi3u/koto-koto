@@ -458,6 +458,12 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
 - ソート: `wpm` DESC, 同値は `accuracy` DESC, 最後に `createdAt` DESC
 - レスポンス: user表示名（`name` が無ければ `email`）、`wpm`, `accuracy`, `rank`, `createdAt`
 
+#### Frontend (Auth / Results)
+
+- `/auth`: Credentials で登録/ログイン。成功後はセッション反映・サインアウトも可能。
+- `/results`: タブ切替 UI。My History は `/api/game-results` を表示（最新50件）。Rankings は `/api/rankings` を timeframe/limit パラメータ付きで表示。
+- ゲーム終了時: サインイン済みなら自動で `/api/game-results` に保存。未ログインなら保存せずトースト警告。
+
 ## ✅ テスト戦略（Jest）
 
 - **テスト基盤**: Next.js 16 対応の `next/jest` + `jsdom`。セットアップは [jest.config.ts](jest.config.ts) / [jest.setup.ts](jest.setup.ts)。
