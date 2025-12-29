@@ -237,3 +237,13 @@ First-time schema apply (if needed):
 ```bash
 npx prisma migrate dev --name init
 ```
+
+## 🔐 Authentication (NextAuth)
+
+NextAuth v4 with Prisma adapter for JWT-based authentication.
+
+- Route: `/api/auth/*` (NextAuth API endpoints)
+- Strategy: JWT with session management
+- Provider: Credentials (bcrypt password hashing)
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for integration details.
