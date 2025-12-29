@@ -1,0 +1,2 @@
+# Generated manually to align with Prisma migrations
+provider = "postgresql"

@@ -214,3 +214,43 @@ Automated performance benchmarking with strict quality gates:
 
 - [.github/workflows/ci.yml](.github/workflows/ci.yml) - GitHub Actions workflow
 - [lighthouserc.json](lighthouserc.json) - Lighthouse CI configuration
+
+## 🗄️ Database (Prisma + Supabase)
+
+Minimal setup only. See [ARCHITECTURE.md](ARCHITECTURE.md) for details.
+
+- URLs are configured in [prisma.config.ts](prisma.config.ts) (Prisma 7). Do not put `url`/`directUrl` in schema.
+- Use Supabase Session Pooler host (`…pooler.supabase.com:5432`) if direct host is IPv6-only.
+
+Quick start
+
+```bash
+cp .env.local.example .env.local
+# Fill: DATABASE_URL / DIRECT_URL / NEXTAUTH_SECRET
+set -a && source .env.local && set +a
+npx prisma migrate status
+npx prisma generate
+```
+
+First-time schema apply (if needed):
+
+```bash
+npx prisma migrate dev --name init
+```
+
+## 🎮 Game Results API
+
+- Endpoint: `/api/game-results` (GET, POST)
+- Auth: NextAuth JWT（未ログインは 401）
+- POST: 保存対象フィールド（例）`wpm`, `accuracy`, `keystrokes`, `correctKeystrokes?`, `elapsedTime`, `difficulty` → `201`
+- GET: 自分の履歴を新しい順に最大50件返却 → `200`
+
+## 🔐 Authentication (NextAuth)
+
+NextAuth v4 with Prisma adapter for JWT-based authentication.
+
+- Route: `/api/auth/*` (NextAuth API endpoints)
+- Strategy: JWT with session management
+- Provider: Credentials (bcrypt password hashing)
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for integration details.

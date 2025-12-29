@@ -75,6 +75,15 @@ src/
     └── useDeviceType.ts    # デバイスタイプ検出フック（分離済み）
 ```
 
+```
+prisma/
+├── schema.prisma
+└── migrations/
+        └── 20251230000000_init/
+                └── migration.sql
+prisma.config.ts
+```
+
 ## 🎯 設計原則
 
 ### 1. 単一責任の原則 (SRP)
@@ -373,6 +382,73 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
 - **ユーティリティ**: camelCase (`formatters.ts`)
 - **定数**: UPPER_SNAKE_CASE (`SEASONAL_THEMES`)
 - **型**: PascalCase (`SeasonalTheme`)
+
+## 🗄️ データ永続化 (Prisma + Supabase)
+
+### 概要
+
+- ORマッパー: Prisma 7（クライアント生成は `src/generated/prisma`）
+- DB: Supabase PostgreSQL（Session Pooler 推奨: `…pooler.supabase.com:5432`）
+- 接続URL管理: [prisma.config.ts](prisma.config.ts)（schema には `url`/`directUrl` を書かない）
+
+### スキーマ構成
+
+- `User` … 認証ユーザー（NextAuth想定）。`Account`/`Session` と1対多
+- `Account` … プロバイダアカウント（`provider + providerAccountId`ユニーク）
+- `Session` … セッション（`sessionToken`ユニーク）
+- `VerificationToken` … メール等の検証トークン
+- `GameResult` … ゲーム結果（WPM, accuracy 等、`User` 外部キー、`onDelete: CASCADE`）
+
+定義は [prisma/schema.prisma](prisma/schema.prisma) を参照。
+
+### マイグレーション戦略
+
+1. 通常運用（Session Pooler / IPv4 到達可）- `.env.local` で pooler ホスト:5432 を指定 - `npx prisma migrate dev --name <name>` → `npx prisma generate`
+
+2. フォールバック（Transaction Pooler 等でハングする場合）- `npx prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > prisma/init.sql` - `psql "$DATABASE_URL" -f prisma/init.sql` - 必要に応じて `_prisma_migrations.checksum` を生成物と同期（あるいは `prisma migrate resolve`）
+
+初期マイグレーションは [prisma/migrations/20251230000000_init/migration.sql](prisma/migrations/20251230000000_init/migration.sql) として保存。
+
+### 注意点（Prisma 7）
+
+- 接続URLは **schema ではなく** [prisma.config.ts](prisma.config.ts) で管理
+- `db.<project>.supabase.co:5432` が IPv6 のみ解決される環境では P1001 の可能性 → IPv4 を持つ **Session Pooler** を使用
+
+### アプリ連携
+
+#### NextAuth 統合
+
+- **ライブラリ**: NextAuth v4.24.13 + @auth/prisma-adapter v2.9.3
+- **認証戦略**: JWT（デフォルト）
+- **プロバイダ**: Credentials（bcryptjs でパスワードハッシュ）
+- **ルート**: [src/app/api/auth/[...nextauth]/route.ts](src/app/api/auth/%5B...nextauth%5D/route.ts)
+- **設定**: [src/lib/auth.ts](src/lib/auth.ts)（authOptions エクスポート）
+- **PrismaClient**: [src/lib/prisma.ts](src/lib/prisma.ts)（シングルトン、@prisma/adapter-pg + pg.Pool 使用）
+
+**技術的注意点**:
+
+- Prisma 7 で生成されるクライアント型と NextAuth v4 の PrismaAdapter に型互換性がないため、`as any` キャストが必要（ESLint無効化コメント付き）
+- 将来的に NextAuth v5 (Auth.js) への移行で解消される可能性あり
+
+**利用するモデル**:
+
+- `User` … 認証ユーザー（email, hashedPassword）
+- `Account` … プロバイダアカウント（OAuth用、現在はCredentialsのみ）
+- `Session` … セッショントークン管理
+- `VerificationToken` … メール検証等
+
+#### ビジネスロジック
+
+- Next.js サーバー側（Server Actions/Route Handlers）から PrismaClient を使用
+- ビジネスデータ（`GameResult`）は `User` に紐付け（FK, CASCADE）
+- 認証が必要なエンドポイントでは `getServerSession(authOptions)` でセッション取得
+
+#### Game Results API
+
+- エンドポイント: `/api/game-results`（GET/POST）
+- 認証: NextAuth JWT。未ログインは 401
+- POST: 必須 `wpm/accuracy/keystrokes/elapsedTime`、任意 `correctKeystrokes/difficulty`。`GameResult` に保存（降順ソートのため `createdAt` index を利用）
+- GET: 自分の履歴を新しい順で最大50件返却
 
 ## ✅ テスト戦略（Jest）
 

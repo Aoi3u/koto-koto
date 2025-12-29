@@ -19,7 +19,15 @@ const customJestConfig = {
       lines: 70,
     },
   },
-  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/app/**', '!src/**/index.{ts,tsx}', '!**/*.d.ts'],
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/app/**',
+    '!src/**/index.{ts,tsx}',
+    '!**/*.d.ts',
+    // Infra-only files are exercised via integration, not unit tests
+    '!src/lib/prisma.ts',
+    '!src/lib/auth.ts',
+  ],
 };
 
 export default createJestConfig(customJestConfig);
