@@ -75,6 +75,15 @@ src/
     └── useDeviceType.ts    # デバイスタイプ検出フック（分離済み）
 ```
 
+```
+prisma/
+├── schema.prisma
+└── migrations/
+        └── 20251230000000_init/
+                └── migration.sql
+prisma.config.ts
+```
+
 ## 🎯 設計原則
 
 ### 1. 単一責任の原則 (SRP)
@@ -373,6 +382,43 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
 - **ユーティリティ**: camelCase (`formatters.ts`)
 - **定数**: UPPER_SNAKE_CASE (`SEASONAL_THEMES`)
 - **型**: PascalCase (`SeasonalTheme`)
+
+## 🗄️ データ永続化 (Prisma + Supabase)
+
+### 概要
+
+- ORマッパー: Prisma 7（クライアント生成は `src/generated/prisma`）
+- DB: Supabase PostgreSQL（Session Pooler 推奨: `…pooler.supabase.com:5432`）
+- 接続URL管理: [prisma.config.ts](prisma.config.ts)（schema には `url`/`directUrl` を書かない）
+
+### スキーマ構成
+
+- `User` … 認証ユーザー（NextAuth想定）。`Account`/`Session` と1対多
+- `Account` … プロバイダアカウント（`provider + providerAccountId`ユニーク）
+- `Session` … セッション（`sessionToken`ユニーク）
+- `VerificationToken` … メール等の検証トークン
+- `GameResult` … ゲーム結果（WPM, accuracy 等、`User` 外部キー、`onDelete: CASCADE`）
+
+定義は [prisma/schema.prisma](prisma/schema.prisma) を参照。
+
+### マイグレーション戦略
+
+1. 通常運用（Session Pooler / IPv4 到達可）- `.env.local` で pooler ホスト:5432 を指定 - `npx prisma migrate dev --name <name>` → `npx prisma generate`
+
+2. フォールバック（Transaction Pooler 等でハングする場合）- `npx prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > prisma/init.sql` - `psql "$DATABASE_URL" -f prisma/init.sql` - 必要に応じて `_prisma_migrations.checksum` を生成物と同期（あるいは `prisma migrate resolve`）
+
+初期マイグレーションは [prisma/migrations/20251230000000_init/migration.sql](prisma/migrations/20251230000000_init/migration.sql) として保存。
+
+### 注意点（Prisma 7）
+
+- 接続URLは **schema ではなく** [prisma.config.ts](prisma.config.ts) で管理
+- `db.<project>.supabase.co:5432` が IPv6 のみ解決される環境では P1001 の可能性 → IPv4 を持つ **Session Pooler** を使用
+
+### アプリ連携（予定/方針）
+
+- Next.js サーバー側（Server Actions/Route Handlers）から PrismaClient を使用
+- 認証（NextAuth）では `User/Account/Session/VerificationToken` モデルを Adapter で利用
+- ビジネスデータ（`GameResult`）は `User` に紐付け（FK, CASCADE）
 
 ## ✅ テスト戦略（Jest）
 
