@@ -450,6 +450,14 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
 - POST: 必須 `wpm/accuracy/keystrokes/elapsedTime`、任意 `correctKeystrokes/difficulty`。`GameResult` に保存（降順ソートのため `createdAt` index を利用）
 - GET: 自分の履歴を新しい順で最大50件返却
 
+#### Rankings API
+
+- エンドポイント: `/api/rankings`（GET）
+- 認証: 不要（読み取り専用）
+- クエリ: `timeframe=all|week|month`（デフォルト all）, `limit`（デフォルト50, 最大200）
+- ソート: `wpm` DESC, 同値は `accuracy` DESC, 最後に `createdAt` DESC
+- レスポンス: user表示名（`name` が無ければ `email`）、`wpm`, `accuracy`, `rank`, `createdAt`
+
 ## ✅ テスト戦略（Jest）
 
 - **テスト基盤**: Next.js 16 対応の `next/jest` + `jsdom`。セットアップは [jest.config.ts](jest.config.ts) / [jest.setup.ts](jest.setup.ts)。
