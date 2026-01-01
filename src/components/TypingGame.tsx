@@ -69,21 +69,33 @@ function TypingGameInner() {
       difficulty: 'normal',
     };
 
+    // Create AbortController to cancel request if component unmounts
+    const abortController = new AbortController();
+
     const send = async () => {
       try {
         const res = await fetch('/api/game-results', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
+          signal: abortController.signal,
         });
         if (!res.ok) throw new Error('save failed');
         addToast('Result saved', 'success');
-      } catch {
-        addToast('Failed to save result', 'error');
+      } catch (error) {
+        // Don't show error toast if the request was aborted (component unmounted)
+        if (error instanceof Error && error.name !== 'AbortError') {
+          addToast('Failed to save result', 'error');
+        }
       }
     };
 
     send();
+
+    // Cleanup: abort the request if component unmounts
+    return () => {
+      abortController.abort();
+    };
   }, [gameState, session?.user?.id, status, elapsedTime, correctKeyCount, errorCount, addToast]);
 
   return (
