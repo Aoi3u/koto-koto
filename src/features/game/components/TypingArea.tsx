@@ -78,10 +78,10 @@ export default function TypingArea({
       <div
         className={`relative flex flex-wrap items-center justify-center text-center ${kanaSizeClass} ${kanaLineHeightClass} font-normal ${kanaMaxWidthClass} ${kanaTrackingClass}`}
       >
-        {/* Render fully matched Kana (Past - Dimmed) */}
+        {/* Render fully matched Kana (Past - Clear) */}
         <span
-          className="transition-colors duration-200"
-          style={{ color: seasonalTheme.colors.text, opacity: 0.3 }}
+          className="transition-colors duration-200 font-medium"
+          style={{ color: seasonalTheme.colors.text }}
         >
           {matchedKana}
         </span>
@@ -89,7 +89,7 @@ export default function TypingArea({
         {/* Render remaining target */}
         {remainingTarget && (
           <>
-            {/* Current Character (Same color as future characters) */}
+            {/* Current Character (Highlighted) */}
             <motion.span
               className="relative mx-px font-bold transition-all duration-1000"
               style={{
@@ -122,8 +122,13 @@ export default function TypingArea({
               />
             </motion.span>
 
-            {/* Future Characters (Crystal Clear) */}
-            <span className="text-zinc-300 font-medium">{remainingTarget.slice(1)}</span>
+            {/* Future Characters (Dimmed) */}
+            <span
+              className="transition-colors duration-200"
+              style={{ color: seasonalTheme.colors.text, opacity: 0.5 }}
+            >
+              {remainingTarget.slice(1)}
+            </span>
           </>
         )}
       </div>
