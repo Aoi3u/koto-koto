@@ -1,6 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
 import { render, act } from '@testing-library/react';
 import useTypingEngine from '../features/game/hooks/useTypingEngine';
+import { SoundProvider } from '../contexts/SoundContext';
 
 type EngineState = ReturnType<typeof useTypingEngine>;
 type HarnessRef = {
@@ -42,7 +43,11 @@ describe('useTypingEngine', () => {
 
   test('prefix acceptance: partial correct input kept as pending', () => {
     const ref = React.createRef<HarnessRef>();
-    render(<Harness target="か" ref={ref} />);
+    render(
+      <SoundProvider>
+        <Harness target="か" ref={ref} />
+      </SoundProvider>
+    );
 
     let r1!: { isWordComplete: boolean } | undefined;
     act(() => {
@@ -58,7 +63,11 @@ describe('useTypingEngine', () => {
 
   test('state transitions and combos on correct typing', () => {
     const ref = React.createRef<HarnessRef>();
-    render(<Harness target="かな" ref={ref} />);
+    render(
+      <SoundProvider>
+        <Harness target="かな" ref={ref} />
+      </SoundProvider>
+    );
 
     // Type 'ka'
     act(() => ref.current!.handleInput('k'));
@@ -82,16 +91,25 @@ describe('useTypingEngine', () => {
 
   test('isWordComplete becomes true on finishing target', () => {
     const ref = React.createRef<HarnessRef>();
-    render(<Harness target="か" ref={ref} />);
+    render(
+      <SoundProvider>
+        <Harness target="しゅ" ref={ref} />
+      </SoundProvider>
+    );
 
     let r!: { isWordComplete: boolean } | undefined;
     act(() => {
-      r = ref.current!.handleInput('k');
+      r = ref.current!.handleInput('s');
     });
     expect(r).toBeDefined();
     expect(r!.isWordComplete).toBe(false);
     act(() => {
-      r = ref.current!.handleInput('a');
+      r = ref.current!.handleInput('y');
+    });
+    expect(r).toBeDefined();
+    expect(r!.isWordComplete).toBe(false);
+    act(() => {
+      r = ref.current!.handleInput('u');
     });
     expect(r).toBeDefined();
     expect(r!.isWordComplete).toBe(true);
@@ -99,7 +117,11 @@ describe('useTypingEngine', () => {
 
   test('error increments and shake toggles on wrong key', () => {
     const ref = React.createRef<HarnessRef>();
-    render(<Harness target="か" ref={ref} />);
+    render(
+      <SoundProvider>
+        <Harness target="か" ref={ref} />
+      </SoundProvider>
+    );
 
     let r!: { isWordComplete: boolean } | undefined;
     act(() => {
