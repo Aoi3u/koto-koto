@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { checkRomaji, isValidPrefix } from '../../../lib/romaji';
-import useSound from './useSound';
+import { useSoundContext } from '../../../contexts/SoundContext';
 
 export default function useTypingEngine() {
   const [matchedRomaji, setMatchedRomaji] = useState('');
@@ -20,14 +20,7 @@ export default function useTypingEngine() {
   const [currentCombo, setCurrentCombo] = useState(0);
   const [maxCombo, setMaxCombo] = useState(0);
 
-  const {
-    playKeySound,
-    currentProfile,
-    changeProfile,
-    availableProfiles,
-    hasAudioSupport,
-    isProfileLoading,
-  } = useSound();
+  const { playKeySound } = useSoundContext();
 
   const resetEngine = useCallback(() => {
     setMatchedRomaji('');
@@ -147,10 +140,5 @@ export default function useTypingEngine() {
     handleInput,
     resetEngine,
     setTarget,
-    currentProfile,
-    changeProfile,
-    availableProfiles,
-    hasAudioSupport,
-    isProfileLoading,
   };
 }

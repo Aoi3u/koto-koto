@@ -51,3 +51,11 @@ export function calculateAccuracy(correctKeys: number, totalKeys: number): numbe
   if (totalKeys === 0) return 0;
   return Math.round((correctKeys / totalKeys) * 100);
 }
+/**
+ * Calculates Zen Score (balanced score of WPM and Accuracy)
+ * Formula: (WPM × Accuracy) ÷ 100
+ */
+export function calculateZenScore(wpm: number, accuracy: number): number {
+  const zenScore = wpm * (accuracy / 100);
+  return Math.round(zenScore * 100) / 100;
+}

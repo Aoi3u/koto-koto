@@ -36,6 +36,7 @@ export interface CombinedTheme extends SeasonalTheme {
   adjustedColors: {
     background: string;
     primary: string;
+    secondary: string;
     glow: string;
   };
 }
@@ -194,6 +195,10 @@ export function getCombinedTheme(): CombinedTheme {
       primary: adjustColorBrightness(
         seasonalTheme.colors.primary,
         timeTheme.atmosphere.brightness * 1.2 // Slight boost for visibility
+      ),
+      secondary: adjustColorBrightness(
+        seasonalTheme.colors.secondary,
+        timeTheme.atmosphere.brightness * 1.1
       ),
       glow: adjustGlow(
         seasonalTheme.colors.glow,

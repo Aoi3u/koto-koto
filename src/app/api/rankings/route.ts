@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { calculateRank } from '@/features/result/utils/rankLogic';
+import { calculateZenScore } from '@/lib/formatters';
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 200;
@@ -16,15 +18,23 @@ const parseLimit = (value: string | null) => {
 const parseTimeframe = (value: string | null) => {
   if (!value) return 'all' as const;
   const normalized = value.toLowerCase();
-  if (normalized === 'all' || normalized === 'week' || normalized === 'month') return normalized;
+  if (
+    normalized === 'all' ||
+    normalized === 'week' ||
+    normalized === 'month' ||
+    normalized === 'day'
+  )
+    return normalized as 'all' | 'week' | 'month' | 'day';
   return null;
 };
 
-const timeframeToDate = (timeframe: 'all' | 'week' | 'month') => {
+const timeframeToDate = (timeframe: 'all' | 'week' | 'month' | 'day') => {
   if (timeframe === 'all') return null;
-  const days = timeframe === 'week' ? 7 : 30;
   const now = Date.now();
-  return new Date(now - days * 24 * 60 * 60 * 1000);
+  if (timeframe === 'day') return new Date(now - 24 * 60 * 60 * 1000);
+  if (timeframe === 'week') return new Date(now - 7 * 24 * 60 * 60 * 1000);
+  if (timeframe === 'month') return new Date(now - 30 * 24 * 60 * 60 * 1000);
+  return null;
 };
 
 export const GET = async (req: Request) => {
@@ -40,7 +50,6 @@ export const GET = async (req: Request) => {
 
   const results = await prisma.gameResult.findMany({
     where: gte ? { createdAt: { gte } } : undefined,
-    orderBy: [{ wordsPerMinute: 'desc' }, { accuracy: 'desc' }, { createdAt: 'desc' }],
     take: limit,
     select: {
       wordsPerMinute: true,
@@ -50,13 +59,28 @@ export const GET = async (req: Request) => {
     },
   });
 
-  const payload = results.map((result, index) => ({
-    rank: index + 1,
-    wpm: result.wordsPerMinute,
-    accuracy: result.accuracy,
-    createdAt: result.createdAt,
-    user: result.user?.name ?? result.user?.email ?? 'Anonymous',
+  // Calculate Zen Score and sort
+  const withZenScore = results.map((result) => ({
+    ...result,
+    zenScore: calculateZenScore(result.wordsPerMinute, result.accuracy),
   }));
+
+  withZenScore.sort((a, b) => b.zenScore - a.zenScore);
+
+  const payload = withZenScore.map((result, index) => {
+    const rankResult = calculateRank(result.wordsPerMinute, result.accuracy);
+    return {
+      rank: index + 1,
+      wpm: result.wordsPerMinute,
+      accuracy: result.accuracy,
+      createdAt: result.createdAt,
+      zenScore: result.zenScore,
+      grade: rankResult.grade,
+      title: rankResult.title,
+      color: rankResult.color,
+      user: result.user?.name ?? result.user?.email ?? 'Anonymous',
+    };
+  });
 
   return NextResponse.json({ results: payload }, { status: 200 });
 };

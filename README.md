@@ -6,259 +6,76 @@
 
 ## Overview
 
-**Koto-Koto** is a minimalist, zen-inspired Japanese typing game designed to induce a state of flow. Unlike frantic arcade typing games, Koto-Koto focuses on rhythm, aesthetics, and the beauty of the Japanese language.
+A minimalist, zen-inspired Japanese typing game designed to induce a state of flow. Built with Next.js 16, TypeScript, and Framer Motion.
 
-Built with **Next.js 16**, **TypeScript**, and **Framer Motion**, it ships a custom typing engine that handles the nuances of Romaji-to-Kana conversion (e.g., `si` vs `shi`, permissive `n` logic) and a season × time-of-day atmosphere system.
+## ✨ Key Features
 
-## ✨ Features
-
-- **Dynamic Seasonal Atmosphere** (花鳥風月 - Kacho-Fugetsu): Real-time visual themes based on Japan's 4 seasons with seasonal particle animations (🌸💧🍂❄️).
-- **Time-of-Day System** (移ろい - Utsuroi): Visual atmosphere changes throughout the day (Morning/Day/Sunset/Night) with brightness and saturation adjustments.
-- **Zen Aesthetics**: A Deep Zen Dark theme with dynamic color adjustment based on time. Use of Mincho typography for a literary feel.
-- **Intelligent Typing Engine**:
-  - **Trie-based Romaji Matcher**: Longest-match DFA/Trie that covers small-tsu, ん の保留/確定、拗音、F/ヴ系列、揺らぎ (`shi/si/ci`, `chi/ti`, `tsu/tu`, `ku/cu/qu`).
-  - **Flexible Romaji**: Supports multiple input styles (Hepburn, Kunrei-shiki). Accepts `si`/`shi`, `tu`/`tsu`, `c`/`k`, etc.
-  - **N-Permisiveness**: gracefully handles the tricky `n` vs `nn` logic with position-aware resolution.
-  - **UI Hints**: `getNextChars` exposes next valid keystrokes for visual guidance.
-- **Realistic Keyboard Sounds**:
-  - **13 Mechanical Switch Profiles**: Choose from authentic keyboard sounds including Cherry MX (Black, Blue, Brown), Topre, Holy Panda, Gateron (Alpaca, Black Ink, Red Ink), Cream, Alps (Blue Alps, Box Navy), Buckling Spring, and Turquoise.
-  - **Sound Switcher UI**: Easy-to-use dropdown menu (bottom-left corner) to switch between different keyboard sound profiles.
-  - **Persistent Settings**: Your preferred sound profile is saved to localStorage and automatically restored.
-  - **Optimized Performance**: Pre-loaded audio buffers with Web Audio API for low-latency, realistic sound playback.
-- **Strict Grading System**:
-  - **Ranks from Seed → SSS**: Titles follow the in-game ladder (Seed → Sprout → Wind in Pines … → Nirvana) with S-ranks gated behind accuracy ≥ 80%.
-  - **Detailed Stats**: Tracks WPM, Accuracy, KPM, Max Combo, keystrokes, and elapsed time, plus a copy-to-clipboard share button.
-- **Modern Tech Stack**: Fully responsive, strictly typed, and built for performance.
-- **Code Quality**: ESLint + Prettier integrated for consistent linting/formatting.
+- **Dynamic Seasonal Atmosphere**: Real-time visual themes based on Japan's 4 seasons with particle animations
+- **Intelligent Typing Engine**: Trie-based Romaji-to-Kana converter with flexible input styles (`si`/`shi`, `tu`/`tsu`, etc.)
+- **13 Keyboard Sound Profiles**: Authentic mechanical switch sounds (Cherry MX, Topre, Holy Panda, Gateron, Alps, etc.)
+- **User Authentication**: Google OAuth 2.0 and email/password login with NextAuth.js
+- **Global Rankings & History**: Period-based leaderboard with Zen Score (WPM × Accuracy ÷ 100)
+- **Strict Grading System**: Ranks from Seed → SSS with accuracy-gated S-ranks
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) via the PostCSS plugin
-- **Animation**: [Framer Motion](https://www.framer.com/motion/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Lint/Format**: ESLint (with Next.js rules) + Prettier
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **Animation**: Framer Motion
+- **Authentication**: NextAuth.js v4
+- **Database**: Prisma 7 + Supabase PostgreSQL
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18.18+ (Next.js 16 requirement)
-- npm
+Node.js 18.18+ and npm
 
-### Installation
+### Setup
 
-1.  Clone the repository:
+```bash
+# Clone repository
+git clone https://github.com/Aoi3u/koto-koto.git
+cd koto-koto
 
-    ```bash
-    git clone https://github.com/Aoi3u/koto-koto.git
-    cd koto-koto
-    ```
+# Install dependencies
+npm install
 
-2.  Install dependencies:
+# Setup environment variables
+cp .env.local.example .env.local
+# Fill in: DATABASE_URL, DIRECT_URL, NEXTAUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 
-    ```bash
-    npm install
-    ```
+# Generate Prisma client
+npx prisma generate
 
-3.  Run the development server:
-
-    ```bash
-    npm run dev
-    ```
-
-4.  Open [http://localhost:3000](http://localhost:3000) with your browser.
-
-### Linting & Formatting
-
-- Lint: `npm run lint`
-- Lint (auto-fix): `npm run lint:fix`
-- Format: `npm run format`
-- Format check (no write): `npm run format:check`
-
-## 📂 Project Structure
-
-The project follows a **Feature-based Architecture** with **Dynamic Atmosphere System** (Season × Time-of-Day).
-
-```
-src/
-├── app/                 # Next.js App Router
-├── components/          # Shared aesthetic components (SeasonalParticles, MobileBlocker, SoundSwitcher)
-├── config/              # Centralized constants
-│   ├── gameConfig.ts    # Scoring thresholds, total sentences
-│   ├── theme.ts         # Color palettes, fonts
-│   ├── seasons.ts       # 4-season atmosphere system
-│   └── timeOfDay.ts     # 4-time-of-day system
-├── contexts/            # React Context (State Management)
-│   └── SeasonalContext.tsx  # Seasonal + Time-of-day theme provider
-├── data/                # Sentence lists and content
-│   ├── sentences.ts     # Backward-compatible re-export
-│   └── sentences/       # Organized by author
-│       ├── types.ts           # Sentence type definitions
-│       ├── natsume-soseki.ts  # Natsume Soseki sentences
-│       ├── dazai-osamu.ts     # Dazai Osamu sentences
-│       ├── miyazawa-kenji.ts  # Miyazawa Kenji sentences
-│       ├── akutagawa-ryunosuke.ts  # Akutagawa sentences
-│       ├── modern-authors.ts  # Modern authors
-│       ├── poetry.ts          # Poetry and haiku
-│       ├── classics.ts        # Classical literature
-│       └── index.ts           # Combined exports
-├── features/            # Feature-based modules
-│   ├── game/            # Core Game Logic
-│   │   ├── components/  # TitleScreen, GameHeader, TypingArea
-│   │   └── hooks/       # Typing and sound management
-│   │       ├── useGameController.ts   # Game orchestration
-│   │       ├── useGameSession.ts      # Session state
-│   │       ├── useTypingEngine.ts     # Typing logic
-│   │       ├── useSound.ts            # Sound composition hook
-│   │       ├── useAudioContext.ts     # AudioContext management
-│   │       ├── useSoundProfile.ts     # Profile loading
-│   │       ├── useKeySound.ts         # Sound playback
-│   │       └── sound-profiles.ts      # Profile constants
-│   └── result/          # Result Screen Logic
-│       ├── components/  # ResultScreen
-│       └── utils/       # Rank calculation logic
-├── lib/                 # Core utilities
-│   ├── romaji.ts        # Public API delegating to trie matcher
-│   ├── romaji-trie.ts   # Trie/DFA romaji-to-kana engine
-│   ├── formatters.ts    # Time and score formatters
-│   ├── device-detection.ts  # Mobile device detection logic
-│   └── constants/
-│       └── kana-map.ts  # Kana-to-Romaji mappings
-├── __tests__/           # Jest unit tests (core logic, hooks)
-├── hooks/               # Custom hooks
-│   ├── useSeason.ts     # Season + Time-of-day detection
-│   └── useDeviceType.ts # Device type detection
-└── public/audio/        # 13 keyboard profiles (press variants only)
+# Run development server
+npm run dev
 ```
 
-## 🎨 Design Philosophy
+Open [http://localhost:3000](http://localhost:3000)
 
-- **Visuals**: High contrast text with glowing carets against a noisy, deep-dark background.
-- **Typography**: `Zen Old Mincho` for both UI and body (with sans-serif fallback).
-- **Feedback**: Subtle ripples and camera shakes (optional) provide physical feedback without breaking focus.
+## 🧪 Development
+
+```bash
+npm run lint       # ESLint check
+npm run format     # Prettier format
+npm test           # Run Jest tests
+npm run test:cov   # Test with coverage
+```
+
+## 📖 Documentation
+
+For detailed technical documentation, see:
+
+- [ARCHITECTURE.md](ARCHITECTURE.md) - System architecture and design patterns
+- [Project Structure](ARCHITECTURE.md#プロジェクト構造) - Directory organization
+- [API Documentation](ARCHITECTURE.md#api-endpoints) - API endpoints reference
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please submit Pull Requests.
 
-## 🧪 Testing
+## 📄 License
 
-Koto-Koto ships a Jest setup tailored for Next.js 16 and focuses on high-density tests for the core typing logic.
-
-- Framework: Jest + Testing Library (jsdom)
-- Config: see [jest.config.ts](jest.config.ts) and [jest.setup.ts](jest.setup.ts)
-- Tests live under [src/**tests**/](src/__tests__)
-
-### Commands
-
-```bash
-npm test          # run once
-npm run test:watch
-npm run test:cov  # with coverage report
-```
-
-### Coverage thresholds
-
-- lib: lines ≥ 85% (e.g. [src/lib/romaji.ts](src/lib/romaji.ts), [src/lib/romaji-trie.ts](src/lib/romaji-trie.ts), [src/lib/formatters.ts](src/lib/formatters.ts))
-- hooks (focused): lines ≥ 70% for [src/features/game/hooks/useTypingEngine.ts](src/features/game/hooks/useTypingEngine.ts)
-
-Note: jsdom environment lacks Web Audio API; `useSound` warns about AudioContext support during tests but does not affect behavior.
-
-## 🚀 CI/CD Pipeline
-
-### GitHub Actions Workflow
-
-Every push to `main` and pull request triggers automated quality checks:
-
-- **lint**: ESLint code quality check
-- **test**: Jest unit tests with coverage report
-- **build**: Next.js production build verification
-- **lighthouse**: Lighthouse CI performance monitoring
-
-### Performance Monitoring (Lighthouse CI)
-
-Automated performance benchmarking with strict quality gates:
-
-| Metric                   | Threshold | Level |
-| ------------------------ | --------- | ----- |
-| Performance              | ≥ 90      | error |
-| Accessibility            | ≥ 85      | warn  |
-| Best Practices           | ≥ 80      | warn  |
-| SEO                      | ≥ 80      | warn  |
-| First Contentful Paint   | ≤ 1500ms  | error |
-| Largest Contentful Paint | ≤ 2500ms  | error |
-| Cumulative Layout Shift  | ≤ 0.1     | error |
-| Speed Index              | ≤ 3000ms  | error |
-
-**Config Files:**
-
-- [.github/workflows/ci.yml](.github/workflows/ci.yml) - GitHub Actions workflow
-- [lighthouserc.json](lighthouserc.json) - Lighthouse CI configuration
-
-## 📚 Additional Resources
-
-- **Architecture Documentation**: See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed technical documentation
-- **Testing Strategy**: Comprehensive test coverage with Jest focusing on core typing logic
-- **Performance Standards**: Automated Lighthouse CI monitoring ensures consistent performance
-
-**Features:**
-
-- Automatic performance regression detection
-- PR comments with Lighthouse scores
-- Quality gate to prevent performance degradation
-- Local testing: `npx @lhci/cli@latest autorun`
-
-**Config Files:**
-
-- [.github/workflows/ci.yml](.github/workflows/ci.yml) - GitHub Actions workflow
-- [lighthouserc.json](lighthouserc.json) - Lighthouse CI configuration
-
-## 🗄️ Database (Prisma + Supabase)
-
-Minimal setup only. See [ARCHITECTURE.md](ARCHITECTURE.md) for details.
-
-- URLs are configured in [prisma.config.ts](prisma.config.ts) (Prisma 7). Do not put `url`/`directUrl` in schema.
-- Use Supabase Session Pooler host (`…pooler.supabase.com:5432`) if direct host is IPv6-only.
-
-Quick start
-
-```bash
-cp .env.local.example .env.local
-# Fill: DATABASE_URL / DIRECT_URL / NEXTAUTH_SECRET
-set -a && source .env.local && set +a
-npx prisma migrate status
-npx prisma generate
-```
-
-First-time schema apply (if needed):
-
-```bash
-npx prisma migrate dev --name init
-```
-
-## 🎮 Game Results API
-
-- Endpoint: `/api/game-results` (GET, POST)
-- Auth: NextAuth JWT（未ログインは 401）
-- POST: 保存対象フィールド（例）`wpm`, `accuracy`, `keystrokes`, `correctKeystrokes?`, `elapsedTime`, `difficulty` → `201`
-- GET: 自分の履歴を新しい順に最大50件返却 → `200`
-
-## 🏆 Rankings API
-
-- Endpoint: `/api/rankings` (GET)
-- Auth: 不要（読み取り専用）
-- Query: `timeframe=all|week|month`（デフォルト all）, `limit`（デフォルト50, 最大200）
-- Sort: `wpm` desc, tie-breaker `accuracy` desc
-- Response: 配列（user表示名, wpm, accuracy, rank, createdAt）
-
-## 🔐 Authentication (NextAuth)
-
-NextAuth v4 with Prisma adapter for JWT-based authentication.
-
-- Route: `/api/auth/*` (NextAuth API endpoints)
-- Strategy: JWT with session management
-- Provider: Credentials (bcrypt password hashing)
-
-See [ARCHITECTURE.md](ARCHITECTURE.md) for integration details.
+MIT

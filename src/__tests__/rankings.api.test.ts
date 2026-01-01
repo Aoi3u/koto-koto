@@ -87,7 +87,6 @@ describe('Rankings API', () => {
 
     expect(mockFindMany()).toHaveBeenCalledWith({
       where: undefined,
-      orderBy: [{ wordsPerMinute: 'desc' }, { accuracy: 'desc' }, { createdAt: 'desc' }],
       take: 50,
       select: {
         wordsPerMinute: true,

@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Zen_Old_Mincho } from 'next/font/google';
 import './globals.css';
 import MobileBlocker from '@/components/MobileBlocker';
+import Providers from '@/components/Providers';
+import AppHeader from '@/components/AppHeader';
 
 const zenOldMincho = Zen_Old_Mincho({
   weight: ['400', '500', '700', '900'],
@@ -27,7 +29,10 @@ export default function RootLayout({
         style={{ fontFamily: 'var(--font-zen-old-mincho, sans-serif)' }}
       >
         <MobileBlocker />
-        {children}
+        <Providers>
+          <AppHeader />
+          {children}
+        </Providers>
       </body>
     </html>
   );
