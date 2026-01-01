@@ -6,6 +6,42 @@ import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 
+/**
+ * Validates that required environment variables are set for authentication
+ * @throws Error if NEXTAUTH_SECRET is not configured
+ */
+function validateAuthEnv() {
+  if (!process.env.NEXTAUTH_SECRET) {
+    throw new Error(
+      'NEXTAUTH_SECRET is not configured. Please set NEXTAUTH_SECRET in your .env file.'
+    );
+  }
+}
+
+/**
+ * Check if Google OAuth is configured with required credentials
+ */
+function isGoogleOAuthConfigured(): boolean {
+  const hasClientId = !!process.env.GOOGLE_CLIENT_ID;
+  const hasClientSecret = !!process.env.GOOGLE_CLIENT_SECRET;
+
+  if (hasClientId !== hasClientSecret) {
+    console.warn(
+      'Google OAuth is not fully configured. Both GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set.'
+    );
+    return false;
+  }
+
+  if (!hasClientId) {
+    console.info(
+      'Google OAuth is not configured. Users will only be able to sign in with email/password.'
+    );
+    return false;
+  }
+
+  return true;
+}
+
 export const authOptions: NextAuthOptions = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   adapter: PrismaAdapter(prisma as any),
@@ -33,10 +69,15 @@ export const authOptions: NextAuthOptions = {
     },
   },
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
+    // Google OAuth provider - only included if credentials are configured
+    ...(isGoogleOAuthConfigured()
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+          }),
+        ]
+      : []),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -64,5 +105,8 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 };
+
+// Validate authentication configuration on module load
+validateAuthEnv();
 
 export default NextAuth(authOptions);
