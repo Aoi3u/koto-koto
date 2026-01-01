@@ -6,8 +6,19 @@ import pg from 'pg';
 // Ensure a single PrismaClient instance on the server
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClientType };
 
+let prismaInstance: PrismaClientType | null = null;
+
 // Lazily initialize Prisma to avoid build-time validation errors
-function createPrismaClient(): PrismaClientType {
+function getPrismaClient(): PrismaClientType {
+  if (prismaInstance) {
+    return prismaInstance;
+  }
+
+  if (globalForPrisma.prisma) {
+    prismaInstance = globalForPrisma.prisma;
+    return prismaInstance;
+  }
+
   // Validate DATABASE_URL exists at runtime
   if (!process.env.DATABASE_URL) {
     throw new Error('DATABASE_URL environment variable is not defined');
@@ -35,14 +46,22 @@ function createPrismaClient(): PrismaClientType {
 
   const adapter = new PrismaPg(pool);
 
-  return new PrismaClient({
+  prismaInstance = new PrismaClient({
     adapter,
     log: isProduction ? ['error', 'warn'] : ['query', 'info', 'warn', 'error'],
   });
+
+  if (!isProduction) {
+    globalForPrisma.prisma = prismaInstance;
+  }
+
+  return prismaInstance;
 }
 
-const isProduction = process.env.NODE_ENV === 'production';
-
-export const prisma: PrismaClientType = globalForPrisma.prisma ?? createPrismaClient();
-
-if (!isProduction) globalForPrisma.prisma = prisma;
+// Export a Proxy that defers initialization until first access
+export const prisma = new Proxy({} as PrismaClientType, {
+  get(_target, prop) {
+    const client = getPrismaClient();
+    return client[prop as keyof PrismaClientType];
+  },
+});
