@@ -9,7 +9,7 @@ import { useToast } from '@/components/ToastProvider';
 import { useSeasonalTheme } from '@/contexts/SeasonalContext';
 
 export default function AuthPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
   const { addToast } = useToast();
   const seasonalTheme = useSeasonalTheme();
@@ -19,6 +19,10 @@ export default function AuthPage() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [updatingName, setUpdatingName] = useState(false);
 
   const toggleMode = () => setMode((m) => (m === 'login' ? 'register' : 'login'));
 
@@ -56,6 +60,37 @@ export default function AuthPage() {
       addToast(err instanceof Error ? err.message : 'Something went wrong', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpdateName = async () => {
+    if (!newName.trim() || updatingName) return;
+    setUpdatingName(true);
+
+    try {
+      const res = await fetch('/api/user/update-name', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName.trim() }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || 'Failed to update name');
+      }
+
+      const data = await res.json();
+
+      addToast('Name updated successfully', 'success');
+      setIsEditingName(false);
+      setNewName('');
+
+      // Update session to reflect the new name
+      await update({ user: { name: data.user.name } });
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : 'Failed to update name', 'error');
+    } finally {
+      setUpdatingName(false);
     }
   };
 
@@ -100,9 +135,70 @@ export default function AuthPage() {
             <div className="text-off-white/80 font-zen-old-mincho">
               Signed in as{' '}
               <span style={{ color: seasonalTheme.adjustedColors.primary }}>
-                {session?.user?.email ?? session?.user?.name}
+                {session?.user?.name || session?.user?.email}
               </span>
             </div>
+
+            {/* Name Edit Section */}
+            <div className="pt-4 pb-6 border-t border-white/5">
+              {!isEditingName ? (
+                <div className="space-y-3">
+                  <div className="text-xs text-subtle-gray tracking-wider font-zen-old-mincho uppercase">
+                    Display Name
+                  </div>
+                  <div className="text-off-white font-zen-old-mincho text-lg">
+                    {session?.user?.name || 'Not set'}
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsEditingName(true);
+                      setNewName(session?.user?.name || '');
+                    }}
+                    className="text-xs text-subtle-gray hover:text-off-white transition-colors tracking-wider font-zen-old-mincho"
+                  >
+                    Change Name
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <input
+                    className="w-full bg-transparent border-b border-white/20 py-2 text-off-white placeholder-white/20 focus:outline-none transition-colors font-zen-old-mincho text-lg text-center"
+                    style={{ caretColor: seasonalTheme.adjustedColors.primary }}
+                    onFocus={(e) =>
+                      (e.target.style.borderColor = seasonalTheme.adjustedColors.primary)
+                    }
+                    onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.2)')}
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Enter new name"
+                    autoFocus
+                  />
+                  <div className="flex gap-3 justify-center">
+                    <button
+                      onClick={handleUpdateName}
+                      disabled={updatingName || !newName.trim()}
+                      className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-off-white font-zen-old-mincho tracking-widest transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed border border-white/10 text-xs"
+                      style={{
+                        boxShadow: `0 0 20px ${seasonalTheme.adjustedColors.glow}20`,
+                      }}
+                    >
+                      {updatingName ? 'SAVING...' : 'SAVE'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsEditingName(false);
+                        setNewName('');
+                      }}
+                      disabled={updatingName}
+                      className="px-4 py-2 text-xs text-subtle-gray hover:text-off-white transition-colors tracking-wider font-zen-old-mincho"
+                    >
+                      CANCEL
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="flex justify-center gap-6 text-sm font-zen-old-mincho tracking-widest">
               <Link
                 href="/results"

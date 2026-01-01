@@ -9,9 +9,23 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma as any),
   session: { strategy: 'jwt' },
   callbacks: {
+    jwt: async ({ token, user, trigger, session }) => {
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
+      }
+      // Handle session update from client
+      if (trigger === 'update' && session?.user?.name) {
+        token.name = session.user.name;
+      }
+      return token;
+    },
     session: async ({ session, token }) => {
       if (session.user && token.sub) {
         session.user.id = token.sub;
+        session.user.name = token.name as string | null;
+        session.user.email = token.email as string;
       }
       return session;
     },
