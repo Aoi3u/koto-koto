@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef, Suspense } from 'react';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -129,7 +129,7 @@ function CustomSelect<T extends string | number>({
   );
 }
 
-export default function ResultsPage() {
+function ResultsPageContent() {
   const { data: session, status } = useSession();
   const { addToast } = useToast();
   const seasonalTheme = useSeasonalTheme();
@@ -494,5 +494,22 @@ export default function ResultsPage() {
         </AnimatePresence>
       </div>
     </main>
+  );
+}
+
+export default function ResultsPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-zen-dark pt-32 pb-16 px-4 md:px-8">
+          <div className="noise-overlay" />
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center text-subtle-gray">Loading...</div>
+          </div>
+        </main>
+      }
+    >
+      <ResultsPageContent />
+    </Suspense>
   );
 }
