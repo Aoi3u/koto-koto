@@ -41,20 +41,6 @@ const timeframeOptions = [
 
 const limitOptions = [50, 100, 200];
 
-function RankBadge({ wpm, accuracy }: { wpm: number; accuracy: number }) {
-  const { grade, color } = calculateRank(wpm, accuracy);
-  const seasonalTheme = useSeasonalTheme();
-
-  return (
-    <span
-      className={`font-zen-old-mincho font-bold ${color} text-lg transition-all duration-1000`}
-      style={{ textShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}` }}
-    >
-      {grade}
-    </span>
-  );
-}
-
 function CustomSelect<T extends string | number>({
   value,
   options,
@@ -232,55 +218,61 @@ export default function ResultsPage() {
 
     return (
       <div className="grid gap-3">
-        {history.data.map((item, i) => (
-          <motion.div
-            key={item.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.03 }}
-            className="group relative bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg p-4 flex items-center justify-between transition-all duration-300"
-            style={{
-              borderColor: 'rgba(255,255,255,0.05)',
-            }}
-            whileHover={{
-              borderColor: seasonalTheme.adjustedColors.primary,
-              boxShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}20`,
-            }}
-          >
-            <div className="flex items-center gap-6">
-              <div className="w-12 text-center">
-                <RankBadge wpm={item.wpm} accuracy={item.accuracy} />
-              </div>
-              <div>
-                <div className="text-2xl font-light font-inter text-off-white">
-                  {item.wpm} <span className="text-xs text-subtle-gray uppercase">WPM</span>
-                </div>
-                <div className="text-xs text-subtle-gray font-mono mt-1">
-                  {new Date(item.createdAt).toLocaleDateString()} •{' '}
-                  {new Date(item.createdAt).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </div>
-              </div>
-            </div>
+        {history.data.map((item, i) => {
+          const rankResult = calculateRank(item.wpm, item.accuracy);
+          const zenScore = Math.round(item.wpm * (item.accuracy / 100) * 100) / 100;
 
-            <div className="flex items-center gap-8 text-right">
-              <div className="hidden sm:block">
-                <div className="text-sm text-off-white font-mono">{item.accuracy}%</div>
-                <div className="text-[10px] text-subtle-gray uppercase tracking-wider">
-                  Accuracy
+          return (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.03 }}
+              className="group relative bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg p-4 flex items-center justify-between transition-all duration-300"
+              style={{
+                borderColor: 'rgba(255,255,255,0.05)',
+              }}
+              whileHover={{
+                borderColor: seasonalTheme.adjustedColors.primary,
+                boxShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}20`,
+              }}
+            >
+              <div className="flex items-center gap-6">
+                <div className="w-16 text-center hidden md:block">
+                  <div className={`text-lg font-bold font-zen-old-mincho ${rankResult.color}`}>
+                    {rankResult.grade}
+                  </div>
+                  <div className="text-[9px] text-subtle-gray leading-tight tracking-wider uppercase line-clamp-1">
+                    {rankResult.title}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-subtle-gray font-mono mb-1">
+                    {new Date(item.createdAt).toLocaleDateString()} •{' '}
+                    {new Date(item.createdAt).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </div>
                 </div>
               </div>
-              <div className="hidden sm:block">
-                <div className="text-sm text-off-white font-mono">
-                  {Math.round(item.elapsedTime / 1000)}s
+
+              <div className="flex items-center gap-6 text-right">
+                <div className="hidden sm:block">
+                  <div className="text-sm text-off-white font-mono font-bold">{zenScore}</div>
+                  <div className="text-[10px] text-subtle-gray uppercase">Zen</div>
                 </div>
-                <div className="text-[10px] text-subtle-gray uppercase tracking-wider">Time</div>
+                <div>
+                  <div className="text-xl font-light font-inter text-off-white">{item.wpm}</div>
+                  <div className="text-[10px] text-subtle-gray uppercase">WPM</div>
+                </div>
+                <div className="hidden sm:block">
+                  <div className="text-sm text-subtle-gray font-mono">{item.accuracy}%</div>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
       </div>
     );
   }, [history, status, seasonalTheme]);
