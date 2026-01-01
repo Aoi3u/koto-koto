@@ -10,6 +10,13 @@ export type Toast = {
   kind: ToastKind;
 };
 
+// Toast display duration in milliseconds (configurable by kind)
+const TOAST_DURATIONS: Record<ToastKind, number> = {
+  success: 3000, // 3 seconds for success messages
+  info: 4000, // 4 seconds for info messages
+  error: 5000, // 5 seconds for errors (longer to ensure readability)
+};
+
 const ToastContext = createContext<{
   addToast: (message: string, kind?: ToastKind) => void;
 } | null>(null);
@@ -31,7 +38,8 @@ export default function ToastProvider({ children }: { children: React.ReactNode 
     (message: string, kind: ToastKind = 'info') => {
       const id = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
       setToasts((prev) => [...prev, { id, message, kind }]);
-      setTimeout(() => remove(id), 3600);
+      const duration = TOAST_DURATIONS[kind];
+      setTimeout(() => remove(id), duration);
     },
     [remove]
   );
