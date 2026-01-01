@@ -51,133 +51,144 @@ export default function AppHeader() {
         </Link>
       </div>
 
-      {/* Settings Button */}
-      <div className="pointer-events-auto relative" ref={menuRef}>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
+      {/* Right Side Actions */}
+      <div className="pointer-events-auto flex items-center gap-2">
+        <Link
+          href="/results"
           className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
-          aria-label="Settings"
+          aria-label="History"
         >
-          <Settings
-            className={`w-5 h-5 transition-transform duration-500 ${isOpen ? 'rotate-90' : ''}`}
-          />
-        </button>
+          <HistoryIcon className="w-5 h-5" />
+        </Link>
 
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-full right-0 mt-4 w-72 rounded-lg backdrop-blur-xl border shadow-2xl overflow-hidden"
-              style={{
-                backgroundColor: 'rgba(15, 20, 25, 0.9)',
-                borderColor: 'rgba(255, 255, 255, 0.1)',
-                boxShadow: `0 10px 40px -10px rgba(0,0,0,0.5), 0 0 20px ${seasonalTheme.adjustedColors.glow}10`,
-              }}
-            >
-              {/* Header of Menu */}
-              <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
-                <span className="text-xs font-zen-old-mincho tracking-widest text-subtle-gray uppercase">
-                  Settings
-                </span>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-subtle-gray hover:text-off-white"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
+        {/* Settings Button */}
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
+            aria-label="Settings"
+          >
+            <Settings
+              className={`w-5 h-5 transition-transform duration-500 ${isOpen ? 'rotate-90' : ''}`}
+            />
+          </button>
 
-              <div className="p-2 space-y-1">
-                {/* Navigation Links */}
-                <Link
-                  href="/results"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
-                >
-                  <HistoryIcon className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
-                  <span className="font-zen-old-mincho tracking-wider">History</span>
-                </Link>
-
-                <Link
-                  href="/auth"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
-                >
-                  <User className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
-                  <span className="font-zen-old-mincho tracking-wider">Account</span>
-                </Link>
-
-                <div className="my-2 border-t border-white/5" />
-
-                {/* Sound Settings */}
-                <div className="px-3 py-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-subtle-gray font-zen-old-mincho tracking-wider">
-                      Keyboard Sound
-                    </span>
-                    {!hasAudioSupport && <VolumeX className="w-3 h-3 text-red-400" />}
-                  </div>
-                  <div className="grid grid-cols-1 gap-1 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
-                    {profiles.map((profile) => (
-                      <button
-                        key={profile}
-                        onClick={() => changeProfile(profile)}
-                        disabled={!hasAudioSupport || isProfileLoading}
-                        className={`flex items-center justify-between px-2 py-1.5 rounded text-xs transition-all ${
-                          currentProfile === profile
-                            ? 'bg-white/10 text-off-white'
-                            : 'text-subtle-gray hover:bg-white/5 hover:text-off-white'
-                        }`}
-                      >
-                        <span>{availableProfiles[profile].name}</span>
-                        {currentProfile === profile && (
-                          <div
-                            className="w-1.5 h-1.5 rounded-full"
-                            style={{ backgroundColor: seasonalTheme.adjustedColors.primary }}
-                          />
-                        )}
-                      </button>
-                    ))}
-                  </div>
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="absolute top-full right-0 mt-4 w-72 rounded-lg backdrop-blur-xl border shadow-2xl overflow-hidden"
+                style={{
+                  backgroundColor: 'rgba(15, 20, 25, 0.9)',
+                  borderColor: 'rgba(255, 255, 255, 0.1)',
+                  boxShadow: `0 10px 40px -10px rgba(0,0,0,0.5), 0 0 20px ${seasonalTheme.adjustedColors.glow}10`,
+                }}
+              >
+                {/* Header of Menu */}
+                <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+                  <span className="text-xs font-zen-old-mincho tracking-widest text-subtle-gray uppercase">
+                    Settings
+                  </span>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="text-subtle-gray hover:text-off-white"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
 
-                <div className="my-2 border-t border-white/5" />
-
-                {/* Auth Action */}
-                {status === 'authenticated' ? (
-                  <button
-                    onClick={() => signOut({ callbackUrl: '/' })}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-red-500/10 text-sm text-red-200 transition-colors group"
+                <div className="p-2 space-y-1">
+                  {/* Navigation Links */}
+                  <Link
+                    href="/results"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
                   >
-                    <LogOut className="w-4 h-4 opacity-70 group-hover:opacity-100" />
-                    <span className="font-zen-old-mincho tracking-wider">Sign Out</span>
-                  </button>
-                ) : (
+                    <HistoryIcon className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
+                    <span className="font-zen-old-mincho tracking-wider">History</span>
+                  </Link>
+
                   <Link
                     href="/auth"
                     onClick={() => setIsOpen(false)}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
                   >
                     <User className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
-                    <span className="font-zen-old-mincho tracking-wider">Sign In</span>
+                    <span className="font-zen-old-mincho tracking-wider">Account</span>
                   </Link>
-                )}
-              </div>
 
-              {/* User Info Footer */}
-              {status === 'authenticated' && (
-                <div className="px-4 py-3 bg-white/5 border-t border-white/5">
-                  <div className="text-xs text-subtle-gray font-zen-old-mincho truncate">
-                    Signed in as <span className="text-off-white">{userLabel}</span>
+                  <div className="my-2 border-t border-white/5" />
+
+                  {/* Sound Settings */}
+                  <div className="px-3 py-2">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-subtle-gray font-zen-old-mincho tracking-wider">
+                        Keyboard Sound
+                      </span>
+                      {!hasAudioSupport && <VolumeX className="w-3 h-3 text-red-400" />}
+                    </div>
+                    <div className="grid grid-cols-1 gap-1 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
+                      {profiles.map((profile) => (
+                        <button
+                          key={profile}
+                          onClick={() => changeProfile(profile)}
+                          disabled={!hasAudioSupport || isProfileLoading}
+                          className={`flex items-center justify-between px-2 py-1.5 rounded text-xs transition-all ${
+                            currentProfile === profile
+                              ? 'bg-white/10 text-off-white'
+                              : 'text-subtle-gray hover:bg-white/5 hover:text-off-white'
+                          }`}
+                        >
+                          <span>{availableProfiles[profile].name}</span>
+                          {currentProfile === profile && (
+                            <div
+                              className="w-1.5 h-1.5 rounded-full"
+                              style={{ backgroundColor: seasonalTheme.adjustedColors.primary }}
+                            />
+                          )}
+                        </button>
+                      ))}
+                    </div>
                   </div>
+
+                  <div className="my-2 border-t border-white/5" />
+
+                  {/* Auth Action */}
+                  {status === 'authenticated' ? (
+                    <button
+                      onClick={() => signOut({ callbackUrl: '/' })}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-red-500/10 text-sm text-red-200 transition-colors group"
+                    >
+                      <LogOut className="w-4 h-4 opacity-70 group-hover:opacity-100" />
+                      <span className="font-zen-old-mincho tracking-wider">Sign Out</span>
+                    </button>
+                  ) : (
+                    <Link
+                      href="/auth"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                    >
+                      <User className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
+                      <span className="font-zen-old-mincho tracking-wider">Sign In</span>
+                    </Link>
+                  )}
                 </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+                {/* User Info Footer */}
+                {status === 'authenticated' && (
+                  <div className="px-4 py-3 bg-white/5 border-t border-white/5">
+                    <div className="text-xs text-subtle-gray font-zen-old-mincho truncate">
+                      Signed in as <span className="text-off-white">{userLabel}</span>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </motion.header>
   );

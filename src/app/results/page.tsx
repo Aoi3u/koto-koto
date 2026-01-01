@@ -25,6 +25,10 @@ type RankingItem = {
   wpm: number;
   accuracy: number;
   createdAt: string;
+  zenScore?: number;
+  grade?: string;
+  title?: string;
+  color?: string;
 };
 
 const timeframeOptions = [
@@ -97,7 +101,7 @@ function CustomSelect<T extends string | number>({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 5, scale: 0.95 }}
             transition={{ duration: 0.1 }}
-            className="absolute top-full right-0 mt-2 min-w-[120px] bg-zen-dark/90 backdrop-blur-md border border-white/10 rounded-md shadow-xl overflow-hidden z-50"
+            className="absolute top-full right-0 mt-2 min-w-[120px]20px] bg-zen-dark/90 backdrop-blur-md border border-white/10 rounded-md shadow-xl overflow-hidden z-50"
             style={{ borderColor: 'rgba(255,255,255,0.1)' }}
           >
             {options.map((opt) => (
@@ -324,6 +328,17 @@ export default function ResultsPage() {
               <div className="text-[10px] text-subtle-gray">
                 {new Date(item.createdAt).toLocaleDateString()}
               </div>
+            </div>
+            {item.grade && (
+              <div className="w-16 text-center hidden md:block">
+                <div className={`text-lg font-bold font-zen-old-mincho ${item.color || ''}`}>
+                  {item.grade}
+                </div>
+              </div>
+            )}
+            <div className="w-20 text-right hidden sm:block">
+              <div className="text-sm text-off-white font-mono font-bold">{item.zenScore}</div>
+              <div className="text-[10px] text-subtle-gray uppercase">Zen</div>
             </div>
             <div className="text-right px-4">
               <div className="text-xl font-light font-inter text-off-white">{item.wpm}</div>
