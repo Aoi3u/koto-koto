@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
 import { calculateRank } from '@/features/result/utils/rankLogic';
+import { calculateZenScore } from '@/lib/formatters';
 import { useSeasonalTheme } from '@/contexts/SeasonalContext';
 
 type HistoryItem = {
@@ -89,7 +90,7 @@ function CustomSelect<T extends string | number>({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 5, scale: 0.95 }}
             transition={{ duration: 0.1 }}
-            className="absolute top-full right-0 mt-2 min-w-[120px]20px] bg-zen-dark/90 backdrop-blur-md border border-white/10 rounded-md shadow-xl overflow-hidden z-50"
+            className="absolute top-full right-0 mt-2 min-w-30 bg-zen-dark/90 backdrop-blur-md border border-white/10 rounded-md shadow-xl overflow-hidden z-50"
             style={{ borderColor: 'rgba(255,255,255,0.1)' }}
           >
             {options.map((opt) => (
@@ -220,7 +221,7 @@ function ResultsPageContent() {
       <div className="grid gap-3">
         {history.data.map((item, i) => {
           const rankResult = calculateRank(item.wpm, item.accuracy);
-          const zenScore = Math.round(item.wpm * (item.accuracy / 100) * 100) / 100;
+          const zenScore = calculateZenScore(item.wpm, item.accuracy);
 
           return (
             <motion.div

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { calculateRank } from '@/features/result/utils/rankLogic';
+import { calculateZenScore } from '@/lib/formatters';
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 200;
@@ -61,7 +62,7 @@ export const GET = async (req: Request) => {
   // Calculate Zen Score and sort
   const withZenScore = results.map((result) => ({
     ...result,
-    zenScore: result.wordsPerMinute * (result.accuracy / 100),
+    zenScore: calculateZenScore(result.wordsPerMinute, result.accuracy),
   }));
 
   withZenScore.sort((a, b) => b.zenScore - a.zenScore);
@@ -73,7 +74,7 @@ export const GET = async (req: Request) => {
       wpm: result.wordsPerMinute,
       accuracy: result.accuracy,
       createdAt: result.createdAt,
-      zenScore: Math.round(result.zenScore * 100) / 100,
+      zenScore: result.zenScore,
       grade: rankResult.grade,
       title: rankResult.title,
       color: rankResult.color,
