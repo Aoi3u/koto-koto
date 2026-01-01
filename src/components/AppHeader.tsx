@@ -69,6 +69,14 @@ export default function AppHeader() {
           <HistoryIcon className="w-5 h-5" />
         </Link>
 
+        <Link
+          href="/auth"
+          className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
+          aria-label={status === 'authenticated' ? 'Profile' : 'Sign In'}
+        >
+          <User className="w-5 h-5" />
+        </Link>
+
         {/* Settings Button */}
         <div className="relative" ref={menuRef}>
           <button
@@ -111,24 +119,6 @@ export default function AppHeader() {
                 <div className="p-2 space-y-1">
                   {/* Navigation Links */}
                   <Link
-                    href="/results?tab=rankings"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
-                  >
-                    <Trophy className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
-                    <span className="font-zen-old-mincho tracking-wider">Leaderboard</span>
-                  </Link>
-
-                  <Link
-                    href="/results?tab=history"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
-                  >
-                    <HistoryIcon className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
-                    <span className="font-zen-old-mincho tracking-wider">History</span>
-                  </Link>
-
-                  <Link
                     href="/auth"
                     onClick={() => setIsOpen(false)}
                     className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
@@ -147,7 +137,7 @@ export default function AppHeader() {
                       </span>
                       {!hasAudioSupport && <VolumeX className="w-3 h-3 text-red-400" />}
                     </div>
-                    <div className="grid grid-cols-1 gap-1 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
+                    <div className="grid grid-cols-1 gap-1 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
                       {profiles.map((profile) => (
                         <button
                           key={profile}
@@ -171,26 +161,18 @@ export default function AppHeader() {
                     </div>
                   </div>
 
-                  <div className="my-2 border-t border-white/5" />
-
-                  {/* Auth Action */}
-                  {status === 'authenticated' ? (
-                    <button
-                      onClick={() => signOut({ callbackUrl: '/' })}
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-red-500/10 text-sm text-red-200 transition-colors group"
-                    >
-                      <LogOut className="w-4 h-4 opacity-70 group-hover:opacity-100" />
-                      <span className="font-zen-old-mincho tracking-wider">Sign Out</span>
-                    </button>
-                  ) : (
-                    <Link
-                      href="/auth"
-                      onClick={() => setIsOpen(false)}
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
-                    >
-                      <User className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
-                      <span className="font-zen-old-mincho tracking-wider">Sign In</span>
-                    </Link>
+                  {/* Sign Out (only if authenticated) */}
+                  {status === 'authenticated' && (
+                    <>
+                      <div className="my-2 border-t border-white/5" />
+                      <button
+                        onClick={() => signOut({ callbackUrl: '/' })}
+                        className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-red-500/10 text-sm text-red-200 transition-colors group"
+                      >
+                        <LogOut className="w-4 h-4 opacity-70 group-hover:opacity-100" />
+                        <span className="font-zen-old-mincho tracking-wider">Sign Out</span>
+                      </button>
+                    </>
                   )}
                 </div>
 
