@@ -27,16 +27,31 @@ function getPrismaClient(): PrismaClientType {
   // Configure SSL at the Pool level only, not globally
   const sslMode = process.env.DATABASE_SSL;
   const isProduction = process.env.NODE_ENV === 'production';
-  
-  // For Supabase and other managed databases, accept self-signed certificates
+
+  // For Supabase and other managed databases, accept self-signed certificates by default
   // Only enforce strict SSL validation if explicitly set to 'strict'
-  const sslConfig = sslMode === 'disable' 
-    ? false 
-    : { rejectUnauthorized: sslMode === 'strict' };
+  let sslConfig: boolean | { rejectUnauthorized: boolean };
+
+  if (sslMode === 'disable') {
+    sslConfig = false; // No SSL
+    console.log('[Prisma] SSL disabled');
+  } else if (sslMode === 'strict') {
+    sslConfig = { rejectUnauthorized: true }; // Strict validation
+    console.log('[Prisma] SSL strict mode enabled');
+  } else {
+    // Default: Accept self-signed certificates (for Supabase, RDS, etc.)
+    sslConfig = { rejectUnauthorized: false };
+    console.log(
+      '[Prisma] SSL enabled with self-signed certificate support (DATABASE_SSL=' + sslMode + ')'
+    );
+  }
 
   // Production-ready connection pool settings
+  // Remove sslmode from connection string if present, we control SSL via pool config
+  const connectionString = process.env.DATABASE_URL.replace(/[?&]sslmode=[^&]*/, '');
+
   const pool = new pg.Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString,
     ssl: sslConfig,
     max: isProduction ? 10 : 5, // Max connections in pool
     idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
