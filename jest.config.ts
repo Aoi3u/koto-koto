@@ -27,6 +27,7 @@ const customJestConfig = {
     // Infra-only files are exercised via integration, not unit tests
     '!src/lib/prisma.ts',
     '!src/lib/auth.ts',
+    '!src/lib/rate-limit.ts',
   ],
 };
 
