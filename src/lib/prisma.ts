@@ -27,8 +27,12 @@ function getPrismaClient(): PrismaClientType {
   // Configure SSL at the Pool level only, not globally
   const sslMode = process.env.DATABASE_SSL;
   const isProduction = process.env.NODE_ENV === 'production';
-  const allowSelfSigned = sslMode !== 'strict' && !isProduction;
-  const sslConfig = sslMode === 'disable' ? false : { rejectUnauthorized: !allowSelfSigned };
+  
+  // For Supabase and other managed databases, accept self-signed certificates
+  // Only enforce strict SSL validation if explicitly set to 'strict'
+  const sslConfig = sslMode === 'disable' 
+    ? false 
+    : { rejectUnauthorized: sslMode === 'strict' };
 
   // Production-ready connection pool settings
   const pool = new pg.Pool({
