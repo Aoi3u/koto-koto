@@ -8,6 +8,7 @@ import { prisma } from '@/lib/prisma';
 
 /**
  * Validates that required environment variables are set for authentication
+ * This should only be called at runtime, not during build time
  * @throws Error if NEXTAUTH_SECRET is not configured
  */
 function validateAuthEnv() {
@@ -20,6 +21,7 @@ function validateAuthEnv() {
 
 /**
  * Check if Google OAuth is configured with required credentials
+ * Safe to call at build time - only logs, doesn't throw
  */
 function isGoogleOAuthConfigured(): boolean {
   const hasClientId = !!process.env.GOOGLE_CLIENT_ID;
@@ -48,7 +50,9 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: 'jwt' },
   callbacks: {
     jwt: async ({ token, user, trigger, session }) => {
+      // Validate environment on first auth request
       if (user) {
+        validateAuthEnv();
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
@@ -105,8 +109,5 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 };
-
-// Validate authentication configuration on module load
-validateAuthEnv();
 
 export default NextAuth(authOptions);
