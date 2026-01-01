@@ -6,17 +6,38 @@ import pg from 'pg';
 // Ensure a single PrismaClient instance on the server
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClientType };
 
+// Validate DATABASE_URL exists
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL environment variable is not defined');
+}
+
 // Configure SSL at the Pool level only, not globally
 const sslMode = process.env.DATABASE_SSL;
-const allowSelfSigned = sslMode !== 'strict' && process.env.NODE_ENV !== 'production';
+const isProduction = process.env.NODE_ENV === 'production';
+const allowSelfSigned = sslMode !== 'strict' && !isProduction;
 const sslConfig = sslMode === 'disable' ? false : { rejectUnauthorized: !allowSelfSigned };
 
+// Production-ready connection pool settings
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: sslConfig,
+  max: isProduction ? 10 : 5, // Max connections in pool
+  idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
+  connectionTimeoutMillis: 10000, // Return error after 10 seconds if connection cannot be established
 });
+
+// Log connection errors
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+});
+
 const adapter = new PrismaPg(pool);
 
-export const prisma: PrismaClientType = globalForPrisma.prisma ?? new PrismaClient({ adapter });
+export const prisma: PrismaClientType =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    adapter,
+    log: isProduction ? ['error', 'warn'] : ['query', 'info', 'warn', 'error'],
+  });
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+if (!isProduction) globalForPrisma.prisma = prisma;
