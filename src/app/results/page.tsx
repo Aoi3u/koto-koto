@@ -346,20 +346,20 @@ export default function ResultsPage() {
             >
               {item.rank}
             </div>
-            <div className="flex-1 px-4">
-              <div className="text-off-white font-zen-old-mincho">{item.user}</div>
+            <div className="flex-1 min-w-0 px-3">
+              <div className="text-off-white font-zen-old-mincho truncate">{item.user}</div>
               <div className="text-[10px] text-subtle-gray">
                 {new Date(item.createdAt).toLocaleDateString()}
               </div>
             </div>
             {item.grade && (
-              <div className="w-16 text-center hidden md:block">
-                <div className="text-lg text-subtle-gray font-bold font-zen-old-mincho">
+              <div className="w-12 text-center hidden md:block">
+                <div className="text-base text-subtle-gray font-bold font-zen-old-mincho">
                   {item.grade}
                 </div>
               </div>
             )}
-            <div className="w-20 text-right hidden sm:block relative group/zen">
+            <div className="w-16 text-right hidden sm:block relative group/zen">
               <div className="text-sm text-off-white font-mono font-semibold cursor-help">
                 {item.zenScore}
               </div>
@@ -374,7 +374,7 @@ export default function ResultsPage() {
                 </div>
               </div>
             </div>
-            <div className="text-right px-4 relative group/wpm">
+            <div className="w-16 text-right relative group/wpm">
               <div className="text-xl font-light font-inter text-off-white cursor-help">
                 {item.wpm}
               </div>
