@@ -258,13 +258,35 @@ export default function ResultsPage() {
               </div>
 
               <div className="flex items-center gap-6 text-right">
-                <div className="hidden sm:block">
-                  <div className="text-sm text-off-white font-mono font-bold">{zenScore}</div>
+                <div className="hidden sm:block relative group/zen">
+                  <div className="text-sm text-off-white font-mono font-bold cursor-help">
+                    {zenScore}
+                  </div>
                   <div className="text-[10px] text-subtle-gray uppercase">Zen</div>
+                  {/* Tooltip for Zen Score */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+                    <div className="text-[10px] text-off-white font-mono mb-1">
+                      Zen Score = WPM × Accuracy ÷ 100
+                    </div>
+                    <div className="text-[9px] text-subtle-gray font-mono">
+                      = {item.wpm} × {item.accuracy}% ÷ 100
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-xl font-light font-inter text-off-white">{item.wpm}</div>
+                <div className="relative group/wpm">
+                  <div className="text-xl font-light font-inter text-off-white cursor-help">
+                    {item.wpm}
+                  </div>
                   <div className="text-[10px] text-subtle-gray uppercase">WPM</div>
+                  {/* Tooltip for WPM */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+                    <div className="text-[10px] text-off-white font-mono mb-1">
+                      WPM = (Correct Keys ÷ 5) ÷ Minutes
+                    </div>
+                    <div className="text-[9px] text-subtle-gray font-mono">
+                      = ({item.correctKeystrokes} ÷ 5) ÷ {(item.elapsedTime / 60).toFixed(2)}m
+                    </div>
+                  </div>
                 </div>
                 <div className="hidden sm:block">
                   <div className="text-sm text-subtle-gray font-mono">{item.accuracy}%</div>
@@ -337,13 +359,32 @@ export default function ResultsPage() {
                 </div>
               </div>
             )}
-            <div className="w-20 text-right hidden sm:block">
-              <div className="text-sm text-off-white font-mono font-semibold">{item.zenScore}</div>
+            <div className="w-20 text-right hidden sm:block relative group/zen">
+              <div className="text-sm text-off-white font-mono font-semibold cursor-help">
+                {item.zenScore}
+              </div>
               <div className="text-[10px] text-subtle-gray uppercase">Zen</div>
+              {/* Tooltip for Zen Score */}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+                <div className="text-[10px] text-off-white font-mono mb-1">
+                  Zen Score = WPM × Accuracy ÷ 100
+                </div>
+                <div className="text-[9px] text-subtle-gray font-mono">
+                  = {item.wpm} × {item.accuracy}% ÷ 100
+                </div>
+              </div>
             </div>
-            <div className="text-right px-4">
-              <div className="text-xl font-light font-inter text-off-white">{item.wpm}</div>
+            <div className="text-right px-4 relative group/wpm">
+              <div className="text-xl font-light font-inter text-off-white cursor-help">
+                {item.wpm}
+              </div>
               <div className="text-[10px] text-subtle-gray uppercase">WPM</div>
+              {/* Tooltip for WPM */}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+                <div className="text-[10px] text-off-white font-mono text-center">
+                  WPM = (Correct Keys ÷ 5) ÷ Minutes
+                </div>
+              </div>
             </div>
             <div className="w-16 text-right hidden sm:block">
               <div className="text-sm text-subtle-gray font-mono">{item.accuracy}%</div>

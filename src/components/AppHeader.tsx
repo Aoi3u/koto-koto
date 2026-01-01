@@ -54,21 +54,19 @@ export default function AppHeader() {
       {/* Right Side Actions */}
       <div className="pointer-events-auto flex items-center gap-2">
         <Link
-          href="/results?tab=rankings"
-          className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
-          aria-label="Leaderboard"
-        >
-          <Trophy className="w-5 h-5" />
-        </Link>
-
-        <Link
           href="/results?tab=history"
           className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
           aria-label="History"
         >
           <HistoryIcon className="w-5 h-5" />
         </Link>
-
+        <Link
+          href="/results?tab=rankings"
+          className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
+          aria-label="Leaderboard"
+        >
+          <Trophy className="w-5 h-5" />
+        </Link>
         <Link
           href="/auth"
           className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
