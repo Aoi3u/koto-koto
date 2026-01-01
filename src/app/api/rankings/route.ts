@@ -17,15 +17,23 @@ const parseLimit = (value: string | null) => {
 const parseTimeframe = (value: string | null) => {
   if (!value) return 'all' as const;
   const normalized = value.toLowerCase();
-  if (normalized === 'all' || normalized === 'week' || normalized === 'month') return normalized;
+  if (
+    normalized === 'all' ||
+    normalized === 'week' ||
+    normalized === 'month' ||
+    normalized === 'day'
+  )
+    return normalized as 'all' | 'week' | 'month' | 'day';
   return null;
 };
 
-const timeframeToDate = (timeframe: 'all' | 'week' | 'month') => {
+const timeframeToDate = (timeframe: 'all' | 'week' | 'month' | 'day') => {
   if (timeframe === 'all') return null;
-  const days = timeframe === 'week' ? 7 : 30;
   const now = Date.now();
-  return new Date(now - days * 24 * 60 * 60 * 1000);
+  if (timeframe === 'day') return new Date(now - 24 * 60 * 60 * 1000);
+  if (timeframe === 'week') return new Date(now - 7 * 24 * 60 * 60 * 1000);
+  if (timeframe === 'month') return new Date(now - 30 * 24 * 60 * 60 * 1000);
+  return null;
 };
 
 export const GET = async (req: Request) => {

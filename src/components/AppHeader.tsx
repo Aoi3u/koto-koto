@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, VolumeX, LogOut, User, History as HistoryIcon, X } from 'lucide-react';
+import { Settings, VolumeX, LogOut, User, History as HistoryIcon, X, Trophy } from 'lucide-react';
 import { useSeasonalTheme } from '@/contexts/SeasonalContext';
 import { useSoundContext } from '@/contexts/SoundContext';
 import type { KeyboardSoundProfile } from '@/features/game/hooks/useSound';
@@ -54,7 +54,15 @@ export default function AppHeader() {
       {/* Right Side Actions */}
       <div className="pointer-events-auto flex items-center gap-2">
         <Link
-          href="/results"
+          href="/results?tab=rankings"
+          className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
+          aria-label="Leaderboard"
+        >
+          <Trophy className="w-5 h-5" />
+        </Link>
+
+        <Link
+          href="/results?tab=history"
           className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
           aria-label="History"
         >
@@ -103,7 +111,16 @@ export default function AppHeader() {
                 <div className="p-2 space-y-1">
                   {/* Navigation Links */}
                   <Link
-                    href="/results"
+                    href="/results?tab=rankings"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                  >
+                    <Trophy className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
+                    <span className="font-zen-old-mincho tracking-wider">Leaderboard</span>
+                  </Link>
+
+                  <Link
+                    href="/results?tab=history"
                     onClick={() => setIsOpen(false)}
                     className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
                   >

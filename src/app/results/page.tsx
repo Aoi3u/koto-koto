@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
@@ -32,9 +33,10 @@ type RankingItem = {
 };
 
 const timeframeOptions = [
+  { value: 'day', label: 'Daily' },
+  { value: 'week', label: 'Weekly' },
+  { value: 'month', label: 'Monthly' },
   { value: 'all', label: 'All time' },
-  { value: 'week', label: 'This week' },
-  { value: 'month', label: 'This month' },
 ] as const;
 
 const limitOptions = [50, 100, 200];
@@ -145,8 +147,15 @@ export default function ResultsPage() {
   const { data: session, status } = useSession();
   const { addToast } = useToast();
   const seasonalTheme = useSeasonalTheme();
+  const searchParams = useSearchParams();
 
   const [tab, setTab] = useState<'history' | 'rankings'>('history');
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'rankings') setTab('rankings');
+    else if (tabParam === 'history') setTab('history');
+  }, [searchParams]);
 
   const [history, setHistory] = useState<{
     loading: boolean;
@@ -159,7 +168,7 @@ export default function ResultsPage() {
     data: RankingItem[];
   }>({ loading: false, error: null, data: [] });
 
-  const [timeframe, setTimeframe] = useState<'all' | 'week' | 'month'>('all');
+  const [timeframe, setTimeframe] = useState<'all' | 'week' | 'month' | 'day'>('all');
   const [limit, setLimit] = useState<number>(50);
 
   const fetchHistory = useCallback(async () => {
@@ -293,7 +302,7 @@ export default function ResultsPage() {
             transition={{ delay: i * 0.02 }}
             className={`flex items-center p-3 rounded-md border transition-colors ${
               item.rank === 1
-                ? 'bg-gold/10 border-gold/30'
+                ? 'bg-yellow-700/20 border-yellow-700/30'
                 : item.rank === 2
                   ? 'bg-white/10 border-white/20'
                   : item.rank === 3
@@ -331,13 +340,13 @@ export default function ResultsPage() {
             </div>
             {item.grade && (
               <div className="w-16 text-center hidden md:block">
-                <div className={`text-lg font-bold font-zen-old-mincho ${item.color || ''}`}>
+                <div className="text-lg text-subtle-gray font-bold font-zen-old-mincho">
                   {item.grade}
                 </div>
               </div>
             )}
             <div className="w-20 text-right hidden sm:block">
-              <div className="text-sm text-off-white font-mono font-bold">{item.zenScore}</div>
+              <div className="text-sm text-off-white font-mono font-semibold">{item.zenScore}</div>
               <div className="text-[10px] text-subtle-gray uppercase">Zen</div>
             </div>
             <div className="text-right px-4">
