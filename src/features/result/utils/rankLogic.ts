@@ -15,9 +15,9 @@ export const calculateRank = (wpm: number, acc: number): RankResult => {
   // 2. Safety Net: If accuracy is too low, force low rank.
   if (acc < 80)
     return {
-      grade: 'C',
-      title: 'Seed (種)',
-      color: THEME.rankColors.C, // Fallback or strict C
+      grade: 'D',
+      title: 'Pebble (小石)',
+      color: THEME.rankColors.D,
       score: zenScore,
     };
 
@@ -29,10 +29,24 @@ export const calculateRank = (wpm: number, acc: number): RankResult => {
       score: zenScore,
     };
 
+  if (zenScore >= RANK_THRESHOLDS.SS_PLUS.score)
+    return {
+      ...RANK_THRESHOLDS.SS_PLUS,
+      color: THEME.rankColors.SS_PLUS,
+      score: zenScore,
+    };
+
   if (zenScore >= RANK_THRESHOLDS.SS.score)
     return {
       ...RANK_THRESHOLDS.SS,
       color: THEME.rankColors.SS,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.SS_MINUS.score)
+    return {
+      ...RANK_THRESHOLDS.SS_MINUS,
+      color: THEME.rankColors.SS_MINUS,
       score: zenScore,
     };
 
@@ -94,5 +108,15 @@ export const calculateRank = (wpm: number, acc: number): RankResult => {
       score: zenScore,
     };
 
-  return { ...RANK_THRESHOLDS.C, color: THEME.rankColors.C, score: zenScore };
+  if (zenScore >= RANK_THRESHOLDS.C.score)
+    return { ...RANK_THRESHOLDS.C, color: THEME.rankColors.C, score: zenScore };
+
+  if (zenScore >= RANK_THRESHOLDS.C_MINUS.score)
+    return {
+      ...RANK_THRESHOLDS.C_MINUS,
+      color: THEME.rankColors.C_MINUS,
+      score: zenScore,
+    };
+
+  return { ...RANK_THRESHOLDS.D, color: THEME.rankColors.D, score: zenScore };
 };

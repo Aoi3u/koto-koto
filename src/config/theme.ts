@@ -18,7 +18,9 @@ export const THEME = {
   },
   rankColors: {
     SSS: 'text-amber-300 drop-shadow-[0_0_25px_rgba(253,224,71,0.4)]',
+    SS_PLUS: 'text-amber-200 drop-shadow-[0_0_18px_rgba(253,224,71,0.35)]',
     SS: 'text-amber-200/90 drop-shadow-[0_0_15px_rgba(253,224,71,0.3)]',
+    SS_MINUS: 'text-amber-100/85 drop-shadow-[0_0_12px_rgba(253,224,71,0.25)]',
     S_PLUS: 'text-amber-100/80 drop-shadow-[0_0_10px_rgba(253,224,71,0.2)]',
     S: 'text-amber-100/70 drop-shadow-sm',
     S_MINUS: 'text-amber-50/60 drop-shadow-sm',
@@ -30,6 +32,8 @@ export const THEME = {
     B_MINUS: 'text-stone-500',
     C_PLUS: 'text-zinc-600',
     C: 'text-zinc-700',
+    C_MINUS: 'text-zinc-700/80',
+    D: 'text-zinc-800',
   },
   seasonal: getCurrentSeasonalTheme,
 } as const;
