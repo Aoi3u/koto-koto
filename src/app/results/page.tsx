@@ -138,12 +138,7 @@ function ResultsPageContent() {
 
   const [tab, setTab] = useState<'history' | 'rankings'>('history');
 
-  useEffect(() => {
-    const tabParam = searchParams.get('tab');
-    if (tabParam === 'rankings') setTab('rankings');
-    else if (tabParam === 'history') setTab('history');
-  }, [searchParams]);
-
+  // Data states
   const [history, setHistory] = useState<{
     loading: boolean;
     error: string | null;
@@ -157,6 +152,57 @@ function ResultsPageContent() {
 
   const [timeframe, setTimeframe] = useState<'all' | 'week' | 'month' | 'day'>('all');
   const [limit, setLimit] = useState<number>(50);
+
+  // Scroll detection refs
+  const historyScrollRef = useRef<HTMLDivElement>(null);
+  const rankingsScrollRef = useRef<HTMLDivElement>(null);
+  const [historyScrollState, setHistoryScrollState] = useState({ top: false, bottom: false });
+  const [rankingsScrollState, setRankingsScrollState] = useState({ top: false, bottom: false });
+
+  // Handle scroll detection
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>, isRankings: boolean) => {
+    const element = e.currentTarget;
+    const hasScrollTop = element.scrollTop > 10;
+    const hasScrollBottom = element.scrollTop < element.scrollHeight - element.clientHeight - 10;
+
+    if (isRankings) {
+      setRankingsScrollState({ top: hasScrollTop, bottom: hasScrollBottom });
+    } else {
+      setHistoryScrollState({ top: hasScrollTop, bottom: hasScrollBottom });
+    }
+  }, []);
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'rankings') setTab('rankings');
+    else if (tabParam === 'history') setTab('history');
+  }, [searchParams]);
+
+  // Check scroll state on data load
+  useEffect(() => {
+    const checkScroll = (ref: React.RefObject<HTMLDivElement | null>, isRankings: boolean) => {
+      if (ref.current) {
+        const element = ref.current;
+        const hasScrollTop = element.scrollTop > 10;
+        const hasScrollBottom =
+          element.scrollTop < element.scrollHeight - element.clientHeight - 10;
+
+        if (isRankings) {
+          setRankingsScrollState({ top: hasScrollTop, bottom: hasScrollBottom });
+        } else {
+          setHistoryScrollState({ top: hasScrollTop, bottom: hasScrollBottom });
+        }
+      }
+    };
+
+    // Small delay to ensure DOM is updated
+    const timer = setTimeout(() => {
+      checkScroll(historyScrollRef, false);
+      checkScroll(rankingsScrollRef, true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [history.data, rankings.data]);
 
   const fetchHistory = useCallback(async () => {
     if (!session?.user) return;
@@ -218,7 +264,13 @@ function ResultsPageContent() {
       return <div className="text-subtle-gray text-sm py-8">No results yet.</div>;
 
     return (
-      <div className="grid gap-3">
+      <div
+        ref={historyScrollRef}
+        onScroll={(e) => handleScroll(e, false)}
+        className={`grid gap-3 max-h-[calc(100vh-20rem)] overflow-y-auto pr-2 scrollbar-thin scroll-container ${
+          historyScrollState.top ? 'has-scroll-top' : ''
+        } ${historyScrollState.bottom ? 'has-scroll-bottom' : ''}`}
+      >
         {history.data.map((item, i) => {
           const rankResult = calculateRank(item.wpm, item.accuracy);
           const zenScore = calculateZenScore(item.wpm, item.accuracy);
@@ -298,7 +350,7 @@ function ResultsPageContent() {
         })}
       </div>
     );
-  }, [history, status, seasonalTheme]);
+  }, [history, status, seasonalTheme, historyScrollState, handleScroll]);
 
   const rankingsContent = useMemo(() => {
     if (rankings.loading) return <div className="text-subtle-gray text-sm py-8">Loading...</div>;
@@ -308,7 +360,13 @@ function ResultsPageContent() {
       return <div className="text-subtle-gray text-sm py-8">No rankings yet.</div>;
 
     return (
-      <div className="grid gap-2">
+      <div
+        ref={rankingsScrollRef}
+        onScroll={(e) => handleScroll(e, true)}
+        className={`grid gap-2 max-h-[calc(100vh-20rem)] overflow-y-auto pr-2 scrollbar-thin scroll-container ${
+          rankingsScrollState.top ? 'has-scroll-top' : ''
+        } ${rankingsScrollState.bottom ? 'has-scroll-bottom' : ''}`}
+      >
         {rankings.data.map((item, i) => (
           <motion.div
             key={`${item.rank}-${item.user}-${item.createdAt}`}
@@ -394,7 +452,7 @@ function ResultsPageContent() {
         ))}
       </div>
     );
-  }, [rankings, seasonalTheme]);
+  }, [rankings, seasonalTheme, rankingsScrollState, handleScroll]);
 
   return (
     <main className="min-h-screen bg-zen-dark pt-32 pb-16 px-4 md:px-8">
