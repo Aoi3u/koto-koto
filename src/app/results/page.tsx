@@ -373,14 +373,14 @@ function ResultsPageContent() {
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.02 }}
-            className={`flex items-center p-3 rounded-md border transition-colors ${
+            className={`flex items-center p-3 rounded-md border transition-all duration-300 ${
               item.rank === 1
                 ? 'bg-yellow-700/20 border-yellow-700/30'
                 : item.rank === 2
                   ? 'bg-white/10 border-white/20'
                   : item.rank === 3
                     ? 'bg-orange-700/20 border-orange-700/30'
-                    : 'bg-transparent border-transparent hover:bg-white/5'
+                    : 'bg-transparent border-transparent hover:bg-white/5 hover:border-white/20'
             }`}
             style={
               item.rank > 3
@@ -482,7 +482,7 @@ function ResultsPageContent() {
           <div className="flex gap-8 border-b border-white/10 pb-1">
             <button
               onClick={() => setTab('history')}
-              className={`pb-2 text-sm tracking-widest uppercase transition-colors relative ${
+              className={`pb-2 text-sm tracking-widest uppercase transition-colors duration-300 relative ${
                 tab === 'history' ? 'text-off-white' : 'text-subtle-gray hover:text-off-white'
               }`}
             >
@@ -497,7 +497,7 @@ function ResultsPageContent() {
             </button>
             <button
               onClick={() => setTab('rankings')}
-              className={`pb-2 text-sm tracking-widest uppercase transition-colors relative ${
+              className={`pb-2 text-sm tracking-widest uppercase transition-colors duration-300 relative ${
                 tab === 'rankings' ? 'text-off-white' : 'text-subtle-gray hover:text-off-white'
               }`}
             >
