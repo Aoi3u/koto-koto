@@ -3,11 +3,11 @@ import { RANK_THRESHOLDS } from '../config/gameConfig';
 import { THEME } from '../config/theme';
 
 describe('rankLogic', () => {
-  test('accuracy gate: acc < 80 forces C', () => {
+  test('accuracy gate: acc < 80 forces D', () => {
     const r = calculateRank(200, 79);
-    expect(r.grade).toBe('C');
-    expect(r.title).toBe('Seed (種)');
-    expect(r.color).toBe(THEME.rankColors.C);
+    expect(r.grade).toBe('D');
+    expect(r.title).toBe('Pebble (小石)');
+    expect(r.color).toBe(THEME.rankColors.D);
   });
 
   test('exact threshold yields correct S ranks', () => {
