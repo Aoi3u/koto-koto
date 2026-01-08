@@ -75,7 +75,3 @@ For detailed technical documentation, see:
 ## 🤝 Contributing
 
 Contributions are welcome! Please submit Pull Requests.
-
-## 📄 License
-
-MIT
