@@ -1,16 +1,11 @@
 import { RANK_THRESHOLDS } from '../../../config/gameConfig';
 import { THEME } from '../../../config/theme';
-
-export interface RankResult {
-  grade: string;
-  title: string;
-  color: string;
-  score: number;
-}
+import { calculateZenScore } from '../../../lib/gameUtils';
+import type { RankResult } from '@/types/game';
 
 export const calculateRank = (wpm: number, acc: number): RankResult => {
   // 1. Formula: ZenScore = WPM * (Accuracy / 100)
-  const zenScore = wpm * (acc / 100);
+  const zenScore = calculateZenScore(wpm, acc);
 
   // 2. Safety Net: If accuracy is too low, force low rank.
   if (acc < 80)

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { calculateRank } from '@/features/result/utils/rankLogic';
-import { calculateZenScore } from '@/lib/formatters';
+import { calculateZenScore } from '@/lib/gameUtils';
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 200;
