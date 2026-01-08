@@ -13,6 +13,7 @@ import { SeasonalProvider, useSeasonalTheme } from '../contexts/SeasonalContext'
 import { motion, AnimatePresence } from 'framer-motion';
 import { calculateAccuracy, calculateWPM } from '../lib/formatters';
 import { useToast } from './ToastProvider';
+import type { GameResultPayload } from '@/types/game';
 
 function TypingGameInner() {
   const seasonalTheme = useSeasonalTheme();
@@ -60,7 +61,7 @@ function TypingGameInner() {
     const wpm = calculateWPM(correctKeyCount, minutes);
     const accuracy = calculateAccuracy(correctKeyCount, totalKeystrokes);
 
-    const payload = {
+    const payload: GameResultPayload = {
       wpm,
       accuracy,
       keystrokes: totalKeystrokes,

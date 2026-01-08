@@ -1,57 +1,120 @@
-import { useState, useCallback } from 'react';
+import { useReducer, useCallback } from 'react';
 import { checkRomaji, isValidPrefix } from '../../../lib/romaji';
 import { useSoundContext } from '../../../contexts/SoundContext';
+import type { RippleEffect, TypingEngineState } from '@/types/game';
+
+type TypingEngineAction =
+  | { type: 'SET_TARGET'; payload: string }
+  | {
+      type: 'PROCESS_INPUT';
+      payload: { key: string; remainingTarget: string; pendingInput: string };
+    }
+  | { type: 'RESET' }
+  | { type: 'SET_SHAKE'; payload: boolean }
+  | {
+      type: 'MARK_MATCH';
+      payload: {
+        matched: string;
+        kanaMatched: string;
+        newTarget: string;
+        newPending: string;
+        comboIncrement: number;
+      };
+    }
+  | { type: 'MARK_PREFIX'; payload: string }
+  | { type: 'MARK_ERROR' }
+  | { type: 'SET_RIPPLE'; payload: RippleEffect | null };
+
+const initialState: TypingEngineState = {
+  matchedRomaji: '',
+  matchedKana: '',
+  pendingInput: '',
+  remainingTarget: '',
+  correctKeyCount: 0,
+  errorCount: 0,
+  currentCombo: 0,
+  maxCombo: 0,
+  shake: false,
+  ripple: null,
+};
+
+function typingEngineReducer(
+  state: TypingEngineState,
+  action: TypingEngineAction
+): TypingEngineState {
+  switch (action.type) {
+    case 'SET_TARGET':
+      return {
+        ...state,
+        remainingTarget: action.payload,
+        matchedKana: '',
+        matchedRomaji: '',
+        pendingInput: '',
+      };
+
+    case 'RESET':
+      return initialState;
+
+    case 'MARK_MATCH': {
+      const newCombo = state.currentCombo + 1;
+      return {
+        ...state,
+        correctKeyCount: state.correctKeyCount + 1,
+        currentCombo: newCombo,
+        maxCombo: Math.max(state.maxCombo, newCombo),
+        matchedRomaji: state.matchedRomaji + action.payload.matched,
+        matchedKana: state.matchedKana + action.payload.kanaMatched,
+        remainingTarget: action.payload.newTarget,
+        pendingInput: action.payload.newPending,
+      };
+    }
+
+    case 'MARK_PREFIX':
+      return {
+        ...state,
+        correctKeyCount: state.correctKeyCount + 1,
+        pendingInput: action.payload,
+      };
+
+    case 'MARK_ERROR':
+      return {
+        ...state,
+        shake: true,
+        errorCount: state.errorCount + 1,
+        currentCombo: 0,
+      };
+
+    case 'SET_SHAKE':
+      return {
+        ...state,
+        shake: action.payload,
+      };
+
+    case 'SET_RIPPLE':
+      return {
+        ...state,
+        ripple: action.payload,
+      };
+
+    default:
+      return state;
+  }
+}
 
 export default function useTypingEngine() {
-  const [matchedRomaji, setMatchedRomaji] = useState('');
-  const [pendingInput, setPendingInput] = useState('');
-  const [remainingTarget, setRemainingTarget] = useState('');
-  const [matchedKana, setMatchedKana] = useState('');
-
-  const [shake, setShake] = useState(false);
-  const [ripple, setRipple] = useState<{
-    x: number;
-    y: number;
-    id: number;
-  } | null>(null);
-
-  const [correctKeyCount, setCorrectKeyCount] = useState(0);
-  const [errorCount, setErrorCount] = useState(0);
-  const [currentCombo, setCurrentCombo] = useState(0);
-  const [maxCombo, setMaxCombo] = useState(0);
-
+  const [state, dispatch] = useReducer(typingEngineReducer, initialState);
   const { playKeySound } = useSoundContext();
 
   const resetEngine = useCallback(() => {
-    setMatchedRomaji('');
-    setPendingInput('');
-    setRemainingTarget('');
-    setMatchedKana('');
-    setCorrectKeyCount(0);
-    setErrorCount(0);
-    setCurrentCombo(0);
-    setMaxCombo(0);
-    setShake(false);
+    dispatch({ type: 'RESET' });
   }, []);
 
   const setTarget = useCallback((newTarget: string) => {
-    setRemainingTarget(newTarget);
-    setMatchedKana('');
-    setMatchedRomaji('');
-    setPendingInput('');
+    dispatch({ type: 'SET_TARGET', payload: newTarget });
   }, []);
 
   const processInput = useCallback(
-    (
-      currentPending: string,
-      currentTarget: string
-    ): {
-      newPending: string;
-      newTarget: string;
-      matched: string; // Romaji
-      kanaMatched: string; // Kana
-      comboIncrement: number;
-    } => {
+    (currentPending: string, currentTarget: string) => {
       let pending = currentPending;
       let target = currentTarget;
       let totalMatchedRomaji = '';
@@ -67,7 +130,7 @@ export default function useTypingEngine() {
           target = result.remainingTarget;
           pending = pending.slice(result.consumedInput.length);
           comboAdd++;
-          setRipple({ x: 0, y: 0, id: Date.now() + Math.random() });
+          dispatch({ type: 'SET_RIPPLE', payload: { x: 0, y: 0, id: Date.now() + Math.random() } });
         } else {
           break;
         }
@@ -89,54 +152,43 @@ export default function useTypingEngine() {
     (key: string) => {
       if (!/^[a-z0-9\-,\.]$/.test(key)) return;
 
-      const nextInput = pendingInput + key;
-
+      const nextInput = state.pendingInput + key;
       const { newPending, newTarget, matched, kanaMatched, comboIncrement } = processInput(
         nextInput,
-        remainingTarget
+        state.remainingTarget
       );
 
       if (comboIncrement > 0) {
-        setCorrectKeyCount((c) => c + 1);
-        setCurrentCombo((prev) => {
-          const newCombo = prev + 1;
-          setMaxCombo((m) => Math.max(m, newCombo));
-          return newCombo;
+        dispatch({
+          type: 'MARK_MATCH',
+          payload: { matched, kanaMatched, newTarget, newPending, comboIncrement },
         });
-        setMatchedRomaji((prev) => prev + matched);
-        setMatchedKana((prev) => prev + kanaMatched);
-        setRemainingTarget(newTarget);
-        setPendingInput(newPending);
-
         return { isWordComplete: newTarget === '' };
       } else {
-        if (isValidPrefix(remainingTarget, nextInput)) {
-          setCorrectKeyCount((c) => c + 1);
+        if (isValidPrefix(state.remainingTarget, nextInput)) {
           playKeySound();
-          setPendingInput(nextInput);
+          dispatch({ type: 'MARK_PREFIX', payload: nextInput });
         } else {
-          setShake(true);
-          setTimeout(() => setShake(false), 300);
-          setErrorCount((c) => c + 1);
-          setCurrentCombo(0);
+          dispatch({ type: 'MARK_ERROR' });
+          setTimeout(() => dispatch({ type: 'SET_SHAKE', payload: false }), 300);
         }
         return { isWordComplete: false };
       }
     },
-    [pendingInput, remainingTarget, processInput, playKeySound]
+    [state.pendingInput, state.remainingTarget, processInput, playKeySound]
   );
 
   return {
-    matchedRomaji,
-    pendingInput,
-    remainingTarget,
-    matchedKana,
-    shake,
-    ripple,
-    correctKeyCount,
-    errorCount,
-    currentCombo,
-    maxCombo,
+    matchedRomaji: state.matchedRomaji,
+    pendingInput: state.pendingInput,
+    remainingTarget: state.remainingTarget,
+    matchedKana: state.matchedKana,
+    shake: state.shake,
+    ripple: state.ripple,
+    correctKeyCount: state.correctKeyCount,
+    errorCount: state.errorCount,
+    currentCombo: state.currentCombo,
+    maxCombo: state.maxCombo,
     handleInput,
     resetEngine,
     setTarget,
