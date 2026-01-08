@@ -75,7 +75,7 @@ function CustomSelect<T extends string | number>({
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 text-xs text-subtle-gray hover:text-off-white transition-colors py-1 border-b border-transparent"
         style={{
-          borderColor: isOpen ? seasonalTheme.adjustedColors.primary : 'transparent',
+          borderColor: isOpen ? seasonalTheme.adjustedColors.primary : 'rgba(0, 0, 0, 0)',
         }}
       >
         {label && <span className="opacity-50 mr-1">{label}:</span>}
@@ -385,7 +385,7 @@ function ResultsPageContent() {
             style={
               item.rank > 3
                 ? {
-                    borderColor: 'transparent',
+                    borderColor: 'rgba(0, 0, 0, 0)',
                   }
                 : {}
             }

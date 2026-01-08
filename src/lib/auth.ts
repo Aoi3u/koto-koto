@@ -45,8 +45,7 @@ function isGoogleOAuthConfigured(): boolean {
 }
 
 export const authOptions: NextAuthOptions = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  adapter: PrismaAdapter(prisma as any),
+  adapter: PrismaAdapter(prisma),
   session: { strategy: 'jwt' },
   callbacks: {
     jwt: async ({ token, user, trigger, session }) => {
