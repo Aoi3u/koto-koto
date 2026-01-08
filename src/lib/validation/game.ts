@@ -54,6 +54,14 @@ export const GameResultFlexibleSchema = z
       return data.correctKeystrokes <= data.keystrokes;
     }
     return true;
-  }, 'Correct keystrokes cannot exceed total keystrokes');
+  }, 'Correct keystrokes cannot exceed total keystrokes')
+  .transform((data) => ({
+    wpm: data.wpm!,
+    accuracy: data.accuracy!,
+    keystrokes: data.keystrokes!,
+    correctKeystrokes: data.correctKeystrokes,
+    elapsedTime: data.elapsedTime!,
+    difficulty: data.difficulty,
+  }));
 
 export type GameResultPayload = z.infer<typeof GameResultPayloadSchema>;

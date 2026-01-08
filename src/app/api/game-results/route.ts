@@ -44,7 +44,7 @@ export const POST = async (req: Request) => {
 
   const result = GameResultFlexibleSchema.safeParse(json);
   if (!result.success) {
-    return badRequest(result.error.errors[0]?.message || 'Validation failed');
+    return badRequest(result.error.issues[0]?.message || 'Validation failed');
   }
 
   const { wpm, accuracy, keystrokes, correctKeystrokes, elapsedTime, difficulty } = result.data;
