@@ -2,75 +2,12 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { GameResultFlexibleSchema } from '@/lib/validation/game';
 
 const MAX_RESULTS = 50;
 
-type ValidPayload = {
-  wpm: number;
-  accuracy: number;
-  keystrokes: number;
-  correctKeystrokes?: number;
-  elapsedTime: number;
-  difficulty: string;
-};
-
-type NormalizedPayload = { data: ValidPayload } | { error: string };
-
 const unauthorized = () => NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 const badRequest = (message: string) => NextResponse.json({ error: message }, { status: 400 });
-
-const toNumber = (value: unknown) => {
-  if (typeof value === 'number' && Number.isFinite(value)) return value;
-  if (typeof value === 'string' && value.trim() !== '') {
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : NaN;
-  }
-  return NaN;
-};
-
-const normalizePayload = (body: unknown): NormalizedPayload => {
-  if (!body || typeof body !== 'object') return { error: 'Invalid JSON payload' };
-
-  const payload = body as Record<string, unknown>;
-  const wpm = toNumber(payload.wpm ?? payload.wordsPerMinute);
-  const accuracy = toNumber(payload.accuracy);
-  const keystrokes = toNumber(payload.keystrokes ?? payload.totalCharacters);
-  const correctKeystrokesRaw = payload.correctKeystrokes ?? payload.correctCharacters;
-  const correctKeystrokes =
-    correctKeystrokesRaw === undefined ? undefined : toNumber(correctKeystrokesRaw);
-  const elapsedTime = toNumber(payload.elapsedTime ?? payload.totalTime);
-  const difficulty = typeof payload.difficulty === 'string' ? payload.difficulty : 'normal';
-
-  if ([wpm, accuracy, keystrokes, elapsedTime].some((v) => Number.isNaN(v))) {
-    return { error: 'Missing or invalid required fields' };
-  }
-
-  if (wpm < 0 || keystrokes < 0 || elapsedTime < 0 || accuracy < 0 || accuracy > 100) {
-    return { error: 'Fields out of allowed range' };
-  }
-
-  if (correctKeystrokes !== undefined) {
-    if (
-      Number.isNaN(correctKeystrokes) ||
-      correctKeystrokes < 0 ||
-      correctKeystrokes > keystrokes
-    ) {
-      return { error: 'Invalid correctKeystrokes' };
-    }
-  }
-
-  return {
-    data: {
-      wpm: Math.round(wpm),
-      accuracy,
-      keystrokes: Math.round(keystrokes),
-      correctKeystrokes:
-        correctKeystrokes === undefined ? undefined : Math.round(correctKeystrokes),
-      elapsedTime: Math.round(elapsedTime),
-      difficulty,
-    },
-  };
-};
 
 const mapResult = (result: {
   id: string;
@@ -98,20 +35,28 @@ export const POST = async (req: Request) => {
     session?.user && 'id' in session.user ? (session.user as { id?: string }).id : undefined;
   if (!userId) return unauthorized();
 
-  const json = await req.json().catch(() => null);
-  const normalized = normalizePayload(json);
-  if ('error' in normalized) return badRequest(normalized.error);
+  let json: unknown;
+  try {
+    json = await req.json();
+  } catch {
+    return badRequest('Invalid JSON payload');
+  }
 
-  const { wpm, accuracy, keystrokes, correctKeystrokes, elapsedTime, difficulty } = normalized.data;
+  const result = GameResultFlexibleSchema.safeParse(json);
+  if (!result.success) {
+    return badRequest(result.error.errors[0]?.message || 'Validation failed');
+  }
+
+  const { wpm, accuracy, keystrokes, correctKeystrokes, elapsedTime, difficulty } = result.data;
 
   const created = await prisma.gameResult.create({
     data: {
       userId,
-      wordsPerMinute: wpm,
+      wordsPerMinute: Math.round(wpm),
       accuracy,
-      totalCharacters: keystrokes,
-      correctCharacters: correctKeystrokes ?? keystrokes,
-      totalTime: elapsedTime,
+      totalCharacters: Math.round(keystrokes),
+      correctCharacters: Math.round(correctKeystrokes ?? keystrokes),
+      totalTime: Math.round(elapsedTime),
       difficulty,
     },
     select: {
