@@ -1,11 +1,5 @@
+import type { MatchResult } from '@/types/game';
 import { KANA_MAP, SMALL_TSU_OPTIONS, TARGET_PREFIX_LENGTHS } from './constants/kana-map';
-
-export type MatchResult = {
-  isMatch: boolean;
-  consumedInput: string;
-  consumedTarget: string;
-  remainingTarget: string;
-};
 
 export type TrieNode = {
   children: Map<string, TrieNode>;
