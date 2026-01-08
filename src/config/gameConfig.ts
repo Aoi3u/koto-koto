@@ -6,6 +6,16 @@ export const GAME_CONFIG = {
 };
 
 export const RANK_THRESHOLDS = {
+  NIRVANA_MASTER: { score: 100, grade: 'SSS 大師', title: 'Nirvana (涅槃)' },
+  NIRVANA_9: { score: 98, grade: 'SSS 九段', title: 'Nirvana (涅槃)' },
+  NIRVANA_8: { score: 96, grade: 'SSS 八段', title: 'Nirvana (涅槃)' },
+  NIRVANA_7: { score: 94, grade: 'SSS 七段', title: 'Nirvana (涅槃)' },
+  NIRVANA_6: { score: 92, grade: 'SSS 六段', title: 'Nirvana (涅槃)' },
+  NIRVANA_5: { score: 90, grade: 'SSS 五段', title: 'Nirvana (涅槃)' },
+  NIRVANA_4: { score: 88, grade: 'SSS 四段', title: 'Nirvana (涅槃)' },
+  NIRVANA_3: { score: 86, grade: 'SSS 三段', title: 'Nirvana (涅槃)' },
+  NIRVANA_2: { score: 84, grade: 'SSS 二段', title: 'Nirvana (涅槃)' },
+  NIRVANA_1: { score: 82, grade: 'SSS 初段', title: 'Nirvana (涅槃)' },
   SSS: { score: 80, grade: 'SSS', title: 'Nirvana (涅槃)' },
   SS_PLUS: { score: 75, grade: 'SS+', title: 'Heaven (天)' },
   SS: { score: 70, grade: 'SS', title: 'Void (虚空)' },
