@@ -22,6 +22,77 @@ export const calculateRank = (wpm: number, acc: number): RankResult => {
     };
 
   // 3. Thresholds (High Density Ladder)
+  // SSS Tier - Nirvana with Dan (段位)
+  if (zenScore >= RANK_THRESHOLDS.NIRVANA_MASTER.score)
+    return {
+      ...RANK_THRESHOLDS.NIRVANA_MASTER,
+      color: THEME.rankColors.NIRVANA_MASTER,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.NIRVANA_9.score)
+    return {
+      ...RANK_THRESHOLDS.NIRVANA_9,
+      color: THEME.rankColors.NIRVANA_9,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.NIRVANA_8.score)
+    return {
+      ...RANK_THRESHOLDS.NIRVANA_8,
+      color: THEME.rankColors.NIRVANA_8,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.NIRVANA_7.score)
+    return {
+      ...RANK_THRESHOLDS.NIRVANA_7,
+      color: THEME.rankColors.NIRVANA_7,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.NIRVANA_6.score)
+    return {
+      ...RANK_THRESHOLDS.NIRVANA_6,
+      color: THEME.rankColors.NIRVANA_6,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.NIRVANA_5.score)
+    return {
+      ...RANK_THRESHOLDS.NIRVANA_5,
+      color: THEME.rankColors.NIRVANA_5,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.NIRVANA_4.score)
+    return {
+      ...RANK_THRESHOLDS.NIRVANA_4,
+      color: THEME.rankColors.NIRVANA_4,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.NIRVANA_3.score)
+    return {
+      ...RANK_THRESHOLDS.NIRVANA_3,
+      color: THEME.rankColors.NIRVANA_3,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.NIRVANA_2.score)
+    return {
+      ...RANK_THRESHOLDS.NIRVANA_2,
+      color: THEME.rankColors.NIRVANA_2,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.NIRVANA_1.score)
+    return {
+      ...RANK_THRESHOLDS.NIRVANA_1,
+      color: THEME.rankColors.NIRVANA_1,
+      score: zenScore,
+    };
+
   if (zenScore >= RANK_THRESHOLDS.SSS.score)
     return {
       ...RANK_THRESHOLDS.SSS,

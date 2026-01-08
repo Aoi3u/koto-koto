@@ -17,6 +17,17 @@ export const THEME = {
     mono: "'JetBrains Mono', monospace",
   },
   rankColors: {
+    NIRVANA_MASTER:
+      'text-amber-300 drop-shadow-[0_0_35px_rgba(253,224,71,0.6)] shadow-amber-300/50',
+    NIRVANA_9: 'text-amber-300 drop-shadow-[0_0_33px_rgba(253,224,71,0.55)]',
+    NIRVANA_8: 'text-amber-300 drop-shadow-[0_0_31px_rgba(253,224,71,0.5)]',
+    NIRVANA_7: 'text-amber-300 drop-shadow-[0_0_29px_rgba(253,224,71,0.48)]',
+    NIRVANA_6: 'text-amber-300 drop-shadow-[0_0_27px_rgba(253,224,71,0.45)]',
+    NIRVANA_5: 'text-amber-300 drop-shadow-[0_0_25px_rgba(253,224,71,0.42)]',
+    NIRVANA_4: 'text-amber-300 drop-shadow-[0_0_23px_rgba(253,224,71,0.4)]',
+    NIRVANA_3: 'text-amber-300 drop-shadow-[0_0_21px_rgba(253,224,71,0.38)]',
+    NIRVANA_2: 'text-amber-300 drop-shadow-[0_0_19px_rgba(253,224,71,0.36)]',
+    NIRVANA_1: 'text-amber-300 drop-shadow-[0_0_17px_rgba(253,224,71,0.34)]',
     SSS: 'text-amber-300 drop-shadow-[0_0_25px_rgba(253,224,71,0.4)]',
     SS_PLUS: 'text-amber-200 drop-shadow-[0_0_18px_rgba(253,224,71,0.35)]',
     SS: 'text-amber-200/90 drop-shadow-[0_0_15px_rgba(253,224,71,0.3)]',
