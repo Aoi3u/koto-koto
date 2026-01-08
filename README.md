@@ -20,11 +20,13 @@ A minimalist, zen-inspired Japanese typing game designed to induce a state of fl
 ## 🛠️ Tech Stack
 
 - **Framework**: Next.js 16 (App Router)
-- **Language**: TypeScript
+- **Language**: TypeScript 5
 - **Styling**: Tailwind CSS 4
-- **Animation**: Framer Motion
+- **Animation**: Framer Motion 12
+- **Validation**: Zod (runtime type safety)
 - **Authentication**: NextAuth.js v4
 - **Database**: Prisma 7 + Supabase PostgreSQL
+- **Testing**: Jest 29 + React Testing Library
 
 ## 🚀 Quick Start
 
