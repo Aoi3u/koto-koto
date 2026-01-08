@@ -87,6 +87,7 @@ describe('Rankings API', () => {
 
     expect(mockFindMany()).toHaveBeenCalledWith({
       where: undefined,
+      orderBy: { createdAt: 'desc' },
       take: 50,
       select: {
         wordsPerMinute: true,
@@ -121,6 +122,7 @@ describe('Rankings API', () => {
 
     const call = mockFindMany().mock.calls[0]?.[0];
     expect(call.take).toBe(10);
+    expect(call.orderBy).toEqual({ createdAt: 'desc' });
     expect(call.where).toBeDefined();
     const gte: Date | undefined = call.where?.createdAt?.gte;
     expect(gte).toBeInstanceOf(Date);

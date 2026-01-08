@@ -50,6 +50,7 @@ export const GET = async (req: Request) => {
 
   const results = await prisma.gameResult.findMany({
     where: gte ? { createdAt: { gte } } : undefined,
+    orderBy: { createdAt: 'desc' },
     take: limit,
     select: {
       wordsPerMinute: true,
