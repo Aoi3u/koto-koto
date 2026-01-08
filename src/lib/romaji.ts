@@ -1,10 +1,5 @@
-import {
-  KANA_MAP,
-  MatchResult,
-  getNextChars,
-  isValidPrefix as trieIsValidPrefix,
-  match,
-} from './romaji-trie';
+import type { MatchResult } from '@/types/game';
+import { KANA_MAP, getNextChars, isValidPrefix as trieIsValidPrefix, match } from './romaji-trie';
 
 export { KANA_MAP, getNextChars };
 export type { MatchResult };

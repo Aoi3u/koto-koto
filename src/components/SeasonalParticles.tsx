@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 interface SeasonalParticle {
@@ -42,6 +42,23 @@ export default function SeasonalParticles({ emoji, color, count = 15 }: Seasonal
     setParticles(generateParticles(count));
   }, [count]);
 
+  // Memoize animation variants to prevent unnecessary motion.div re-renders
+  const animationVariants = useMemo(
+    () => ({
+      initial: { opacity: 0 },
+      animate: {
+        y: '120vh',
+        opacity: [0, 0.3, 0.3, 0],
+        x: [0, 20, -10, 5],
+      },
+      transition: {
+        repeat: Infinity,
+        ease: 'linear' as const,
+      },
+    }),
+    [] // animation variants are static
+  );
+
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {particles.map((particle) => (
@@ -53,17 +70,12 @@ export default function SeasonalParticles({ emoji, color, count = 15 }: Seasonal
             fontSize: `${particle.size}rem`,
             filter: `drop-shadow(0 0 8px ${color})`,
           }}
-          initial={{ y: `${particle.y}vh`, opacity: 0 }}
-          animate={{
-            y: '120vh',
-            opacity: [0, 0.3, 0.3, 0],
-            x: [0, 20, -10, 5],
-          }}
+          initial={{ ...animationVariants.initial, y: `${particle.y}vh` }}
+          animate={animationVariants.animate}
           transition={{
+            ...animationVariants.transition,
             duration: particle.duration,
             delay: particle.delay,
-            repeat: Infinity,
-            ease: 'linear',
           }}
         >
           {emoji}

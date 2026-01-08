@@ -1,8 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { getRandomSentences, Sentence } from '../../../data/sentences';
 import { GAME_CONFIG } from '../../../config/gameConfig';
-
-export type GameState = 'waiting' | 'playing' | 'finished';
+import type { GameState } from '@/types/game';
 
 export default function useGameSession() {
   const [gameState, setGameState] = useState<GameState>('waiting');
