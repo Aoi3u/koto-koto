@@ -43,11 +43,13 @@ model GameResult {
   correctCharacters Int
   totalTime      Int // milliseconds
   difficulty     String    @default("normal")
+  zenScore       Float? // Calculated as (wordsPerMinute * accuracy / 100) for leaderboard optimization
   
   createdAt     DateTime  @default(now())
 
   @@index([userId])
   @@index([createdAt])
+  @@index([zenScore(sort: Desc)])
 }
 
 // NextAuth accounts

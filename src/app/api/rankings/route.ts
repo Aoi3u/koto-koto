@@ -37,6 +37,13 @@ const timeframeToDate = (timeframe: 'all' | 'week' | 'month' | 'day') => {
   return null;
 };
 
+// Generate anonymous handle from user ID for privacy
+const generateAnonymousHandle = (userId: string): string => {
+  // Use first 8 characters of user ID to create a consistent but non-identifiable handle
+  const shortId = userId.substring(0, 8);
+  return `Player_${shortId}`;
+};
+
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
 
@@ -48,38 +55,39 @@ export const GET = async (req: Request) => {
 
   const gte = timeframeToDate(timeframe);
 
+  // Fetch top N results directly using zenScore index
+  // Only include records with non-null zenScore to ensure proper ranking
   const results = await prisma.gameResult.findMany({
-    where: gte ? { createdAt: { gte } } : undefined,
-    orderBy: { createdAt: 'desc' },
+    where: {
+      zenScore: { not: null },
+      ...(gte ? { createdAt: { gte } } : {}),
+    },
+    orderBy: { zenScore: 'desc' },
     take: limit,
     select: {
       wordsPerMinute: true,
       accuracy: true,
       createdAt: true,
-      user: { select: { name: true, email: true } },
+      zenScore: true,
+      userId: true,
+      user: { select: { name: true } },
     },
   });
 
-  // Calculate Zen Score and sort
-  const withZenScore = results.map((result) => ({
-    ...result,
-    zenScore: calculateZenScore(result.wordsPerMinute, result.accuracy),
-  }));
-
-  withZenScore.sort((a, b) => b.zenScore - a.zenScore);
-
-  const payload = withZenScore.map((result, index) => {
+  const payload = results.map((result, index) => {
     const rankResult = calculateRank(result.wordsPerMinute, result.accuracy);
+    // zenScore should always be present due to WHERE clause, but provide fallback for type safety
+    const zenScore = result.zenScore ?? calculateZenScore(result.wordsPerMinute, result.accuracy);
     return {
       rank: index + 1,
       wpm: result.wordsPerMinute,
       accuracy: result.accuracy,
       createdAt: result.createdAt,
-      zenScore: result.zenScore,
+      zenScore,
       grade: rankResult.grade,
       title: rankResult.title,
       color: rankResult.color,
-      user: result.user?.name ?? result.user?.email ?? 'Anonymous',
+      user: result.user?.name ?? generateAnonymousHandle(result.userId),
     };
   });
 
