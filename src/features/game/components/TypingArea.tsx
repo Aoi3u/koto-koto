@@ -95,6 +95,7 @@ export default function TypingArea({
               style={{
                 color: seasonalTheme.adjustedColors.primary,
                 textShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}`,
+                opacity: 0.5,
               }}
               animate={{
                 textShadow: [
