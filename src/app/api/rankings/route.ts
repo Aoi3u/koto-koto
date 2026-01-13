@@ -48,34 +48,28 @@ export const GET = async (req: Request) => {
 
   const gte = timeframeToDate(timeframe);
 
+  // Fetch top N results directly using zenScore index
   const results = await prisma.gameResult.findMany({
     where: gte ? { createdAt: { gte } } : undefined,
-    orderBy: { createdAt: 'desc' },
+    orderBy: { zenScore: 'desc' },
     take: limit,
     select: {
       wordsPerMinute: true,
       accuracy: true,
       createdAt: true,
+      zenScore: true,
       user: { select: { name: true, email: true } },
     },
   });
 
-  // Calculate Zen Score and sort
-  const withZenScore = results.map((result) => ({
-    ...result,
-    zenScore: calculateZenScore(result.wordsPerMinute, result.accuracy),
-  }));
-
-  withZenScore.sort((a, b) => b.zenScore - a.zenScore);
-
-  const payload = withZenScore.map((result, index) => {
+  const payload = results.map((result, index) => {
     const rankResult = calculateRank(result.wordsPerMinute, result.accuracy);
     return {
       rank: index + 1,
       wpm: result.wordsPerMinute,
       accuracy: result.accuracy,
       createdAt: result.createdAt,
-      zenScore: result.zenScore,
+      zenScore: result.zenScore ?? calculateZenScore(result.wordsPerMinute, result.accuracy), // Fallback for null values
       grade: rankResult.grade,
       title: rankResult.title,
       color: rankResult.color,
