@@ -88,7 +88,7 @@ describe('Rankings API', () => {
     const res = await GET(req);
 
     expect(mockFindMany()).toHaveBeenCalledWith({
-      where: undefined,
+      where: { zenScore: { not: null } },
       orderBy: { zenScore: 'desc' },
       take: 50,
       select: {
@@ -127,6 +127,7 @@ describe('Rankings API', () => {
     expect(call.take).toBe(10);
     expect(call.orderBy).toEqual({ zenScore: 'desc' });
     expect(call.where).toBeDefined();
+    expect(call.where.zenScore).toEqual({ not: null });
     const gte: Date | undefined = call.where?.createdAt?.gte;
     expect(gte).toBeInstanceOf(Date);
     // 7日分引いた日時になっていること（多少の誤差を許容）
