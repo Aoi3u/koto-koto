@@ -35,6 +35,9 @@ export default function useGameController() {
   // Sync Engine with Session Word
   useEffect(() => {
     if (gameState === 'playing' && currentWord) {
+      // Reset engine first to ensure clean state when switching words
+      resetEngine();
+      // Then set the new target
       setTarget(currentWord.reading);
     } else if (gameState === 'waiting') {
       resetEngine();
