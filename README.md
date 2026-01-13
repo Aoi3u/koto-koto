@@ -2,7 +2,8 @@
 
 **Japanese Zen Typing**
 
-<img width="512" height="512" alt="koto-koto_banner" src="https://github.com/user-attachments/assets/80f81de5-e797-4387-8cee-efc4ef408129" />
+<img width="512" height="512" alt="favicon" src="https://github.com/user-attachments/assets/3a08b42a-89f1-4a8c-bfc8-136befdfc51d" />
+
 
 ## Overview
 
