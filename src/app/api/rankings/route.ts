@@ -37,6 +37,13 @@ const timeframeToDate = (timeframe: 'all' | 'week' | 'month' | 'day') => {
   return null;
 };
 
+// Generate anonymous handle from user ID for privacy
+const generateAnonymousHandle = (userId: string): string => {
+  // Use first 8 characters of user ID to create a consistent but non-identifiable handle
+  const shortId = userId.substring(0, 8);
+  return `Player_${shortId}`;
+};
+
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
 
@@ -62,7 +69,8 @@ export const GET = async (req: Request) => {
       accuracy: true,
       createdAt: true,
       zenScore: true,
-      user: { select: { name: true, email: true } },
+      userId: true,
+      user: { select: { name: true } },
     },
   });
 
@@ -79,7 +87,7 @@ export const GET = async (req: Request) => {
       grade: rankResult.grade,
       title: rankResult.title,
       color: rankResult.color,
-      user: result.user?.name ?? result.user?.email ?? 'Anonymous',
+      user: result.user?.name ?? generateAnonymousHandle(result.userId),
     };
   });
 
