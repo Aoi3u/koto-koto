@@ -49,6 +49,9 @@ export const POST = async (req: Request) => {
 
   const { wpm, accuracy, keystrokes, correctKeystrokes, elapsedTime, difficulty } = result.data;
 
+  // Calculate zenScore for leaderboard optimization
+  const zenScore = (Math.round(wpm) * accuracy) / 100;
+
   const created = await prisma.gameResult.create({
     data: {
       userId,
@@ -58,6 +61,7 @@ export const POST = async (req: Request) => {
       correctCharacters: Math.round(correctKeystrokes ?? keystrokes),
       totalTime: Math.round(elapsedTime),
       difficulty,
+      zenScore,
     },
     select: {
       id: true,
