@@ -90,41 +90,38 @@ export default function TypingArea({
         {remainingTarget && (
           <>
             {/* Current Character (Highlighted) */}
-            {/* Only show if not already in matchedKana (defensive check for state sync issues) */}
-            {!matchedKana.endsWith(remainingTarget[0]) && (
-              <motion.span
-                className="relative mx-px font-bold transition-all duration-1000"
-                style={{
-                  color: seasonalTheme.adjustedColors.primary,
+            <motion.span
+              key={remainingTarget}
+              className="relative mx-px font-bold transition-all duration-1000"
+              style={{
+                color: seasonalTheme.adjustedColors.primary,
                   textShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}`,
-                  opacity: 0.5,
-                }}
-                animate={{
-                  textShadow: [
+              }}
+              animate={{
+                textShadow: [
                     `0 0 10px ${seasonalTheme.adjustedColors.glow}`,
                     `0 0 20px ${seasonalTheme.adjustedColors.glow}`,
                     `0 0 10px ${seasonalTheme.adjustedColors.glow}`,
-                  ],
-                }}
-                transition={{
+                ],
+              }}
+              transition={{
                   duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            >
+              {remainingTarget[0]}
+              {/* Caret - Absolute Positioned */}
+              <motion.div
+                className="absolute -bottom-1 left-0 w-full h-0.5 shadow-lg transition-all duration-1000"
+                style={{
+                  backgroundColor: seasonalTheme.colors.accent,
+                  boxShadow: `0 0 10px ${seasonalTheme.colors.accent}`,
                 }}
-              >
-                {remainingTarget[0]}
-                {/* Caret - Absolute Positioned */}
-                <motion.div
-                  className="absolute -bottom-1 left-0 w-full h-0.5 shadow-lg transition-all duration-1000"
-                  style={{
-                    backgroundColor: seasonalTheme.colors.accent,
-                    boxShadow: `0 0 10px ${seasonalTheme.colors.accent}`,
-                  }}
-                  animate={{ opacity: [1, 0.5, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                />
-              </motion.span>
-            )}
+                animate={{ opacity: [1, 0.5, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              />
+            </motion.span>
             {/* Future Characters (Dimmed) */}
             <span
               className="transition-colors duration-200"
