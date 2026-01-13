@@ -70,12 +70,14 @@ describe('Rankings API', () => {
       {
         wordsPerMinute: 200,
         accuracy: 95,
+        zenScore: 190,
         createdAt: new Date('2025-12-01T00:00:00.000Z'),
         user: { name: 'Alice', email: 'alice@example.com' },
       },
       {
         wordsPerMinute: 180,
         accuracy: 96,
+        zenScore: 172.8,
         createdAt: new Date('2025-12-02T00:00:00.000Z'),
         user: { name: null, email: 'bob@example.com' },
       },
@@ -87,12 +89,13 @@ describe('Rankings API', () => {
 
     expect(mockFindMany()).toHaveBeenCalledWith({
       where: undefined,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { zenScore: 'desc' },
       take: 50,
       select: {
         wordsPerMinute: true,
         accuracy: true,
         createdAt: true,
+        zenScore: true,
         user: { select: { name: true, email: true } },
       },
     });
@@ -122,7 +125,7 @@ describe('Rankings API', () => {
 
     const call = mockFindMany().mock.calls[0]?.[0];
     expect(call.take).toBe(10);
-    expect(call.orderBy).toEqual({ createdAt: 'desc' });
+    expect(call.orderBy).toEqual({ zenScore: 'desc' });
     expect(call.where).toBeDefined();
     const gte: Date | undefined = call.where?.createdAt?.gte;
     expect(gte).toBeInstanceOf(Date);
