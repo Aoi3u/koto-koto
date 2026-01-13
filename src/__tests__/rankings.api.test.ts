@@ -72,14 +72,16 @@ describe('Rankings API', () => {
         accuracy: 95,
         zenScore: 190,
         createdAt: new Date('2025-12-01T00:00:00.000Z'),
-        user: { name: 'Alice', email: 'alice@example.com' },
+        userId: 'user-alice-12345',
+        user: { name: 'Alice' },
       },
       {
         wordsPerMinute: 180,
         accuracy: 96,
         zenScore: 172.8,
         createdAt: new Date('2025-12-02T00:00:00.000Z'),
-        user: { name: null, email: 'bob@example.com' },
+        userId: 'user-bob-67890',
+        user: { name: null },
       },
     ]);
 
@@ -96,7 +98,8 @@ describe('Rankings API', () => {
         accuracy: true,
         createdAt: true,
         zenScore: true,
-        user: { select: { name: true, email: true } },
+        userId: true,
+        user: { select: { name: true } },
       },
     });
 
@@ -113,7 +116,7 @@ describe('Rankings API', () => {
       rank: 2,
       wpm: 180,
       accuracy: 96,
-      user: 'bob@example.com',
+      user: 'Player_user-bob',
     });
   });
 
