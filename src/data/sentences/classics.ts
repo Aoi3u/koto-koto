@@ -17,7 +17,7 @@ export const classicsSentences: Sentence[] = [
   {
     id: 'kunikida_musashino_01',
     display: '武蔵野の面影は今わずかに入間郡に残っている。',
-    reading: 'むさしののおもかげはいまわずかにいるまごおりにのこっている。',
+    reading: 'むさしののおもかげはいまわずかにいるまぐんにのこっている。',
     meta: { author: '国木田独歩', title: '武蔵野' },
   },
   {
