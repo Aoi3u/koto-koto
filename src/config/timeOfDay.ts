@@ -27,8 +27,8 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
     description: 'Awakening, mist, gentle light',
     hourRange: [5, 9],
     atmosphere: {
-      brightness: 0.7,
-      saturation: 0.6,
+      brightness: 0.45,
+      saturation: 0.35,
       ambientOverlay: 'rgba(255,250,240,0.08)', // Warm white mist
     },
   },
@@ -38,9 +38,9 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
     description: 'Clarity, stillness, full light',
     hourRange: [10, 15],
     atmosphere: {
-      brightness: 1.0,
-      saturation: 0.8,
-      ambientOverlay: 'rgba(255,255,255,0.05)', // Bright clear
+      brightness: 0.6,
+      saturation: 0.4,
+      ambientOverlay: 'rgba(230,245,255,0.2)', // Bright clear (cool tint)
     },
   },
   sunset: {
@@ -49,9 +49,9 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
     description: 'Tasogare, transition, shadows',
     hourRange: [16, 18],
     atmosphere: {
-      brightness: 0.5,
-      saturation: 1.0,
-      ambientOverlay: 'rgba(255,140,60,0.12)', // Orange glow
+      brightness: 0.45,
+      saturation: 0.95,
+      ambientOverlay: 'rgba(255,140,60,0.11)', // Orange glow
     },
   },
   night: {
@@ -60,9 +60,9 @@ export const TIME_THEMES: Record<TimeOfDay, TimeTheme> = {
     description: 'Deep void, focus, serenity',
     hourRange: [19, 4],
     atmosphere: {
-      brightness: 0.3,
-      saturation: 0.4,
-      ambientOverlay: 'rgba(20,20,40,0.15)', // Deep blue darkness
+      brightness: 0.28,
+      saturation: 0.38,
+      ambientOverlay: 'rgba(20,20,40,0.14)', // Deep blue darkness
     },
   },
 };
