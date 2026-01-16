@@ -22,7 +22,7 @@ export default function HistoryTrendChart({
   return (
     <div className="bg-white/5 border border-white/10 rounded-lg p-4">
       <div className="flex items-center justify-between mb-3">
-        <div className="text-sm uppercase tracking-[0.3em] text-subtle-gray">Trend</div>
+        <div className="text-xs uppercase tracking-[0.3em] text-subtle-gray">Trend</div>
         <div className="text-[12px] text-subtle-gray">{data.length} sessions</div>
       </div>
       <div className="h-96">
