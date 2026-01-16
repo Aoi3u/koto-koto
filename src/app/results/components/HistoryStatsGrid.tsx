@@ -18,18 +18,16 @@ export default function HistoryStatsGrid({ stats }: { stats: HistoryStats }) {
   const statCards = statCardsFrom(stats);
 
   return (
-    <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+    <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
       {statCards.map((stat) => (
         <div
           key={stat.label}
           className="bg-white/5 border border-white/10 rounded-lg p-3 flex flex-col gap-1"
         >
-          <div className="text-[10px] uppercase tracking-[0.2em] text-subtle-gray">
-            {stat.label}
-          </div>
-          <div className="text-lg text-off-white font-mono">
+          <div className="text-sm text-subtle-gray">{stat.label}</div>
+          <div className="text-xl text-off-white font-mono">
             {stat.value}
-            <span className="text-xs text-subtle-gray ml-1">{stat.suffix}</span>
+            <span className="text-sm text-subtle-gray ml-1">{stat.suffix}</span>
           </div>
         </div>
       ))}

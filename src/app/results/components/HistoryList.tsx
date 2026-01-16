@@ -24,7 +24,7 @@ export default function HistoryList({
     <div
       ref={scrollRef}
       onScroll={onScroll}
-      className={`grid gap-3 max-h-[calc(100vh-24rem)] overflow-y-auto pr-2 scrollbar-thin scroll-container ${
+      className={`grid gap-3 pr-2 ${
         scrollState.top ? 'has-scroll-top' : ''
       } ${scrollState.bottom ? 'has-scroll-bottom' : ''}`}
     >

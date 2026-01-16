@@ -22,7 +22,7 @@ export default function RankingsList({
     <div
       ref={scrollRef}
       onScroll={onScroll}
-      className={`grid gap-2 max-h-[calc(100vh-20rem)] overflow-y-auto pr-2 scrollbar-thin scroll-container ${
+      className={`grid gap-2 pr-2 ${
         scrollState.top ? 'has-scroll-top' : ''
       } ${scrollState.bottom ? 'has-scroll-bottom' : ''}`}
     >

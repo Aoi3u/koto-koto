@@ -139,6 +139,18 @@ function ResultsPageContent() {
     fetchRankings();
   }, [fetchRankings]);
 
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, []);
+
   const historyStats = useMemo(() => computeHistoryStats(history.data), [history.data]);
   const historyChartData = useMemo(() => buildHistoryChart(history.data), [history.data]);
 
