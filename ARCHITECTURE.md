@@ -258,6 +258,8 @@ D (Seed) → C (Sprout) → B (Wind in Pines) → A (Clear Sky)
 
 - 個人の成績履歴 (最新50件)
 - Zen Score, Grade, Title表示
+- トレンドチャート (WPM/Accuracy/Zen Score)
+- サマリ統計と連続日数 (streak)
 
 **Rankings Tab** (`/results?tab=rankings`):
 
