@@ -101,7 +101,7 @@ function TypingGameInner() {
 
   return (
     <div
-      className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden font-zen-old-mincho select-none transition-colors duration-1000"
+      className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden font-zen-old-mincho select-none transition-colors duration-1000 pt-20"
       style={{ backgroundColor: seasonalTheme.adjustedColors.background }}
     >
       {/* Mobile Blocker */}
