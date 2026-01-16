@@ -9,6 +9,7 @@ import {
   calculateWPM,
   calculateKPM,
   calculateAccuracy,
+  calculateZenScore,
 } from '../../../lib/formatters';
 
 interface ResultScreenProps {
@@ -37,6 +38,7 @@ export default function ResultScreen({
   const accuracy = calculateAccuracy(correctKeyCount, totalKeystrokes);
 
   const { grade, title, color } = calculateRank(netWpm, accuracy);
+  const zenScore = calculateZenScore(netWpm, accuracy);
 
   const handleShare = () => {
     const text = `Koto-Koto Result:\nRank: ${grade} - ${title}\nWPM: ${netWpm}\nAccuracy: ${accuracy}%\n\nhttps://koto-koto.vercel.app/\n#KotoKoto`;
@@ -69,7 +71,7 @@ export default function ResultScreen({
       </motion.div>
 
       {/* Title Display */}
-      <h1 className="text-xl md:text-3xl font-zen-old-mincho font-bold mb-6 md:mb-8 text-off-white tracking-widest opacity-90 text-center">
+      <h1 className="text-xl md:text-2xl font-zen-old-mincho font-bold mb-6 md:mb-8 text-off-white tracking-widest opacity-90 text-center">
         {title}
       </h1>
 
@@ -106,6 +108,17 @@ export default function ResultScreen({
 
         {/* Detail Stats Row */}
         <div className="col-span-2 grid grid-cols-3 gap-3">
+          <div
+            className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000"
+            style={{
+              borderColor: `${seasonalTheme.adjustedColors.primary}20`,
+            }}
+          >
+            <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
+              Zen Score
+            </span>
+            <span className="text-base md:text-lg font-inter font-semibold mt-1">{zenScore}</span>
+          </div>
           <div
             className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000"
             style={{
@@ -156,12 +169,7 @@ export default function ResultScreen({
             <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
               Share
             </span>
-            <Share2
-              className="w-4 h-4 md:w-5 md:h-5 mt-1 transition-colors duration-1000"
-              style={{
-                color: seasonalTheme.adjustedColors.primary,
-              }}
-            />
+            <Share2 className="w-4 h-4 md:w-5 md:h-5 mt-1 transition-colors duration-1000" />
           </div>
         </div>
       </div>

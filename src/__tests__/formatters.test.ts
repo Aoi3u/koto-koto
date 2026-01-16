@@ -5,7 +5,9 @@ import {
   calculateWPM,
   calculateKPM,
   calculateAccuracy,
+  calculateZenScore,
 } from '../lib/formatters';
+import { validateGameResult } from '../lib/gameUtils';
 
 describe('formatters.ts', () => {
   test('pad works', () => {
@@ -45,5 +47,23 @@ describe('formatters.ts', () => {
     expect(calculateAccuracy(0, 0)).toBe(0);
     expect(calculateAccuracy(5, 10)).toBe(50);
     expect(calculateAccuracy(3, 7)).toBe(43); // 42.857 -> 43
+  });
+
+  test('calculateZenScore rounds wpm before calculation', () => {
+    expect(calculateZenScore(0, 0)).toBe(0);
+    expect(calculateZenScore(50, 100)).toBe(50); // (50 * 100) / 100 = 50
+    expect(calculateZenScore(100, 50)).toBe(50); // (100 * 50) / 100 = 50
+    expect(calculateZenScore(75.4, 80)).toBe(60); // (75 * 80) / 100 = 60
+    expect(calculateZenScore(75.6, 80)).toBe(60.8); // (76 * 80) / 100 = 60.8
+  });
+
+  test('validateGameResult validates constraints correctly', () => {
+    expect(validateGameResult(0, 0, 0)).toBe(true);
+    expect(validateGameResult(50, 50, 100)).toBe(true);
+    expect(validateGameResult(100, 100, 1000)).toBe(true);
+    expect(validateGameResult(-1, 50, 100)).toBe(false); // negative wpm
+    expect(validateGameResult(50, -1, 100)).toBe(false); // negative accuracy
+    expect(validateGameResult(50, 101, 100)).toBe(false); // accuracy > 100
+    expect(validateGameResult(50, 50, -1)).toBe(false); // negative keystrokes
   });
 });
