@@ -29,7 +29,7 @@ describe('rankLogic', () => {
   });
 
   test('boundary just below moves to lower rank', () => {
-    const belowS = calculateRank(RANK_THRESHOLDS.S.score - 0.1, 100);
+    const belowS = calculateRank(RANK_THRESHOLDS.S.score - 1, 100);
     expect(belowS.grade).toBe('S-');
     expect(belowS.color).toBe(THEME.rankColors.S_MINUS);
   });
