@@ -5,6 +5,16 @@ import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from 'recharts';
 import { useToast } from '@/components/ToastProvider';
 import { calculateRank } from '@/features/result/utils/rankLogic';
 import { calculateZenScore } from '@/lib/formatters';
@@ -19,6 +29,25 @@ type HistoryItem = {
   correctKeystrokes: number;
   elapsedTime: number;
   difficulty: string;
+};
+
+type HistoryChartPoint = {
+  label: string;
+  wpm: number;
+  accuracy: number;
+  zen: number;
+};
+
+type HistoryStats = {
+  sessions: number;
+  avgWpm: number;
+  bestWpm: number;
+  avgAccuracy: number;
+  bestAccuracy: number;
+  avgZen: number;
+  bestZen: number;
+  currentStreak: number;
+  longestStreak: number;
 };
 
 type RankingItem = {
@@ -42,6 +71,105 @@ const timeframeOptions = [
 ] as const;
 
 const limitOptions = [50, 100, 200];
+
+const formatDayKey = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const toDayNumber = (date: Date) =>
+  Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
+
+const computeHistoryStats = (items: HistoryItem[]): HistoryStats => {
+  if (items.length === 0) {
+    return {
+      sessions: 0,
+      avgWpm: 0,
+      bestWpm: 0,
+      avgAccuracy: 0,
+      bestAccuracy: 0,
+      avgZen: 0,
+      bestZen: 0,
+      currentStreak: 0,
+      longestStreak: 0,
+    };
+  }
+
+  const stats = items.reduce(
+    (acc, item) => {
+      const zen = calculateZenScore(item.wpm, item.accuracy);
+      acc.totalWpm += item.wpm;
+      acc.totalAccuracy += item.accuracy;
+      acc.totalZen += zen;
+      acc.bestWpm = Math.max(acc.bestWpm, item.wpm);
+      acc.bestAccuracy = Math.max(acc.bestAccuracy, item.accuracy);
+      acc.bestZen = Math.max(acc.bestZen, zen);
+      return acc;
+    },
+    {
+      totalWpm: 0,
+      totalAccuracy: 0,
+      totalZen: 0,
+      bestWpm: 0,
+      bestAccuracy: 0,
+      bestZen: 0,
+    }
+  );
+
+  const uniqueDays = new Map<number, string>();
+  items.forEach((item) => {
+    const date = new Date(item.createdAt);
+    uniqueDays.set(toDayNumber(date), formatDayKey(date));
+  });
+  const dayNumbers = Array.from(uniqueDays.keys()).sort((a, b) => b - a);
+
+  let currentStreak = 0;
+  if (dayNumbers.length > 0) {
+    currentStreak = 1;
+    for (let i = 1; i < dayNumbers.length; i += 1) {
+      if (dayNumbers[i - 1] - dayNumbers[i] === 1) currentStreak += 1;
+      else break;
+    }
+  }
+
+  let longestStreak = 0;
+  let streak = 0;
+  for (let i = 0; i < dayNumbers.length; i += 1) {
+    if (i === 0 || dayNumbers[i - 1] - dayNumbers[i] === 1) {
+      streak += 1;
+    } else {
+      streak = 1;
+    }
+    longestStreak = Math.max(longestStreak, streak);
+  }
+
+  return {
+    sessions: items.length,
+    avgWpm: Math.round(stats.totalWpm / items.length),
+    bestWpm: Math.round(stats.bestWpm),
+    avgAccuracy: Math.round((stats.totalAccuracy / items.length) * 10) / 10,
+    bestAccuracy: Math.round(stats.bestAccuracy * 10) / 10,
+    avgZen: Math.round(stats.totalZen / items.length),
+    bestZen: Math.round(stats.bestZen),
+    currentStreak,
+    longestStreak,
+  };
+};
+
+const buildHistoryChart = (items: HistoryItem[]): HistoryChartPoint[] => {
+  const sorted = [...items].sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  );
+
+  return sorted.map((item) => ({
+    label: new Date(item.createdAt).toLocaleDateString(),
+    wpm: Math.round(item.wpm),
+    accuracy: Math.round(item.accuracy * 10) / 10,
+    zen: Math.round(calculateZenScore(item.wpm, item.accuracy)),
+  }));
+};
 
 function CustomSelect<T extends string | number>({
   value,
@@ -247,6 +375,9 @@ function ResultsPageContent() {
     fetchRankings();
   }, [fetchRankings]);
 
+  const historyStats = useMemo(() => computeHistoryStats(history.data), [history.data]);
+  const historyChartData = useMemo(() => buildHistoryChart(history.data), [history.data]);
+
   const historyContent = useMemo(() => {
     if (status !== 'authenticated') {
       return (
@@ -264,94 +395,201 @@ function ResultsPageContent() {
     if (history.data.length === 0)
       return <div className="text-subtle-gray text-sm py-8">No results yet.</div>;
 
+    const statCards = [
+      { label: 'Sessions', value: historyStats.sessions, suffix: '' },
+      { label: 'Avg WPM', value: historyStats.avgWpm, suffix: '' },
+      { label: 'Best WPM', value: historyStats.bestWpm, suffix: '' },
+      { label: 'Avg Accuracy', value: historyStats.avgAccuracy, suffix: '%' },
+      { label: 'Best Accuracy', value: historyStats.bestAccuracy, suffix: '%' },
+      { label: 'Avg Zen', value: historyStats.avgZen, suffix: '' },
+      { label: 'Best Zen', value: historyStats.bestZen, suffix: '' },
+      { label: 'Current Streak', value: historyStats.currentStreak, suffix: 'd' },
+      { label: 'Longest Streak', value: historyStats.longestStreak, suffix: 'd' },
+    ];
+
     return (
-      <div
-        ref={historyScrollRef}
-        onScroll={(e) => handleScroll(e, false)}
-        className={`grid gap-3 max-h-[calc(100vh-20rem)] overflow-y-auto pr-2 scrollbar-thin scroll-container ${
-          historyScrollState.top ? 'has-scroll-top' : ''
-        } ${historyScrollState.bottom ? 'has-scroll-bottom' : ''}`}
-      >
-        {history.data.map((item, i) => {
-          const rankResult = calculateRank(item.wpm, item.accuracy);
-          const zenScore = calculateZenScore(item.wpm, item.accuracy);
-
-          return (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.03 }}
-              className="group relative bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg p-4 flex items-center justify-between transition-all duration-300"
-              style={{
-                borderColor: 'rgba(255,255,255,0.05)',
-              }}
-              whileHover={{
-                borderColor: seasonalTheme.adjustedColors.primary,
-                boxShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}20`,
-              }}
+      <div className="space-y-8">
+        <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+          {statCards.map((stat) => (
+            <div
+              key={stat.label}
+              className="bg-white/5 border border-white/10 rounded-lg p-3 flex flex-col gap-1"
             >
-              <div className="flex items-center gap-6">
-                <div className="w-16 text-center hidden md:block">
-                  <div className={`text-lg font-bold font-zen-old-mincho ${rankResult.color}`}>
-                    {rankResult.grade}
-                  </div>
-                  <div className="text-[9px] text-subtle-gray leading-tight tracking-wider uppercase line-clamp-1">
-                    {rankResult.title}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xs text-subtle-gray font-mono mb-1">
-                    {new Date(item.createdAt).toLocaleDateString()} •{' '}
-                    {new Date(item.createdAt).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </div>
-                </div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-subtle-gray">
+                {stat.label}
               </div>
+              <div className="text-lg text-off-white font-mono">
+                {stat.value}
+                <span className="text-xs text-subtle-gray ml-1">{stat.suffix}</span>
+              </div>
+            </div>
+          ))}
+        </div>
 
-              <div className="flex items-center gap-6 text-right">
-                <div className="hidden sm:block relative group/zen">
-                  <div className="text-sm text-off-white font-mono font-bold cursor-help">
-                    {zenScore}
-                  </div>
-                  <div className="text-[10px] text-subtle-gray uppercase">Zen</div>
-                  {/* Tooltip for Zen Score */}
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-                    <div className="text-[10px] text-off-white font-mono mb-1">
-                      Zen Score = WPM × Accuracy ÷ 100
+        <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-xs uppercase tracking-[0.3em] text-subtle-gray">Trend</div>
+            <div className="text-[10px] text-subtle-gray">{historyChartData.length} sessions</div>
+          </div>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={historyChartData}
+                margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+              >
+                <CartesianGrid stroke="rgba(255,255,255,0.08)" strokeDasharray="4 4" />
+                <XAxis dataKey="label" stroke="rgba(255,255,255,0.35)" tick={{ fontSize: 10 }} />
+                <YAxis
+                  yAxisId="left"
+                  stroke="rgba(255,255,255,0.35)"
+                  tick={{ fontSize: 10 }}
+                  domain={[0, 'auto']}
+                />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  stroke="rgba(255,255,255,0.35)"
+                  tick={{ fontSize: 10 }}
+                  domain={[0, 100]}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(10,10,12,0.95)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                  }}
+                  labelStyle={{ color: '#cbd5f5' }}
+                />
+                <Legend wrapperStyle={{ fontSize: '10px' }} />
+                <Line
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="wpm"
+                  stroke={seasonalTheme.adjustedColors.primary}
+                  strokeWidth={2}
+                  dot={false}
+                  name="WPM"
+                />
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="accuracy"
+                  stroke="rgba(255,255,255,0.7)"
+                  strokeWidth={2}
+                  dot={false}
+                  name="Accuracy %"
+                />
+                <Line
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="zen"
+                  stroke="rgba(255,212,102,0.8)"
+                  strokeWidth={1.5}
+                  dot={false}
+                  name="Zen"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div
+          ref={historyScrollRef}
+          onScroll={(e) => handleScroll(e, false)}
+          className={`grid gap-3 max-h-[calc(100vh-24rem)] overflow-y-auto pr-2 scrollbar-thin scroll-container ${
+            historyScrollState.top ? 'has-scroll-top' : ''
+          } ${historyScrollState.bottom ? 'has-scroll-bottom' : ''}`}
+        >
+          {history.data.map((item, i) => {
+            const rankResult = calculateRank(item.wpm, item.accuracy);
+            const zenScore = calculateZenScore(item.wpm, item.accuracy);
+
+            return (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.03 }}
+                className="group relative bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg p-4 flex items-center justify-between transition-all duration-300"
+                style={{
+                  borderColor: 'rgba(255,255,255,0.05)',
+                }}
+                whileHover={{
+                  borderColor: seasonalTheme.adjustedColors.primary,
+                  boxShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}20`,
+                }}
+              >
+                <div className="flex items-center gap-6">
+                  <div className="w-16 text-center hidden md:block">
+                    <div className={`text-lg font-bold font-zen-old-mincho ${rankResult.color}`}>
+                      {rankResult.grade}
                     </div>
-                    <div className="text-[9px] text-subtle-gray font-mono">
-                      = {item.wpm} × {item.accuracy}% ÷ 100
+                    <div className="text-[9px] text-subtle-gray leading-tight tracking-wider uppercase line-clamp-1">
+                      {rankResult.title}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-subtle-gray font-mono mb-1">
+                      {new Date(item.createdAt).toLocaleDateString()} •{' '}
+                      {new Date(item.createdAt).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
                     </div>
                   </div>
                 </div>
-                <div className="relative group/wpm">
-                  <div className="text-xl font-light font-inter text-off-white cursor-help">
-                    {item.wpm}
+
+                <div className="flex items-center gap-6 text-right">
+                  <div className="hidden sm:block relative group/zen">
+                    <div className="text-sm text-off-white font-mono font-bold cursor-help">
+                      {zenScore}
+                    </div>
+                    <div className="text-[10px] text-subtle-gray uppercase">Zen</div>
+                    {/* Tooltip for Zen Score */}
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+                      <div className="text-[10px] text-off-white font-mono mb-1">
+                        Zen Score = WPM × Accuracy ÷ 100
+                      </div>
+                      <div className="text-[9px] text-subtle-gray font-mono">
+                        = {item.wpm} × {item.accuracy}% ÷ 100
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-[10px] text-subtle-gray uppercase">WPM</div>
-                  {/* Tooltip for WPM */}
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-                    <div className="text-[10px] text-off-white font-mono mb-1">
-                      WPM = (Correct Keys ÷ 5) ÷ Minutes
+                  <div className="relative group/wpm">
+                    <div className="text-xl font-light font-inter text-off-white cursor-help">
+                      {item.wpm}
                     </div>
-                    <div className="text-[9px] text-subtle-gray font-mono">
-                      = ({item.correctKeystrokes} ÷ 5) ÷ {(item.elapsedTime / 60).toFixed(2)}m
+                    <div className="text-[10px] text-subtle-gray uppercase">WPM</div>
+                    {/* Tooltip for WPM */}
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+                      <div className="text-[10px] text-off-white font-mono mb-1">
+                        WPM = (Correct Keys ÷ 5) ÷ Minutes
+                      </div>
+                      <div className="text-[9px] text-subtle-gray font-mono">
+                        = ({item.correctKeystrokes} ÷ 5) ÷ {(item.elapsedTime / 60).toFixed(2)}m
+                      </div>
                     </div>
+                  </div>
+                  <div className="hidden sm:block">
+                    <div className="text-sm text-subtle-gray font-mono">{item.accuracy}%</div>
                   </div>
                 </div>
-                <div className="hidden sm:block">
-                  <div className="text-sm text-subtle-gray font-mono">{item.accuracy}%</div>
-                </div>
-              </div>
-            </motion.div>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     );
-  }, [history, status, seasonalTheme, historyScrollState, handleScroll]);
+  }, [
+    history,
+    status,
+    seasonalTheme,
+    historyScrollState,
+    handleScroll,
+    historyStats,
+    historyChartData,
+  ]);
 
   const rankingsContent = useMemo(() => {
     if (rankings.loading) return <div className="text-subtle-gray text-sm py-8">Loading...</div>;
