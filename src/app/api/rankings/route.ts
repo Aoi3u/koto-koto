@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { calculateRank } from '@/features/result/utils/rankLogic';
 import { calculateZenScore } from '@/lib/gameUtils';
-import { authOptions } from '@/lib/auth';
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 200;
@@ -48,8 +46,6 @@ const generateAnonymousHandle = (userId: string): string => {
 
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
-  const session = await getServerSession(authOptions);
-  const currentUserId = session?.user?.id;
 
   const limit = parseLimit(searchParams.get('limit'));
   if (!limit) return badRequest('Invalid limit');
@@ -92,7 +88,6 @@ export const GET = async (req: Request) => {
       title: rankResult.title,
       color: rankResult.color,
       user: result.user?.name ?? generateAnonymousHandle(result.userId),
-      isSelf: currentUserId ? result.userId === currentUserId : false,
     };
   });
 
