@@ -10,6 +10,15 @@ jest.mock('next/server', () => ({
   },
 }));
 
+// Avoid pulling in real NextAuth ESM dependencies during tests
+jest.mock('next-auth', () => ({
+  getServerSession: jest.fn().mockResolvedValue(null),
+}));
+
+jest.mock('@/lib/auth', () => ({
+  authOptions: {},
+}));
+
 jest.mock('../lib/prisma', () => ({
   prisma: {
     gameResult: {
