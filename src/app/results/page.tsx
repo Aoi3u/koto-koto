@@ -4,35 +4,15 @@ import { useCallback, useEffect, useMemo, useState, useRef, Suspense } from 'rea
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
-import { calculateRank } from '@/features/result/utils/rankLogic';
-import { calculateZenScore } from '@/lib/formatters';
 import { useSeasonalTheme } from '@/contexts/SeasonalContext';
-
-type HistoryItem = {
-  id: string;
-  createdAt: string;
-  wpm: number;
-  accuracy: number;
-  keystrokes: number;
-  correctKeystrokes: number;
-  elapsedTime: number;
-  difficulty: string;
-};
-
-type RankingItem = {
-  rank: number;
-  user: string;
-  wpm: number;
-  accuracy: number;
-  createdAt: string;
-  zenScore?: number;
-  grade?: string;
-  title?: string;
-  color?: string;
-  isSelf?: boolean;
-};
+import CustomSelect from './components/CustomSelect';
+import HistoryList from './components/HistoryList';
+import HistoryStatsGrid from './components/HistoryStatsGrid';
+import HistoryTrendChart from './components/HistoryTrendChart';
+import RankingsList from './components/RankingsList';
+import { buildHistoryChart, computeHistoryStats } from './utils/history';
+import type { HistoryItem, RankingItem } from './types';
 
 const timeframeOptions = [
   { value: 'day', label: 'Daily' },
@@ -42,94 +22,6 @@ const timeframeOptions = [
 ] as const;
 
 const limitOptions = [50, 100, 200];
-
-function CustomSelect<T extends string | number>({
-  value,
-  options,
-  onChange,
-  label,
-}: {
-  value: T;
-  options: { value: T; label: string }[];
-  onChange: (value: T) => void;
-  label?: string;
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const seasonalTheme = useSeasonalTheme();
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const selectedLabel = options.find((opt) => opt.value === value)?.label;
-
-  return (
-    <div className="relative" ref={containerRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 text-xs text-subtle-gray hover:text-off-white transition-colors py-1 border-b border-transparent"
-        style={{
-          borderColor: isOpen ? seasonalTheme.adjustedColors.primary : 'rgba(0, 0, 0, 0)',
-        }}
-      >
-        {label && <span className="opacity-50 mr-1">{label}:</span>}
-        <span className="font-mono">{selectedLabel}</span>
-        <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-      </button>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 5, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 5, scale: 0.95 }}
-            transition={{ duration: 0.1 }}
-            className="absolute top-full right-0 mt-2 min-w-30 bg-zen-dark/90 backdrop-blur-md border border-white/10 rounded-md shadow-xl overflow-hidden z-50"
-            style={{ borderColor: 'rgba(255,255,255,0.1)' }}
-          >
-            {options.map((opt) => (
-              <button
-                key={String(opt.value)}
-                onClick={() => {
-                  onChange(opt.value);
-                  setIsOpen(false);
-                }}
-                className="w-full text-left px-3 py-2 text-xs transition-colors flex items-center justify-between group hover:bg-white/5"
-                style={{
-                  color: value === opt.value ? seasonalTheme.adjustedColors.primary : undefined,
-                }}
-              >
-                <span
-                  className={
-                    value === opt.value
-                      ? 'font-bold'
-                      : 'text-subtle-gray group-hover:text-off-white'
-                  }
-                >
-                  {opt.label}
-                </span>
-                {value === opt.value && (
-                  <motion.div
-                    layoutId={`check-${label}`}
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{ backgroundColor: seasonalTheme.adjustedColors.primary }}
-                  />
-                )}
-              </button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
 
 function ResultsPageContent() {
   const { data: session, status } = useSession();
@@ -247,6 +139,21 @@ function ResultsPageContent() {
     fetchRankings();
   }, [fetchRankings]);
 
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, []);
+
+  const historyStats = useMemo(() => computeHistoryStats(history.data), [history.data]);
+  const historyChartData = useMemo(() => buildHistoryChart(history.data), [history.data]);
+
   const historyContent = useMemo(() => {
     if (status !== 'authenticated') {
       return (
@@ -265,93 +172,29 @@ function ResultsPageContent() {
       return <div className="text-subtle-gray text-sm py-8">No results yet.</div>;
 
     return (
-      <div
-        ref={historyScrollRef}
-        onScroll={(e) => handleScroll(e, false)}
-        className={`grid gap-3 max-h-[calc(100vh-20rem)] overflow-y-auto pr-2 scrollbar-thin scroll-container ${
-          historyScrollState.top ? 'has-scroll-top' : ''
-        } ${historyScrollState.bottom ? 'has-scroll-bottom' : ''}`}
-      >
-        {history.data.map((item, i) => {
-          const rankResult = calculateRank(item.wpm, item.accuracy);
-          const zenScore = calculateZenScore(item.wpm, item.accuracy);
-
-          return (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.03 }}
-              className="group relative bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg p-4 flex items-center justify-between transition-all duration-300"
-              style={{
-                borderColor: 'rgba(255,255,255,0.05)',
-              }}
-              whileHover={{
-                borderColor: seasonalTheme.adjustedColors.primary,
-                boxShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}20`,
-              }}
-            >
-              <div className="flex items-center gap-6">
-                <div className="w-16 text-center hidden md:block">
-                  <div className={`text-lg font-bold font-zen-old-mincho ${rankResult.color}`}>
-                    {rankResult.grade}
-                  </div>
-                  <div className="text-[9px] text-subtle-gray leading-tight tracking-wider uppercase line-clamp-1">
-                    {rankResult.title}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xs text-subtle-gray font-mono mb-1">
-                    {new Date(item.createdAt).toLocaleDateString()} •{' '}
-                    {new Date(item.createdAt).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-6 text-right">
-                <div className="hidden sm:block relative group/zen">
-                  <div className="text-sm text-off-white font-mono font-bold cursor-help">
-                    {zenScore}
-                  </div>
-                  <div className="text-[10px] text-subtle-gray uppercase">Zen</div>
-                  {/* Tooltip for Zen Score */}
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-                    <div className="text-[10px] text-off-white font-mono mb-1">
-                      Zen Score = WPM × Accuracy ÷ 100
-                    </div>
-                    <div className="text-[9px] text-subtle-gray font-mono">
-                      = {item.wpm} × {item.accuracy}% ÷ 100
-                    </div>
-                  </div>
-                </div>
-                <div className="relative group/wpm">
-                  <div className="text-xl font-light font-inter text-off-white cursor-help">
-                    {item.wpm}
-                  </div>
-                  <div className="text-[10px] text-subtle-gray uppercase">WPM</div>
-                  {/* Tooltip for WPM */}
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-                    <div className="text-[10px] text-off-white font-mono mb-1">
-                      WPM = (Correct Keys ÷ 5) ÷ Minutes
-                    </div>
-                    <div className="text-[9px] text-subtle-gray font-mono">
-                      = ({item.correctKeystrokes} ÷ 5) ÷ {(item.elapsedTime / 60).toFixed(2)}m
-                    </div>
-                  </div>
-                </div>
-                <div className="hidden sm:block">
-                  <div className="text-sm text-subtle-gray font-mono">{item.accuracy}%</div>
-                </div>
-              </div>
-            </motion.div>
-          );
-        })}
+      <div className="space-y-8">
+        <HistoryStatsGrid stats={historyStats} />
+        <HistoryTrendChart
+          data={historyChartData}
+          accentColor={seasonalTheme.adjustedColors.primary}
+        />
+        <HistoryList
+          items={history.data}
+          scrollRef={historyScrollRef}
+          scrollState={historyScrollState}
+          onScroll={(e) => handleScroll(e, false)}
+        />
       </div>
     );
-  }, [history, status, seasonalTheme, historyScrollState, handleScroll]);
+  }, [
+    history,
+    status,
+    seasonalTheme,
+    historyScrollState,
+    handleScroll,
+    historyStats,
+    historyChartData,
+  ]);
 
   const rankingsContent = useMemo(() => {
     if (rankings.loading) return <div className="text-subtle-gray text-sm py-8">Loading...</div>;
@@ -361,115 +204,14 @@ function ResultsPageContent() {
       return <div className="text-subtle-gray text-sm py-8">No rankings yet.</div>;
 
     return (
-      <div
-        ref={rankingsScrollRef}
+      <RankingsList
+        items={rankings.data}
+        scrollRef={rankingsScrollRef}
+        scrollState={rankingsScrollState}
         onScroll={(e) => handleScroll(e, true)}
-        className={`grid gap-2 max-h-[calc(100vh-20rem)] overflow-y-auto pr-2 scrollbar-thin scroll-container ${
-          rankingsScrollState.top ? 'has-scroll-top' : ''
-        } ${rankingsScrollState.bottom ? 'has-scroll-bottom' : ''}`}
-      >
-        {rankings.data.map((item, i) => {
-          const isSelf = item.isSelf;
-          return (
-            <motion.div
-              key={`${item.rank}-${item.user}-${item.createdAt}`}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.02 }}
-              className={`flex items-center p-3 rounded-md border transition-all duration-300 ${
-                item.rank === 1
-                  ? 'bg-yellow-700/20 border-yellow-700/30'
-                  : item.rank === 2
-                    ? 'bg-white/10 border-white/20'
-                    : item.rank === 3
-                      ? 'bg-orange-700/20 border-orange-700/30'
-                      : 'bg-transparent border-transparent hover:bg-white/5 hover:border-white/20'
-              } ${isSelf ? 'relative' : ''}`}
-              style={{
-                ...(item.rank > 3
-                  ? {
-                      borderColor: 'rgba(0, 0, 0, 0)',
-                    }
-                  : {}),
-                ...(isSelf
-                  ? {
-                      borderColor: item.rank > 3 ? seasonalTheme.adjustedColors.primary : undefined,
-                      boxShadow: `0 0 0 1px ${seasonalTheme.adjustedColors.primary}, 0 0 18px ${seasonalTheme.adjustedColors.glow}35`,
-                    }
-                  : {}),
-              }}
-              whileHover={
-                item.rank > 3
-                  ? {
-                      borderColor: seasonalTheme.adjustedColors.primary,
-                      backgroundColor: 'rgba(255,255,255,0.05)',
-                    }
-                  : {}
-              }
-            >
-              <div
-                className={`w-8 text-center font-mono font-bold ${
-                  item.rank <= 3 ? 'text-off-white' : 'text-subtle-gray'
-                }`}
-              >
-                {item.rank}
-              </div>
-              <div className="flex-1 min-w-0 px-3">
-                <div className="flex items-center gap-2">
-                  <div className="text-off-white font-zen-old-mincho truncate">{item.user}</div>
-                  {isSelf && (
-                    <span className="px-2 py-0.5 text-[10px] font-mono rounded-full bg-white/10 border border-white/15">
-                      You
-                    </span>
-                  )}
-                </div>
-                <div className="text-[10px] text-subtle-gray">
-                  {new Date(item.createdAt).toLocaleDateString()}
-                </div>
-              </div>
-              {item.grade && (
-                <div className="w-12 text-center hidden md:block">
-                  <div className="text-base text-subtle-gray font-bold font-zen-old-mincho">
-                    {item.grade}
-                  </div>
-                </div>
-              )}
-              <div className="w-16 text-right hidden sm:block relative group/zen">
-                <div className="text-sm text-off-white font-mono font-semibold cursor-help">
-                  {item.zenScore}
-                </div>
-                <div className="text-[10px] text-subtle-gray uppercase">Zen</div>
-                {/* Tooltip for Zen Score */}
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-                  <div className="text-[10px] text-off-white font-mono mb-1">
-                    Zen Score = WPM × Accuracy ÷ 100
-                  </div>
-                  <div className="text-[9px] text-subtle-gray font-mono">
-                    = {item.wpm} × {item.accuracy}% ÷ 100
-                  </div>
-                </div>
-              </div>
-              <div className="w-16 text-right relative group/wpm">
-                <div className="text-xl font-light font-inter text-off-white cursor-help">
-                  {item.wpm}
-                </div>
-                <div className="text-[10px] text-subtle-gray uppercase">WPM</div>
-                {/* Tooltip for WPM */}
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-                  <div className="text-[10px] text-off-white font-mono text-center">
-                    WPM = (Correct Keys ÷ 5) ÷ Minutes
-                  </div>
-                </div>
-              </div>
-              <div className="w-16 text-right hidden sm:block">
-                <div className="text-sm text-subtle-gray font-mono">{item.accuracy}%</div>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
+      />
     );
-  }, [rankings, seasonalTheme, rankingsScrollState, handleScroll]);
+  }, [rankings, rankingsScrollState, handleScroll]);
 
   return (
     <main className="min-h-screen bg-zen-dark pt-32 pb-16 px-4 md:px-8">

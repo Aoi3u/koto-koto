@@ -15,6 +15,7 @@ A minimalist, zen-inspired Japanese typing game designed to induce a state of fl
 - **13 Keyboard Sound Profiles**: Authentic mechanical switch sounds (Cherry MX, Topre, Holy Panda, Gateron, Alps, etc.)
 - **User Authentication**: Google OAuth 2.0 and email/password login with NextAuth.js
 - **Global Rankings & History**: Period-based leaderboard with Zen Score (WPM × Accuracy ÷ 100)
+- **History Analytics**: Trend chart and summary stats with session streaks
 - **Strict Grading System**: Ranks from Seed → SSS with accuracy-gated S-ranks
 
 ## 🛠️ Tech Stack
