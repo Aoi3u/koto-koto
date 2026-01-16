@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { GameResultFlexibleSchema } from '@/lib/validation/game';
+import { calculateZenScore } from '@/lib/gameUtils';
 
 const MAX_RESULTS = 50;
 
@@ -50,7 +51,7 @@ export const POST = async (req: Request) => {
   const { wpm, accuracy, keystrokes, correctKeystrokes, elapsedTime, difficulty } = result.data;
 
   // Calculate zenScore for leaderboard optimization
-  const zenScore = (Math.round(wpm) * accuracy) / 100;
+  const zenScore = calculateZenScore(wpm, accuracy);
 
   const created = await prisma.gameResult.create({
     data: {

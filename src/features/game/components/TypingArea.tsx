@@ -95,17 +95,17 @@ export default function TypingArea({
               className="relative mx-px font-bold transition-all duration-1000"
               style={{
                 color: seasonalTheme.adjustedColors.primary,
-                  textShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}`,
+                textShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}`,
               }}
               animate={{
                 textShadow: [
-                    `0 0 10px ${seasonalTheme.adjustedColors.glow}`,
-                    `0 0 20px ${seasonalTheme.adjustedColors.glow}`,
-                    `0 0 10px ${seasonalTheme.adjustedColors.glow}`,
+                  `0 0 10px ${seasonalTheme.adjustedColors.glow}`,
+                  `0 0 20px ${seasonalTheme.adjustedColors.glow}`,
+                  `0 0 10px ${seasonalTheme.adjustedColors.glow}`,
                 ],
               }}
               transition={{
-                  duration: 2,
+                duration: 2,
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}

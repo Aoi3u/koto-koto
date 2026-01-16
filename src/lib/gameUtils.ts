@@ -34,8 +34,7 @@ export function calculateAccuracy(correctKeys: number, totalKeys: number): numbe
  * This prioritizes both speed and precision
  */
 export function calculateZenScore(wpm: number, accuracy: number): number {
-  const zenScore = wpm * (accuracy / 100);
-  return Math.round(zenScore * 100) / 100;
+  return (Math.round(wpm) * accuracy) / 100;
 }
 
 /**

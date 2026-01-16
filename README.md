@@ -4,7 +4,6 @@
 
 <img width="256" height="256" alt="favicon" src="https://github.com/user-attachments/assets/3a08b42a-89f1-4a8c-bfc8-136befdfc51d" />
 
-
 ## Overview
 
 A minimalist, zen-inspired Japanese typing game designed to induce a state of flow. Built with Next.js 16, TypeScript, and Framer Motion.
