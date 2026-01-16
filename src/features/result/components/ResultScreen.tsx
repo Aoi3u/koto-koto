@@ -109,7 +109,7 @@ export default function ResultScreen({
         {/* Detail Stats Row */}
         <div className="col-span-2 grid grid-cols-3 gap-3">
           <div
-            className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000"
+            className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000 relative group/zen"
             style={{
               borderColor: `${seasonalTheme.adjustedColors.primary}20`,
             }}
@@ -117,7 +117,18 @@ export default function ResultScreen({
             <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
               Zen Score
             </span>
-            <span className="text-base md:text-lg font-inter font-semibold mt-1">{zenScore}</span>
+            <span className="text-base md:text-lg font-inter font-semibold mt-1 cursor-help">
+              {zenScore}
+            </span>
+            {/* Tooltip for Zen Score */}
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+              <div className="text-[10px] text-off-white font-mono mb-1">
+                Zen Score = WPM × Accuracy ÷ 100
+              </div>
+              <div className="text-[9px] text-subtle-gray font-mono">
+                = {netWpm} × {accuracy}% ÷ 100
+              </div>
+            </div>
           </div>
           <div
             className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000"
