@@ -6,6 +6,7 @@ import { useSeasonalTheme } from '../../../contexts/SeasonalContext';
 
 interface TypingAreaProps {
   currentWord: Sentence | undefined;
+  nextWord?: Sentence | undefined;
   matchedRomaji: string;
   pendingInput: string;
   matchedKana: string;
@@ -16,6 +17,7 @@ interface TypingAreaProps {
 
 export default function TypingArea({
   currentWord,
+  nextWord,
   pendingInput,
   matchedKana,
   remainingTarget,
@@ -54,97 +56,111 @@ export default function TypingArea({
 
   return (
     <motion.div
-      className={`relative w-full text-center flex flex-col items-center justify-center space-y-8 ${
-        shake ? 'animate-shake' : ''
-      }`}
+      className={`relative w-full text-center mt-12 ${shake ? 'animate-shake' : ''}`}
       animate={shake ? { x: [-10, 10, -10, 10, 0] } : {}}
       transition={{ duration: 0.3 }}
     >
-      {/* KANJI / VISUAL DISPLAY */}
-      <motion.div
-        key={currentWord.id}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={`${textSizeClass} font-zen-old-mincho font-bold tracking-widest leading-relaxed wrap-break-word whitespace-pre-wrap max-w-5xl transition-all duration-1000`}
-        style={{
-          color: seasonalTheme.colors.text,
-          textShadow: `0 0 30px ${seasonalTheme.adjustedColors.glow}`,
-        }}
-      >
-        {display}
-      </motion.div>
+      <div className="flex flex-col items-center justify-center space-y-8">
+        {/* KANJI / VISUAL DISPLAY */}
+        <motion.div
+          key={currentWord.id}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`${textSizeClass} font-zen-old-mincho font-bold tracking-widest leading-relaxed wrap-break-word whitespace-pre-wrap max-w-5xl transition-all duration-1000`}
+          style={{
+            color: seasonalTheme.colors.text,
+            textShadow: `0 0 30px ${seasonalTheme.adjustedColors.glow}`,
+          }}
+        >
+          {display}
+        </motion.div>
 
-      {/* Kana reading with progress */}
-      <div
-        className={`relative flex flex-wrap items-center justify-center text-center ${kanaSizeClass} ${kanaLineHeightClass} font-normal ${kanaMaxWidthClass} ${kanaTrackingClass}`}
-      >
-        {/* Render fully matched Kana (Past - Clear) */}
-        <span
-          className="transition-colors duration-200 font-medium"
+        {/* Kana reading with progress */}
+        <div
+          className={`relative flex flex-wrap items-center justify-center text-center ${kanaSizeClass} ${kanaLineHeightClass} font-normal ${kanaMaxWidthClass} ${kanaTrackingClass}`}
+        >
+          {/* Render fully matched Kana (Past - Clear) */}
+          <span
+            className="transition-colors duration-200 font-medium"
+            style={{ color: seasonalTheme.colors.text }}
+          >
+            {matchedKana}
+          </span>
+
+          {/* Render remaining target */}
+          {remainingTarget && (
+            <>
+              {/* Current Character (Highlighted) */}
+              <motion.span
+                key={remainingTarget}
+                className="relative mx-px font-bold transition-all duration-1000"
+                style={{
+                  color: seasonalTheme.adjustedColors.primary,
+                  textShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}`,
+                }}
+                animate={{
+                  textShadow: [
+                    `0 0 10px ${seasonalTheme.adjustedColors.glow}`,
+                    `0 0 20px ${seasonalTheme.adjustedColors.glow}`,
+                    `0 0 10px ${seasonalTheme.adjustedColors.glow}`,
+                  ],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              >
+                {remainingTarget[0]}
+                {/* Caret - Absolute Positioned */}
+                <motion.div
+                  className="absolute -bottom-1 left-0 w-full h-0.5 shadow-lg transition-all duration-1000"
+                  style={{
+                    backgroundColor: seasonalTheme.colors.accent,
+                    boxShadow: `0 0 10px ${seasonalTheme.colors.accent}`,
+                  }}
+                  animate={{ opacity: [1, 0.5, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                />
+              </motion.span>
+              {/* Future Characters (Dimmed) */}
+              <span
+                className="transition-colors duration-200"
+                style={{ color: seasonalTheme.colors.text, opacity: 0.5 }}
+              >
+                {remainingTarget.slice(1)}
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* Source / Citation */}
+        {currentWord.meta && (
+          <div className="mt-1 max-w-4xl w-full mx-auto text-right text-[10px] md:text-xs text-white/40">
+            出典:{' '}
+            {currentWord.meta.author && <span className="mr-1">{currentWord.meta.author}</span>}
+            {currentWord.meta.title && <span>『{currentWord.meta.title}』</span>}
+          </div>
+        )}
+
+        {/* Romaji Input Display - Minimalist below */}
+        <div className="h-6 font-inter text-subtle-gray text-opacity-50 tracking-wide">
+          {pendingInput}
+        </div>
+      </div>
+
+      {/* Next Word Preview */}
+      {nextWord && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.3 }}
+          className="absolute top-full mt-6 w-full flex flex-col items-center justify-center text-lg font-zen-old-mincho font-medium transition-colors duration-1000"
           style={{ color: seasonalTheme.colors.text }}
         >
-          {matchedKana}
-        </span>
-
-        {/* Render remaining target */}
-        {remainingTarget && (
-          <>
-            {/* Current Character (Highlighted) */}
-            <motion.span
-              key={remainingTarget}
-              className="relative mx-px font-bold transition-all duration-1000"
-              style={{
-                color: seasonalTheme.adjustedColors.primary,
-                textShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}`,
-              }}
-              animate={{
-                textShadow: [
-                  `0 0 10px ${seasonalTheme.adjustedColors.glow}`,
-                  `0 0 20px ${seasonalTheme.adjustedColors.glow}`,
-                  `0 0 10px ${seasonalTheme.adjustedColors.glow}`,
-                ],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            >
-              {remainingTarget[0]}
-              {/* Caret - Absolute Positioned */}
-              <motion.div
-                className="absolute -bottom-1 left-0 w-full h-0.5 shadow-lg transition-all duration-1000"
-                style={{
-                  backgroundColor: seasonalTheme.colors.accent,
-                  boxShadow: `0 0 10px ${seasonalTheme.colors.accent}`,
-                }}
-                animate={{ opacity: [1, 0.5, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-              />
-            </motion.span>
-            {/* Future Characters (Dimmed) */}
-            <span
-              className="transition-colors duration-200"
-              style={{ color: seasonalTheme.colors.text, opacity: 0.5 }}
-            >
-              {remainingTarget.slice(1)}
-            </span>
-          </>
-        )}
-      </div>
-
-      {/* Source / Citation */}
-      {currentWord.meta && (
-        <div className="mt-1 max-w-4xl w-full mx-auto text-right text-[10px] md:text-xs text-white/40">
-          出典: {currentWord.meta.author && <span className="mr-1">{currentWord.meta.author}</span>}
-          {currentWord.meta.title && <span>『{currentWord.meta.title}』</span>}
-        </div>
+          <div className="text-xs mb-1 opacity-60 font-sans tracking-widest uppercase">Next</div>
+          <div className="max-w-4xl text-center px-4">{nextWord.display}</div>
+        </motion.div>
       )}
-
-      {/* Romaji Input Display - Minimalist below */}
-      <div className="h-6 font-inter text-subtle-gray text-opacity-50 tracking-wide">
-        {pendingInput}
-      </div>
 
       {/* Ripple Effect Layer */}
       {ripple && (
