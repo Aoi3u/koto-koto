@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { motion } from 'framer-motion';
-import { useSeasonalTheme } from '@/contexts/SeasonalContext';
+import { useThemePalette } from '@/contexts/SeasonalContext';
 import type { RankingItem } from '../types';
 
 export default function RankingsList({
@@ -16,7 +16,7 @@ export default function RankingsList({
   scrollState: { top: boolean; bottom: boolean };
   onScroll: (event: React.UIEvent<HTMLDivElement>) => void;
 }) {
-  const seasonalTheme = useSeasonalTheme();
+  const { palette } = useThemePalette('dynamic');
 
   return (
     <div
@@ -51,15 +51,15 @@ export default function RankingsList({
                 : {}),
               ...(isSelf
                 ? {
-                    borderColor: item.rank > 3 ? seasonalTheme.adjustedColors.primary : undefined,
-                    boxShadow: `0 0 0 1px ${seasonalTheme.adjustedColors.primary}, 0 0 18px ${seasonalTheme.adjustedColors.glow}35`,
+                    borderColor: item.rank > 3 ? palette.primary : undefined,
+                    boxShadow: `0 0 0 1px ${palette.primary}, 0 0 18px ${palette.glow}35`,
                   }
                 : {}),
             }}
             whileHover={
               item.rank > 3
                 ? {
-                    borderColor: seasonalTheme.adjustedColors.primary,
+                    borderColor: palette.primary,
                     backgroundColor: 'rgba(255,255,255,0.05)',
                   }
                 : {}

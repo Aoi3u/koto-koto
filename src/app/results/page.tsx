@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/components/ToastProvider';
-import { useSeasonalTheme } from '@/contexts/SeasonalContext';
+import { useThemePalette } from '@/contexts/SeasonalContext';
 import CustomSelect from './components/CustomSelect';
 import HistoryList from './components/HistoryList';
 import HistoryStatsGrid from './components/HistoryStatsGrid';
@@ -26,7 +26,7 @@ const limitOptions = [50, 100, 200];
 function ResultsPageContent() {
   const { data: session, status } = useSession();
   const { addToast } = useToast();
-  const seasonalTheme = useSeasonalTheme();
+  const { palette } = useThemePalette('dynamic');
   const searchParams = useSearchParams();
 
   const [tab, setTab] = useState<'history' | 'rankings'>('history');
@@ -174,10 +174,7 @@ function ResultsPageContent() {
     return (
       <div className="space-y-8">
         <HistoryStatsGrid stats={historyStats} />
-        <HistoryTrendChart
-          data={historyChartData}
-          accentColor={seasonalTheme.adjustedColors.primary}
-        />
+        <HistoryTrendChart data={historyChartData} />
         <HistoryList
           items={history.data}
           scrollRef={historyScrollRef}
@@ -186,15 +183,7 @@ function ResultsPageContent() {
         />
       </div>
     );
-  }, [
-    history,
-    status,
-    seasonalTheme,
-    historyScrollState,
-    handleScroll,
-    historyStats,
-    historyChartData,
-  ]);
+  }, [history, status, historyScrollState, handleScroll, historyStats, historyChartData]);
 
   const rankingsContent = useMemo(() => {
     if (rankings.loading) return <div className="text-subtle-gray text-sm py-8">Loading...</div>;
@@ -232,7 +221,7 @@ function ResultsPageContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="text-4xl font-zen-old-mincho text-off-white transition-all duration-1000"
-              style={{ textShadow: `0 0 30px ${seasonalTheme.adjustedColors.glow}` }}
+              style={{ textShadow: `0 0 30px ${palette.glow}` }}
             >
               Records
             </motion.h1>
@@ -250,7 +239,7 @@ function ResultsPageContent() {
                 <motion.div
                   layoutId="tab-indicator"
                   className="absolute bottom-0 left-0 right-0 h-0.5"
-                  style={{ backgroundColor: seasonalTheme.adjustedColors.primary }}
+                  style={{ backgroundColor: palette.primary }}
                 />
               )}
             </button>
@@ -265,7 +254,7 @@ function ResultsPageContent() {
                 <motion.div
                   layoutId="tab-indicator"
                   className="absolute bottom-0 left-0 right-0 h-0.5"
-                  style={{ backgroundColor: seasonalTheme.adjustedColors.primary }}
+                  style={{ backgroundColor: palette.primary }}
                 />
               )}
             </button>

@@ -28,8 +28,8 @@ export default function RootLayout({
         className={`${zenOldMincho.variable} antialiased bg-zen-dark text-off-white overflow-hidden`}
         style={{ fontFamily: 'var(--font-zen-old-mincho, sans-serif)' }}
       >
-        <MobileBlocker />
         <Providers>
+          <MobileBlocker />
           <AppHeader />
           {children}
         </Providers>

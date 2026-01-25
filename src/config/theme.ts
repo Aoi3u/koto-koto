@@ -1,21 +1,4 @@
-import { getCurrentSeasonalTheme } from './seasons';
-
 export const THEME = {
-  colors: {
-    zenDark: '#1a1a1a', // Approximate from usage
-    offWhite: '#f5f5f7',
-    subtleGray: '#a1a1aa',
-    sakura: '#fbcfe8',
-    matcha: '#a7f3d0',
-    gold: '#fde047',
-    charcoal: '#27272a',
-    cyan: '#22d3ee',
-  },
-  fonts: {
-    zenOldMincho: "'Zen Old Mincho', serif",
-    inter: "'Inter', sans-serif",
-    mono: "'JetBrains Mono', monospace",
-  },
   rankColors: {
     NIRVANA_MASTER:
       'text-amber-300 drop-shadow-[0_0_35px_rgba(253,224,71,0.6)] shadow-amber-300/50',
@@ -46,5 +29,20 @@ export const THEME = {
     C_MINUS: 'text-zinc-700/80',
     D: 'text-zinc-800',
   },
-  seasonal: getCurrentSeasonalTheme,
+} as const;
+
+export const CHART_THEME = {
+  grid: 'rgba(255,255,255,0.1)',
+  axis: 'rgba(255,255,255,0.4)',
+  axisSecondary: 'rgba(255,255,255,0.45)',
+  tooltip: {
+    background: 'rgba(10,10,12,0.95)',
+    border: 'rgba(255,255,255,0.2)',
+    label: '#cbd5f5',
+  },
+  lines: {
+    wpm: '#33a6b8', // 浅葱色 (asagi-iro)
+    accuracy: '#c0a2c7', // 藤色 (fuji-iro)
+    zen: '#f8b500', // 山吹色 (yamabuki-iro)
+  },
 } as const;
