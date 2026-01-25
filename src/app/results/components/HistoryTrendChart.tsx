@@ -10,15 +10,12 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
+import { CHART_THEME } from '@/config/theme';
 import type { HistoryChartPoint } from '../types';
 
-export default function HistoryTrendChart({
-  data,
-  accentColor,
-}: {
-  data: HistoryChartPoint[];
-  accentColor: string;
-}) {
+export default function HistoryTrendChart({ data }: { data: HistoryChartPoint[] }) {
+  const chartColors = CHART_THEME;
+
   return (
     <div className="bg-white/5 border border-white/10 rounded-lg p-4">
       <div className="flex items-center justify-between mb-3">
@@ -28,54 +25,56 @@ export default function HistoryTrendChart({
       <div className="h-96">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 20, right: 0, left: 0, bottom: 10 }}>
-            <CartesianGrid stroke="rgba(255,255,255,0.1)" strokeDasharray="4 4" />
-            <XAxis dataKey="label" stroke="rgba(255,255,255,0.4)" tick={{ fontSize: 10 }} />
+            <CartesianGrid stroke={chartColors.grid} strokeDasharray="4 4" />
+            <XAxis dataKey="label" stroke={chartColors.axis} tick={{ fontSize: 10 }} />
             <YAxis
               yAxisId="left"
-              stroke="rgba(255,255,255,0.4)"
+              stroke={chartColors.axis}
               tick={{ fontSize: 12 }}
               domain={[0, 'auto']}
             />
             <YAxis
               yAxisId="right"
               orientation="right"
-              stroke="rgba(255,255,255,0.45)"
+              stroke={chartColors.axisSecondary}
               tick={{ fontSize: 12 }}
               domain={[0, 100]}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: 'rgba(10,10,12,0.95)',
-                border: '1px solid rgba(255,255,255,0.2)',
+                backgroundColor: chartColors.tooltip.background,
+                border: `1px solid ${chartColors.tooltip.border}`,
                 borderRadius: '8px',
                 fontSize: '14px',
               }}
-              labelStyle={{ color: '#cbd5f5' }}
+              labelStyle={{ color: chartColors.tooltip.label }}
             />
             <Legend wrapperStyle={{ fontSize: '12px' }} />
             <Line
               yAxisId="left"
               type="monotone"
               dataKey="wpm"
-              stroke="rgba(203,109,200,0.9)"
+              stroke={chartColors.lines.wpm}
               strokeWidth={2.5}
               dot={false}
+              strokeDasharray="6 4"
               name="WPM"
             />
             <Line
               yAxisId="right"
               type="monotone"
               dataKey="accuracy"
-              stroke="rgba(109,259,157,0.9)"
+              stroke={chartColors.lines.accuracy}
               strokeWidth={2.5}
               dot={false}
+              strokeDasharray="6 4"
               name="Accuracy"
             />
             <Line
               yAxisId="left"
               type="monotone"
               dataKey="zenScore"
-              stroke="rgba(243,208,58,0.9)"
+              stroke={chartColors.lines.zen}
               strokeWidth={2.5}
               dot={false}
               name="Zen Score"

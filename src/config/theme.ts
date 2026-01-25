@@ -30,3 +30,19 @@ export const THEME = {
     D: 'text-zinc-800',
   },
 } as const;
+
+export const CHART_THEME = {
+  grid: 'rgba(255,255,255,0.1)',
+  axis: 'rgba(255,255,255,0.4)',
+  axisSecondary: 'rgba(255,255,255,0.45)',
+  tooltip: {
+    background: 'rgba(10,10,12,0.95)',
+    border: 'rgba(255,255,255,0.2)',
+    label: '#cbd5f5',
+  },
+  lines: {
+    wpm: '#33a6b8', // 浅葱色 (asagi-iro)
+    accuracy: '#c0a2c7', // 藤色 (fuji-iro)
+    zen: '#f8b500', // 山吹色 (yamabuki-iro)
+  },
+} as const;

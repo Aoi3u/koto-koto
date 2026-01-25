@@ -174,7 +174,7 @@ function ResultsPageContent() {
     return (
       <div className="space-y-8">
         <HistoryStatsGrid stats={historyStats} />
-        <HistoryTrendChart data={historyChartData} accentColor={palette.primary} />
+        <HistoryTrendChart data={historyChartData} />
         <HistoryList
           items={history.data}
           scrollRef={historyScrollRef}
