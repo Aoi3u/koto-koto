@@ -1,21 +1,4 @@
-import { getCurrentSeasonalTheme } from './seasons';
-
 export const THEME = {
-  colors: {
-    zenDark: '#1a1a1a', // Approximate from usage
-    offWhite: '#f5f5f7',
-    subtleGray: '#a1a1aa',
-    sakura: '#fbcfe8',
-    matcha: '#a7f3d0',
-    gold: '#fde047',
-    charcoal: '#27272a',
-    cyan: '#22d3ee',
-  },
-  fonts: {
-    zenOldMincho: "'Zen Old Mincho', serif",
-    inter: "'Inter', sans-serif",
-    mono: "'JetBrains Mono', monospace",
-  },
   rankColors: {
     NIRVANA_MASTER:
       'text-amber-300 drop-shadow-[0_0_35px_rgba(253,224,71,0.6)] shadow-amber-300/50',
@@ -46,5 +29,4 @@ export const THEME = {
     C_MINUS: 'text-zinc-700/80',
     D: 'text-zinc-800',
   },
-  seasonal: getCurrentSeasonalTheme,
 } as const;

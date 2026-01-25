@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
-import { useSeasonalTheme } from '@/contexts/SeasonalContext';
+import { useThemePalette } from '@/contexts/SeasonalContext';
 
 export default function CustomSelect<T extends string | number>({
   value,
@@ -18,7 +18,7 @@ export default function CustomSelect<T extends string | number>({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const seasonalTheme = useSeasonalTheme();
+  const { palette } = useThemePalette('dynamic');
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,7 +38,7 @@ export default function CustomSelect<T extends string | number>({
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 text-xs text-subtle-gray hover:text-off-white transition-colors py-1 border-b border-transparent"
         style={{
-          borderColor: isOpen ? seasonalTheme.adjustedColors.primary : 'rgba(0, 0, 0, 0)',
+          borderColor: isOpen ? palette.primary : 'rgba(0, 0, 0, 0)',
         }}
       >
         {label && <span className="opacity-50 mr-1">{label}:</span>}
@@ -65,7 +65,7 @@ export default function CustomSelect<T extends string | number>({
                 }}
                 className="w-full text-left px-3 py-2 text-xs transition-colors flex items-center justify-between group hover:bg-white/5"
                 style={{
-                  color: value === opt.value ? seasonalTheme.adjustedColors.primary : undefined,
+                  color: value === opt.value ? palette.primary : undefined,
                 }}
               >
                 <span
@@ -81,7 +81,7 @@ export default function CustomSelect<T extends string | number>({
                   <motion.div
                     layoutId={`check-${label}`}
                     className="w-1.5 h-1.5 rounded-full"
-                    style={{ backgroundColor: seasonalTheme.adjustedColors.primary }}
+                    style={{ backgroundColor: palette.primary }}
                   />
                 )}
               </button>

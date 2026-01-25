@@ -9,7 +9,7 @@ import GameHeader from '../features/game/components/GameHeader';
 import ResultScreen from '../features/result/components/ResultScreen';
 import MobileBlocker from './MobileBlocker';
 import SeasonalParticles from './SeasonalParticles';
-import { SeasonalProvider, useSeasonalTheme } from '../contexts/SeasonalContext';
+import { SeasonalProvider, useSeasonalTheme, useThemePalette } from '../contexts/SeasonalContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { calculateAccuracy, calculateWPM } from '../lib/formatters';
 import { useToast } from './ToastProvider';
@@ -17,6 +17,7 @@ import type { GameResultPayload } from '@/types/game';
 
 function TypingGameInner() {
   const seasonalTheme = useSeasonalTheme();
+  const { palette } = useThemePalette('stable');
   const { data: session, status } = useSession();
   const { addToast } = useToast();
   const postedRef = useRef(false);
@@ -102,8 +103,12 @@ function TypingGameInner() {
 
   return (
     <div
-      className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden font-zen-old-mincho select-none transition-colors duration-1000"
-      style={{ backgroundColor: seasonalTheme.colors.background }}
+      className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden font-zen-old-mincho select-none transition-colors duration-1000 selection:bg-[color:var(--selection-bg)] selection:text-[color:var(--selection-text)]"
+      style={{
+        backgroundColor: palette.background,
+        ['--selection-bg' as string]: palette.primary,
+        ['--selection-text' as string]: palette.background,
+      }}
     >
       {/* Mobile Blocker */}
       <MobileBlocker />

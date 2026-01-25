@@ -5,13 +5,13 @@ import { useSession, signOut } from 'next-auth/react';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, VolumeX, LogOut, User, History as HistoryIcon, X, Trophy } from 'lucide-react';
-import { useSeasonalTheme } from '@/contexts/SeasonalContext';
+import { useThemePalette } from '@/contexts/SeasonalContext';
 import { useSoundContext } from '@/contexts/SoundContext';
 import type { KeyboardSoundProfile } from '@/features/game/hooks/useSound';
 
 export default function AppHeader() {
   const { data: session, status } = useSession();
-  const seasonalTheme = useSeasonalTheme();
+  const { palette } = useThemePalette('dynamic');
   const { currentProfile, changeProfile, availableProfiles, hasAudioSupport, isProfileLoading } =
     useSoundContext();
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function AppHeader() {
           href="/"
           className="text-off-white font-zen-old-mincho tracking-[0.2em] text-sm uppercase transition-colors duration-500"
           style={{
-            textShadow: `0 0 20px ${seasonalTheme.adjustedColors.glow}40`,
+            textShadow: `0 0 20px ${palette.glow}40`,
           }}
         >
           Koto-Koto
@@ -98,7 +98,7 @@ export default function AppHeader() {
                 style={{
                   backgroundColor: 'rgba(15, 20, 25, 0.9)',
                   borderColor: 'rgba(255, 255, 255, 0.1)',
-                  boxShadow: `0 10px 40px -10px rgba(0,0,0,0.5), 0 0 20px ${seasonalTheme.adjustedColors.glow}10`,
+                  boxShadow: `0 10px 40px -10px rgba(0,0,0,0.5), 0 0 20px ${palette.glow}10`,
                 }}
               >
                 {/* Header of Menu */}
@@ -151,7 +151,7 @@ export default function AppHeader() {
                           {currentProfile === profile && (
                             <div
                               className="w-1.5 h-1.5 rounded-full"
-                              style={{ backgroundColor: seasonalTheme.adjustedColors.primary }}
+                              style={{ backgroundColor: palette.primary }}
                             />
                           )}
                         </button>

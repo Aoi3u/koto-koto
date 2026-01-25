@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Sentence } from '../../../data/sentences';
-import { useSeasonalTheme } from '../../../contexts/SeasonalContext';
+import { useThemePalette } from '../../../contexts/SeasonalContext';
 
 interface TypingAreaProps {
   currentWord: Sentence | undefined;
@@ -24,7 +24,7 @@ export default function TypingArea({
   shake,
   ripple,
 }: TypingAreaProps) {
-  const seasonalTheme = useSeasonalTheme();
+  const { palette } = useThemePalette('stable');
 
   if (!currentWord) return null;
 
@@ -68,8 +68,8 @@ export default function TypingArea({
           animate={{ opacity: 1, y: 0 }}
           className={`${textSizeClass} font-zen-old-mincho font-bold tracking-widest leading-relaxed wrap-break-word whitespace-pre-wrap max-w-5xl transition-all duration-1000`}
           style={{
-            color: seasonalTheme.colors.text,
-            textShadow: `0 0 30px ${seasonalTheme.colors.glow}`,
+            color: palette.text,
+            textShadow: `0 0 30px ${palette.glow}`,
           }}
         >
           {display}
@@ -82,7 +82,7 @@ export default function TypingArea({
           {/* Render fully matched Kana (Past - Clear) */}
           <span
             className="transition-colors duration-200 font-medium"
-            style={{ color: seasonalTheme.colors.text }}
+            style={{ color: palette.text }}
           >
             {matchedKana}
           </span>
@@ -95,15 +95,15 @@ export default function TypingArea({
                 key={remainingTarget}
                 className="relative mx-px font-bold transition-all duration-1000"
                 style={{
-                  color: seasonalTheme.colors.primary,
-                  textShadow: `0 0 15px ${seasonalTheme.colors.glow}`,
+                  color: palette.primary,
+                  textShadow: `0 0 15px ${palette.glow}`,
                   opacity: 0.5,
                 }}
                 animate={{
                   textShadow: [
-                    `0 0 10px ${seasonalTheme.colors.glow}`,
-                    `0 0 20px ${seasonalTheme.colors.glow}`,
-                    `0 0 10px ${seasonalTheme.colors.glow}`,
+                    `0 0 10px ${palette.glow}`,
+                    `0 0 20px ${palette.glow}`,
+                    `0 0 10px ${palette.glow}`,
                   ],
                 }}
                 transition={{
@@ -117,8 +117,8 @@ export default function TypingArea({
                 <motion.div
                   className="absolute -bottom-1 left-0 w-full h-0.5 shadow-lg transition-all duration-1000"
                   style={{
-                    backgroundColor: seasonalTheme.colors.accent,
-                    boxShadow: `0 0 10px ${seasonalTheme.colors.accent}`,
+                    backgroundColor: palette.accent,
+                    boxShadow: `0 0 10px ${palette.accent}`,
                   }}
                   animate={{ opacity: [1, 0.5, 1] }}
                   transition={{ duration: 1, repeat: Infinity }}
@@ -127,7 +127,7 @@ export default function TypingArea({
               {/* Future Characters (Dimmed) */}
               <span
                 className="transition-colors duration-200"
-                style={{ color: seasonalTheme.colors.text, opacity: 0.5 }}
+                style={{ color: palette.text, opacity: 0.5 }}
               >
                 {remainingTarget.slice(1)}
               </span>
@@ -156,7 +156,7 @@ export default function TypingArea({
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.3 }}
           className="absolute top-full mt-6 w-full flex flex-col items-center justify-center text-lg font-zen-old-mincho font-medium transition-colors duration-1000"
-          style={{ color: seasonalTheme.colors.text }}
+          style={{ color: palette.text }}
         >
           <div className="text-xs mb-1 opacity-60 font-sans tracking-widest uppercase">Next</div>
           <div className="max-w-4xl text-center px-4">{nextWord.display}</div>
@@ -181,7 +181,7 @@ export default function TypingArea({
             top: '50%',
             x: '-50%',
             y: '-50%',
-            borderColor: `${seasonalTheme.colors.primary}80`,
+            borderColor: `${palette.primary}80`,
           }}
         />
       )}

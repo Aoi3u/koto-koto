@@ -133,7 +133,7 @@ export default function ResultScreen({
           <div
             className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000"
             style={{
-              borderColor: `${seasonalTheme.adjustedColors.primary}20`,
+              borderColor: `${seasonalTheme.colors.primary}20`,
             }}
           >
             <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
@@ -149,7 +149,7 @@ export default function ResultScreen({
           <div
             className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000"
             style={{
-              borderColor: `${seasonalTheme.adjustedColors.primary}20`,
+              borderColor: `${seasonalTheme.colors.primary}20`,
             }}
           >
             <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
@@ -173,7 +173,7 @@ export default function ResultScreen({
           <div
             className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-all duration-300 border"
             style={{
-              borderColor: `${seasonalTheme.adjustedColors.primary}20`,
+              borderColor: `${seasonalTheme.colors.primary}20`,
             }}
             onClick={handleShare}
           >
@@ -188,7 +188,12 @@ export default function ResultScreen({
       <button
         onClick={onRestart}
         autoFocus
-        className="group relative px-8 py-3 md:px-10 md:py-4 overflow-hidden rounded-full bg-off-white text-zen-dark font-inter font-bold tracking-widest hover:bg-matcha transition-colors duration-300"
+        className="group relative px-8 py-3 md:px-10 md:py-4 overflow-hidden rounded-full font-inter font-bold tracking-widest transition-colors duration-300"
+        style={{
+          backgroundColor: seasonalTheme.colors.primary,
+          color: seasonalTheme.colors.background,
+          boxShadow: `0 0 18px ${seasonalTheme.colors.glow}`,
+        }}
       >
         <span className="relative z-10 flex items-center gap-2 text-sm md:text-base">
           <RefreshCw className="w-3 h-3 md:w-4 md:h-4" /> PLAY AGAIN

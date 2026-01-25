@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { formatTime } from '../../../lib/formatters';
-import { useSeasonalTheme } from '../../../contexts/SeasonalContext';
+import { useSeasonalTheme, useThemePalette } from '../../../contexts/SeasonalContext';
 
 interface GameHeaderProps {
   elapsedTime: number;
@@ -20,6 +20,7 @@ export default function GameHeader({
   onQuit,
 }: GameHeaderProps) {
   const seasonalTheme = useSeasonalTheme();
+  const { palette } = useThemePalette('stable');
   const timeStr = formatTime(elapsedTime);
 
   return (
@@ -44,7 +45,7 @@ export default function GameHeader({
         </span>
         <span
           className="text-xl font-inter font-light tracking-wider text-off-white transition-all duration-1000"
-          style={{ textShadow: `0 0 15px ${seasonalTheme.colors.glow}` }}
+          style={{ textShadow: `0 0 15px ${palette.glow}` }}
         >
           {timeStr}
         </span>
