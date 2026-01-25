@@ -246,10 +246,8 @@ export default function AuthPage() {
                 >
                   <input
                     className="w-full bg-transparent border-b border-white/20 py-2 text-off-white placeholder-white/20 focus:outline-none transition-colors font-zen-old-mincho text-lg text-center"
-                    style={{ caretColor: seasonalTheme.adjustedColors.primary }}
-                    onFocus={(e) =>
-                      (e.target.style.borderColor = seasonalTheme.adjustedColors.primary)
-                    }
+                    style={{ caretColor: palette.primary }}
+                    onFocus={(e) => (e.target.style.borderColor = palette.primary)}
                     onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.2)')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}

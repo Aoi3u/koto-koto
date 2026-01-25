@@ -183,7 +183,7 @@ function ResultsPageContent() {
         />
       </div>
     );
-  }, [history, status, palette, historyScrollState, handleScroll, historyStats, historyChartData]);
+  }, [history, status, historyScrollState, handleScroll, historyStats, historyChartData]);
 
   const rankingsContent = useMemo(() => {
     if (rankings.loading) return <div className="text-subtle-gray text-sm py-8">Loading...</div>;
