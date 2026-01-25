@@ -44,7 +44,7 @@ export default function GameHeader({
         </span>
         <span
           className="text-xl font-inter font-light tracking-wider text-off-white transition-all duration-1000"
-          style={{ textShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}` }}
+          style={{ textShadow: `0 0 15px ${seasonalTheme.colors.glow}` }}
         >
           {timeStr}
         </span>
