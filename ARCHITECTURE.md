@@ -222,8 +222,17 @@ const validated = result.data;
 ### `/api/rankings` (GET)
 
 - **Auth**: 不要 (読み取り専用)
-- **Query**: `timeframe=all|day|week|month`, `limit=50` (最大200)
+- **Query**:
+  - `timeframe=all|day|week|month`
+  - `limit=50` (最大200)
+  - `mode=users|runs`（省略時は `users`）
 - **Sort**: Zen Score (WPM × Accuracy ÷ 100) DESC
+- **Modes**:
+  - `mode=users` (Players): ユーザーごとのベストラン（同一ユーザーの全プレイから Zen Score 最大の 1 プレイを選択）
+  - `mode=runs` (Runs): 各プレイをそのまま戦績として並べる
+- **Ranking Rule**:
+  - Zen Score 同点時は「タイ順位」（コンペティション方式）
+  - 例: Zen Score が `a=250, b=250, c=200` の場合 → `rank: 1, 1, 3`
 - **Response**: user名, wpm, accuracy, zen score, grade/title, rank, createdAt
 
 ### `/api/user/update-name` (PATCH)
@@ -264,6 +273,9 @@ D (Seed) → C (Sprout) → B (Wind in Pines) → A (Clear Sky)
 **Rankings Tab** (`/results?tab=rankings`):
 
 - グローバルランキング
+- モード切り替え:
+  - Players: ユーザーごとの最高記録（デフォルト表示, `mode=users`）
+  - Runs: 各プレイの戦績一覧 (`mode=runs`)
 - CustomSelectで期間・表示数フィルタリング
 - 順位に応じた視覚スタイル (1位=金, 2位=銀, 3位=銅)
 
