@@ -74,7 +74,16 @@ describe('Rankings API', () => {
     expect(json.error).toMatch(/Invalid timeframe/);
   });
 
-  it('uses defaults (timeframe=all, limit=50) and ranks results', async () => {
+  it('returns 400 for invalid mode', async () => {
+    const GET = await getHandler();
+    const req = makeReq('http://localhost/api/rankings?mode=unknown');
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+    const json = await res.json();
+    expect(json.error).toMatch(/Invalid mode/);
+  });
+
+  it('uses runs mode (timeframe=all, limit=50) and ranks results', async () => {
     mockFindMany().mockResolvedValueOnce([
       {
         wordsPerMinute: 200,
@@ -95,7 +104,7 @@ describe('Rankings API', () => {
     ]);
 
     const GET = await getHandler();
-    const req = makeReq('http://localhost/api/rankings');
+    const req = makeReq('http://localhost/api/rankings?mode=runs');
     const res = await GET(req);
 
     expect(mockFindMany()).toHaveBeenCalledWith({
@@ -129,10 +138,62 @@ describe('Rankings API', () => {
     });
   });
 
+  it('aggregates best result per user when mode=users', async () => {
+    mockFindMany().mockResolvedValueOnce([
+      // Alice: 2 プレイ（より高い ZenScore の方を採用）
+      {
+        wordsPerMinute: 200,
+        accuracy: 95,
+        createdAt: new Date('2025-12-02T00:00:00.000Z'),
+        zenScore: 0, // API 側では calculateZenScore を使うのでここは無視される
+        userId: 'user-alice-12345',
+        user: { name: 'Alice' },
+      },
+      {
+        wordsPerMinute: 210,
+        accuracy: 97,
+        createdAt: new Date('2025-12-03T00:00:00.000Z'),
+        zenScore: 0,
+        userId: 'user-alice-12345',
+        user: { name: 'Alice' },
+      },
+      // Bob: 1 プレイ
+      {
+        wordsPerMinute: 180,
+        accuracy: 96,
+        createdAt: new Date('2025-12-01T00:00:00.000Z'),
+        zenScore: 0,
+        userId: 'user-bob-67890',
+        user: { name: null },
+      },
+    ]);
+
+    const GET = await getHandler();
+    const req = makeReq('http://localhost/api/rankings?mode=users');
+    const res = await GET(req);
+
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    // ユーザーごとに 1 件ずつになっていること
+    expect(json.results).toHaveLength(2);
+    // Alice が 210 / 97 のプレイで 1 位になっている
+    expect(json.results[0]).toMatchObject({
+      user: 'Alice',
+      wpm: 210,
+      accuracy: 97,
+    });
+    // Bob は匿名ハンドルで 2 位
+    expect(json.results[1]).toMatchObject({
+      user: 'Player_user-bob',
+      wpm: 180,
+      accuracy: 96,
+    });
+  });
+
   it('applies timeframe=week and limit', async () => {
     mockFindMany().mockResolvedValueOnce([]);
     const GET = await getHandler();
-    const req = new Request('http://localhost/api/rankings?timeframe=week&limit=10');
+    const req = new Request('http://localhost/api/rankings?timeframe=week&limit=10&mode=runs');
     await GET(req);
 
     const call = mockFindMany().mock.calls[0]?.[0];

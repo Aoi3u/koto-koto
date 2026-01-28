@@ -30,6 +30,7 @@ function ResultsPageContent() {
   const searchParams = useSearchParams();
 
   const [tab, setTab] = useState<'history' | 'rankings'>('history');
+  const [rankingMode, setRankingMode] = useState<'runs' | 'users'>('users');
 
   // Data states
   const [history, setHistory] = useState<{
@@ -118,7 +119,11 @@ function ResultsPageContent() {
   const fetchRankings = useCallback(async () => {
     setRankings((prev) => ({ ...prev, loading: true, error: null }));
     try {
-      const params = new URLSearchParams({ timeframe, limit: String(limit) });
+      const params = new URLSearchParams({
+        timeframe,
+        limit: String(limit),
+        mode: rankingMode,
+      });
       const res = await fetch(`/api/rankings?${params.toString()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error('Failed to fetch rankings');
       const body = await res.json();
@@ -127,7 +132,7 @@ function ResultsPageContent() {
       setRankings({ loading: false, error: 'Failed to load rankings', data: [] });
       addToast('Failed to load rankings', 'error');
     }
-  }, [timeframe, limit, addToast]);
+  }, [timeframe, limit, rankingMode, addToast]);
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -281,19 +286,45 @@ function ResultsPageContent() {
               transition={{ duration: 0.3 }}
               className="space-y-8"
             >
-              <div className="flex gap-6 justify-end mb-4">
-                <CustomSelect
-                  value={timeframe}
-                  options={[...timeframeOptions]}
-                  onChange={(val) => setTimeframe(val)}
-                  label="Period"
-                />
-                <CustomSelect
-                  value={limit}
-                  options={limitOptions.map((l) => ({ value: l, label: `${l} rows` }))}
-                  onChange={(val) => setLimit(val)}
-                  label="Show"
-                />
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div className="inline-flex rounded-full border border-white/15 bg-white/5 p-1 text-xs uppercase tracking-[0.2em]">
+                  <button
+                    type="button"
+                    onClick={() => setRankingMode('users')}
+                    className={`px-4 py-1 rounded-full transition-colors ${
+                      rankingMode === 'users'
+                        ? 'bg-off-white text-zen-dark'
+                        : 'text-subtle-gray hover:text-off-white'
+                    }`}
+                  >
+                    Players
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRankingMode('runs')}
+                    className={`px-4 py-1 rounded-full transition-colors ${
+                      rankingMode === 'runs'
+                        ? 'bg-off-white text-zen-dark'
+                        : 'text-subtle-gray hover:text-off-white'
+                    }`}
+                  >
+                    Runs
+                  </button>
+                </div>
+                <div className="flex gap-6 justify-end">
+                  <CustomSelect
+                    value={timeframe}
+                    options={[...timeframeOptions]}
+                    onChange={(val) => setTimeframe(val)}
+                    label="Period"
+                  />
+                  <CustomSelect
+                    value={limit}
+                    options={limitOptions.map((l) => ({ value: l, label: `${l} rows` }))}
+                    onChange={(val) => setLimit(val)}
+                    label="Show"
+                  />
+                </div>
               </div>
               {rankingsContent}
             </motion.div>
