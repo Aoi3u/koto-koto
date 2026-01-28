@@ -41,7 +41,7 @@ export default function ResultScreen({
   const zenScore = calculateZenScore(netWpm, accuracy);
 
   const handleShare = () => {
-    const text = `Koto-Koto Result:\nRank: ${grade} - ${title}\nWPM: ${netWpm}\nAccuracy: ${accuracy}%\n\nhttps://koto-koto.vercel.app/\n#KotoKoto`;
+    const text = `Koto-Koto Evaluation Result\n━━━━━━━━━━━━━━━━━━\nRank: ${grade} "${title}"\nZen Score: ${zenScore}\nWPM: ${netWpm} / ACC: ${accuracy}%\n━━━━━━━━━━━━━━━━━━\nVerify your limits!\nhttps://koto-koto.vercel.app/`;
     navigator.clipboard.writeText(text);
     alert('Result copied to clipboard!');
   };
