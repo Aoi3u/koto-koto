@@ -91,12 +91,28 @@ export const GET = async (req: Request) => {
       },
     });
 
-    const payload = results.map((result, index) => {
+    // 競技スタイルの順位付け（同点は同順位、次順位は人数ぶん飛ばす）
+    let lastZenScore: number | null = null;
+    let lastRank = 0;
+    let position = 0;
+
+    const payload = results.map((result) => {
+      position += 1;
       // 表示・ランク判定用の ZenScore は常に計算関数から求める
       const zenScore = calculateZenScore(result.wordsPerMinute, result.accuracy);
+
+      let rank: number;
+      if (lastZenScore === null || zenScore < lastZenScore) {
+        rank = position;
+        lastRank = rank;
+        lastZenScore = zenScore;
+      } else {
+        rank = lastRank;
+      }
+
       const rankResult = calculateRank(result.wordsPerMinute, result.accuracy);
       return {
-        rank: index + 1,
+        rank,
         wpm: result.wordsPerMinute,
         accuracy: result.accuracy,
         createdAt: result.createdAt,
@@ -171,12 +187,28 @@ export const GET = async (req: Request) => {
 
   const topUsers = sortedBest.slice(0, limit);
 
-  const payload = topUsers.map((result, index) => {
+  // 競技スタイルの順位付け（同点は同順位、次順位は人数ぶん飛ばす）
+  let lastZenScore: number | null = null;
+  let lastRank = 0;
+  let position = 0;
+
+  const payload = topUsers.map((result) => {
+    position += 1;
+
+    let rank: number;
+    if (lastZenScore === null || result.zenScore < lastZenScore) {
+      rank = position;
+      lastRank = rank;
+      lastZenScore = result.zenScore;
+    } else {
+      rank = lastRank;
+    }
+
     const rankResult = calculateRank(result.wpm, result.accuracy);
     const displayName = result.name ?? generateAnonymousHandle(result.userId);
 
     return {
-      rank: index + 1,
+      rank,
       wpm: result.wpm,
       accuracy: result.accuracy,
       createdAt: result.createdAt,
