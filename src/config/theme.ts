@@ -17,6 +17,24 @@ export const THEME = {
     mono: "'JetBrains Mono', monospace",
   },
   rankColors: {
+    PARINIRVANA_10:
+      'text-white drop-shadow-[0_0_50px_rgba(255,255,255,0.9)] shadow-white/80 animate-pulse',
+    PARINIRVANA_9: 'text-white drop-shadow-[0_0_48px_rgba(255,255,255,0.85)] shadow-white/75',
+    PARINIRVANA_8:
+      'text-yellow-100 drop-shadow-[0_0_46px_rgba(255,255,255,0.8)] shadow-yellow-100/75',
+    PARINIRVANA_7:
+      'text-yellow-100 drop-shadow-[0_0_44px_rgba(255,255,255,0.75)] shadow-yellow-100/70',
+    PARINIRVANA_6:
+      'text-yellow-200 drop-shadow-[0_0_42px_rgba(253,224,71,0.85)] shadow-yellow-200/70',
+    PARINIRVANA_5:
+      'text-yellow-200 drop-shadow-[0_0_40px_rgba(253,224,71,0.8)] shadow-yellow-200/65',
+    PARINIRVANA_4:
+      'text-yellow-300 drop-shadow-[0_0_38px_rgba(253,224,71,0.75)] shadow-yellow-300/60',
+    PARINIRVANA_3:
+      'text-yellow-300 drop-shadow-[0_0_36px_rgba(253,224,71,0.7)] shadow-yellow-300/55',
+    PARINIRVANA_2:
+      'text-amber-300 drop-shadow-[0_0_35px_rgba(253,224,71,0.65)] shadow-amber-300/55',
+    PARINIRVANA_1: 'text-amber-300 drop-shadow-[0_0_33px_rgba(253,224,71,0.6)] shadow-amber-300/50',
     NIRVANA_MASTER:
       'text-amber-300 drop-shadow-[0_0_35px_rgba(253,224,71,0.6)] shadow-amber-300/50',
     NIRVANA_9: 'text-amber-300 drop-shadow-[0_0_33px_rgba(253,224,71,0.55)]',

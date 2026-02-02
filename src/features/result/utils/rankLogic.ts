@@ -17,6 +17,77 @@ export const calculateRank = (wpm: number, acc: number): RankResult => {
     };
 
   // 3. Thresholds (High Density Ladder)
+  // SSS++ Tier - Parinirvana (涅槃寂静)
+  if (zenScore >= RANK_THRESHOLDS.PARINIRVANA_10.score)
+    return {
+      ...RANK_THRESHOLDS.PARINIRVANA_10,
+      color: THEME.rankColors.PARINIRVANA_10,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.PARINIRVANA_9.score)
+    return {
+      ...RANK_THRESHOLDS.PARINIRVANA_9,
+      color: THEME.rankColors.PARINIRVANA_9,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.PARINIRVANA_8.score)
+    return {
+      ...RANK_THRESHOLDS.PARINIRVANA_8,
+      color: THEME.rankColors.PARINIRVANA_8,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.PARINIRVANA_7.score)
+    return {
+      ...RANK_THRESHOLDS.PARINIRVANA_7,
+      color: THEME.rankColors.PARINIRVANA_7,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.PARINIRVANA_6.score)
+    return {
+      ...RANK_THRESHOLDS.PARINIRVANA_6,
+      color: THEME.rankColors.PARINIRVANA_6,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.PARINIRVANA_5.score)
+    return {
+      ...RANK_THRESHOLDS.PARINIRVANA_5,
+      color: THEME.rankColors.PARINIRVANA_5,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.PARINIRVANA_4.score)
+    return {
+      ...RANK_THRESHOLDS.PARINIRVANA_4,
+      color: THEME.rankColors.PARINIRVANA_4,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.PARINIRVANA_3.score)
+    return {
+      ...RANK_THRESHOLDS.PARINIRVANA_3,
+      color: THEME.rankColors.PARINIRVANA_3,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.PARINIRVANA_2.score)
+    return {
+      ...RANK_THRESHOLDS.PARINIRVANA_2,
+      color: THEME.rankColors.PARINIRVANA_2,
+      score: zenScore,
+    };
+
+  if (zenScore >= RANK_THRESHOLDS.PARINIRVANA_1.score)
+    return {
+      ...RANK_THRESHOLDS.PARINIRVANA_1,
+      color: THEME.rankColors.PARINIRVANA_1,
+      score: zenScore,
+    };
+
   // SSS Tier - Nirvana with Dan (段位)
   if (zenScore >= RANK_THRESHOLDS.NIRVANA_MASTER.score)
     return {
