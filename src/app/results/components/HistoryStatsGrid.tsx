@@ -32,7 +32,7 @@ export default function HistoryStatsGrid({ stats }: { stats: HistoryStats }) {
               <span className="opacity-70 text-sm font-normal">・ {stats.bestZenRank.title}</span>
             </div>
           )}
-          <div className="text-sm text-subtle-gray/70">Avg: {stats.avgZenScore}</div>
+          <div className="text-sm text-subtle-gray/70">Avg: {Math.round(stats.avgZenScore)}</div>
         </div>
       </div>
       {/* Streak Section */}
