@@ -15,13 +15,7 @@ import { THEME } from '@/config/theme';
 import { getSeasonalChartColors } from '@/config/seasons';
 import type { HistoryChartPoint } from '../types';
 
-export default function HistoryTrendChart({
-  data,
-  accentColor,
-}: {
-  data: HistoryChartPoint[];
-  accentColor: string;
-}) {
+export default function HistoryTrendChart({ data }: { data: HistoryChartPoint[] }) {
   const { adjustedColors } = useSeasonalTheme();
   const chartColors = getSeasonalChartColors();
 
