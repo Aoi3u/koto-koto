@@ -24,8 +24,7 @@ export default function HistoryStatsGrid({ stats }: { stats: HistoryStats }) {
             Highest Zen Score
           </div>
           <div
-            className="text-5xl md:text-6xl font-light font-zen-old-mincho mb-2 drop-shadow-sm"
-            style={{ color: adjustedColors.primary }}
+            className="text-5xl text-off-white md:text-6xl font-light font-zen-old-mincho mb-2 drop-shadow-sm"
           >
             {Math.round(stats.bestZenScore)}
           </div>
@@ -66,7 +65,7 @@ export default function HistoryStatsGrid({ stats }: { stats: HistoryStats }) {
       </div>
       <div className="col-span-1 md:col-span-1 bg-white/5 border border-white/5 rounded-xl p-3 flex flex-col">
         <div className="text-sm uppercase tracking-wider text-subtle-gray">Best Acc</div>
-        <div className="text-xl my-1 font-mono" style={{ color: adjustedColors.secondary }}>
+        <div className="text-xl text-off-white my-1 font-mono">
           {stats.bestAccuracy}%
         </div>
         <div className="text-sm text-subtle-gray/60">Avg: {Math.round(stats.avgAccuracy)}%</div>
