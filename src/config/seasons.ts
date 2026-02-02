@@ -176,6 +176,102 @@ function adjustGlow(glow: string, brightness: number, saturation: number): strin
 }
 
 /**
+ * Adjusts color saturation and brightness for better chart visibility
+ * while maintaining seasonal aesthetics
+ */
+function adjustColorForChart(
+  color: string,
+  brightnessBoost: number,
+  saturationBoost: number,
+  hueShift: number = 0
+): string {
+  const hex = color.replace('#', '');
+  let r = parseInt(hex.substring(0, 2), 16);
+  let g = parseInt(hex.substring(2, 4), 16);
+  let b = parseInt(hex.substring(4, 6), 16);
+
+  // Convert RGB to HSL
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  let l = (max + min) / 2;
+
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+        break;
+      case g:
+        h = ((b - r) / d + 2) / 6;
+        break;
+      case b:
+        h = ((r - g) / d + 4) / 6;
+        break;
+    }
+  }
+
+  // Apply hue shift (for creating contrasting colors)
+  h = (h + hueShift) % 1;
+  if (h < 0) h += 1;
+
+  // Adjust saturation and lightness
+  s = Math.min(1, s * saturationBoost);
+  l = Math.min(0.85, l * brightnessBoost); // Cap lightness for readability
+
+  // Convert HSL back to RGB
+  const hue2rgb = (p: number, q: number, t: number) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+
+  let r2, g2, b2;
+  if (s === 0) {
+    r2 = g2 = b2 = l;
+  } else {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r2 = hue2rgb(p, q, h + 1 / 3);
+    g2 = hue2rgb(p, q, h);
+    b2 = hue2rgb(p, q, h - 1 / 3);
+  }
+
+  const toHex = (n: number) => {
+    const hex = Math.round(n * 255).toString(16);
+    return hex.padStart(2, '0');
+  };
+
+  return `#${toHex(r2)}${toHex(g2)}${toHex(b2)}`;
+}
+
+/**
+ * Gets chart line colors derived from current seasonal theme
+ * with enhanced visibility for dark backgrounds
+ */
+export function getSeasonalChartColors(): {
+  zenScore: string;
+  wpm: string;
+  accuracy: string;
+} {
+  const theme = getCurrentSeasonalTheme();
+
+  return {
+    zenScore: adjustColorForChart(theme.colors.primary, 1.4, 1.3), // Main metric: brightest, original hue
+    wpm: adjustColorForChart(theme.colors.primary, 1.35, 1.25, 0.4), // Secondary: shifted hue for contrast
+    accuracy: adjustColorForChart(theme.colors.accent, 1.3, 1.1), // Accent: slightly subdued
+  };
+}
+
+/**
  * Gets combined season + time-of-day theme
  */
 export function getCombinedTheme(): CombinedTheme {

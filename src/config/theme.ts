@@ -50,11 +50,6 @@ export const THEME = {
     grid: 'rgba(255,255,255,0.05)',
     axis: 'rgba(255,255,255,0.2)',
     axisText: 'rgba(255,255,255,0.6)',
-    lines: {
-      primary: '#fcd34d', // Higher visibility gold for zenScore
-      secondary: '#60a5fa', // Bright blue for WPM
-      accent: '#4ade80', // Bright green for accuracy
-    },
     tooltip: {
       bg: 'rgba(23, 23, 23, 0.95)',
       border: 'rgba(255,255,255,0.1)',

@@ -12,6 +12,7 @@ import {
 } from 'recharts';
 import { useSeasonalTheme } from '@/contexts/SeasonalContext';
 import { THEME } from '@/config/theme';
+import { getSeasonalChartColors } from '@/config/seasons';
 import type { HistoryChartPoint } from '../types';
 
 export default function HistoryTrendChart({
@@ -22,6 +23,7 @@ export default function HistoryTrendChart({
   accentColor: string;
 }) {
   const { adjustedColors } = useSeasonalTheme();
+  const chartColors = getSeasonalChartColors();
 
   return (
     <div
@@ -96,9 +98,9 @@ export default function HistoryTrendChart({
               yAxisId="left"
               type="monotone"
               dataKey="zenScore"
-              stroke={THEME.charts.lines.primary}
+              stroke={chartColors.zenScore}
               strokeWidth={3}
-              activeDot={{ r: 6, fill: THEME.charts.lines.primary, stroke: '#fff', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: chartColors.zenScore, stroke: '#fff', strokeWidth: 2 }}
               dot={false}
               name="Zen Score"
               animationDuration={1500}
@@ -108,13 +110,13 @@ export default function HistoryTrendChart({
               yAxisId="left"
               type="monotone"
               dataKey="wpm"
-              stroke={THEME.charts.lines.secondary}
+              stroke={chartColors.wpm}
               strokeWidth={2}
               strokeDasharray="4 4"
               dot={false}
               name="WPM"
               role="img"
-              opacity={0.8}
+              opacity={0.85}
               animationDuration={1500}
             />
             {/* Accuracy - Accent */}
@@ -122,11 +124,11 @@ export default function HistoryTrendChart({
               yAxisId="right"
               type="monotone"
               dataKey="accuracy"
-              stroke={THEME.charts.lines.accent}
+              stroke={chartColors.accuracy}
               strokeWidth={1.5}
               dot={false}
               name="Accuracy"
-              opacity={0.7}
+              opacity={0.75}
               animationDuration={1500}
             />
           </LineChart>
