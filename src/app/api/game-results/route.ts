@@ -5,7 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { GameResultFlexibleSchema } from '@/lib/validation/game';
 import { calculateZenScore } from '@/lib/gameUtils';
 
-const MAX_RESULTS = 50;
+// Display limit for the results list
+const DISPLAY_LIMIT = 100;
 
 const unauthorized = () => NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 const badRequest = (message: string) => NextResponse.json({ error: message }, { status: 400 });
@@ -85,10 +86,10 @@ export const GET = async () => {
     session?.user && 'id' in session.user ? (session.user as { id?: string }).id : undefined;
   if (!userId) return unauthorized();
 
-  const results = await prisma.gameResult.findMany({
+  // Fetch all results for analytics (stats, trends, streaks)
+  const allResults = await prisma.gameResult.findMany({
     where: { userId },
     orderBy: { createdAt: 'desc' },
-    take: MAX_RESULTS,
     select: {
       id: true,
       createdAt: true,
@@ -101,5 +102,28 @@ export const GET = async () => {
     },
   });
 
-  return NextResponse.json({ results: results.map(mapResult) }, { status: 200 });
+  // Fetch limited results for display list
+  const displayResults = await prisma.gameResult.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    take: DISPLAY_LIMIT,
+    select: {
+      id: true,
+      createdAt: true,
+      wordsPerMinute: true,
+      accuracy: true,
+      totalCharacters: true,
+      correctCharacters: true,
+      totalTime: true,
+      difficulty: true,
+    },
+  });
+
+  return NextResponse.json(
+    {
+      allResults: allResults.map(mapResult),
+      results: displayResults.map(mapResult),
+    },
+    { status: 200 }
+  );
 };
