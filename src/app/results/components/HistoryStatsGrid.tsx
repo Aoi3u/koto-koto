@@ -23,10 +23,8 @@ export default function HistoryStatsGrid({ stats }: { stats: HistoryStats }) {
           <div className="text-sm uppercase tracking-[0.2em] text-subtle-gray mb-2 font-zen-old-mincho">
             Highest Zen Score
           </div>
-          <div
-            className="text-5xl text-off-white md:text-6xl font-light font-zen-old-mincho mb-2 drop-shadow-sm"
-          >
-            {Math.round(stats.bestZenScore)}
+          <div className="text-5xl text-off-white md:text-6xl font-light font-zen-old-mincho mb-2 drop-shadow-sm">
+            {stats.bestZenScore}
           </div>
           {stats.bestZenRank && (
             <div className={`text-md font-bold mb-1 ${stats.bestZenRank.color}`}>
@@ -34,7 +32,7 @@ export default function HistoryStatsGrid({ stats }: { stats: HistoryStats }) {
               <span className="opacity-70 text-sm font-normal">・ {stats.bestZenRank.title}</span>
             </div>
           )}
-          <div className="text-sm text-subtle-gray/70">Avg: {Math.round(stats.avgZenScore)}</div>
+          <div className="text-sm text-subtle-gray/70">Avg: {stats.avgZenScore}</div>
         </div>
       </div>
       {/* Streak Section */}
@@ -65,9 +63,7 @@ export default function HistoryStatsGrid({ stats }: { stats: HistoryStats }) {
       </div>
       <div className="col-span-1 md:col-span-1 bg-white/5 border border-white/5 rounded-xl p-3 flex flex-col">
         <div className="text-sm uppercase tracking-wider text-subtle-gray">Best Acc</div>
-        <div className="text-xl text-off-white my-1 font-mono">
-          {stats.bestAccuracy}%
-        </div>
+        <div className="text-xl text-off-white my-1 font-mono">{stats.bestAccuracy}%</div>
         <div className="text-sm text-subtle-gray/60">Avg: {Math.round(stats.avgAccuracy)}%</div>
       </div>
     </div>
