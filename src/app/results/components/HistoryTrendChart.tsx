@@ -10,6 +10,8 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
+import { useSeasonalTheme } from '@/contexts/SeasonalContext';
+import { THEME } from '@/config/theme';
 import type { HistoryChartPoint } from '../types';
 
 export default function HistoryTrendChart({
@@ -19,66 +21,113 @@ export default function HistoryTrendChart({
   data: HistoryChartPoint[];
   accentColor: string;
 }) {
+  const { adjustedColors } = useSeasonalTheme();
+
   return (
-    <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-      <div className="flex items-center justify-between mb-3">
-        <div className="text-xs uppercase tracking-[0.3em] text-subtle-gray">Trend</div>
-        <div className="text-[12px] text-subtle-gray">{data.length} sessions</div>
+    <div
+      className="bg-white/5 border rounded-xl p-6 mb-6"
+      style={{ borderColor: THEME.colors.zenDark }}
+    >
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col">
+          <h3 className="text-sm uppercase tracking-[0.2em] text-subtle-gray font-zen-old-mincho">
+            Progression
+          </h3>
+          <p className="text-xs text-subtle-gray/60 mt-1">Daily trend of your performance</p>
+        </div>
+        <div className="text-xs text-subtle-gray font-mono bg-white/5 px-2 py-1 rounded">
+          {data.length} sessions
+        </div>
       </div>
-      <div className="h-96">
+
+      <div className="h-[350px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 20, right: 0, left: 0, bottom: 10 }}>
-            <CartesianGrid stroke="rgba(255,255,255,0.1)" strokeDasharray="4 4" />
-            <XAxis dataKey="label" stroke="rgba(255,255,255,0.4)" tick={{ fontSize: 10 }} />
+          <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <CartesianGrid stroke={THEME.charts.grid} vertical={false} strokeDasharray="4 4" />
+            <XAxis
+              dataKey="label"
+              stroke={THEME.charts.axis}
+              tick={{ fontSize: 10, fill: THEME.charts.axisText }}
+              tickLine={false}
+              axisLine={{ stroke: THEME.charts.axis }}
+              dy={10}
+            />
             <YAxis
               yAxisId="left"
-              stroke="rgba(255,255,255,0.4)"
-              tick={{ fontSize: 12 }}
+              stroke={THEME.charts.axis}
+              tick={{ fontSize: 10, fill: THEME.charts.axisText }}
+              tickLine={false}
+              axisLine={false}
               domain={[0, 'auto']}
             />
             <YAxis
               yAxisId="right"
               orientation="right"
-              stroke="rgba(255,255,255,0.45)"
-              tick={{ fontSize: 12 }}
+              stroke={THEME.charts.axis}
+              tick={{ fontSize: 10, fill: THEME.charts.axisText }}
+              tickLine={false}
+              axisLine={false}
               domain={[0, 100]}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: 'rgba(10,10,12,0.95)',
-                border: '1px solid rgba(255,255,255,0.2)',
+                backgroundColor: THEME.charts.tooltip.bg,
+                backdropFilter: 'blur(8px)',
+                border: `1px solid ${THEME.charts.tooltip.border}`,
                 borderRadius: '8px',
-                fontSize: '14px',
+                fontSize: '12px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
               }}
-              labelStyle={{ color: '#cbd5f5' }}
+              itemStyle={{ padding: 0 }}
+              labelStyle={{
+                color: adjustedColors.primary,
+                marginBottom: '0.5rem',
+                fontFamily: 'monospace',
+              }}
+              cursor={{ stroke: THEME.charts.axis, strokeWidth: 1 }}
             />
-            <Legend wrapperStyle={{ fontSize: '12px' }} />
-            <Line
-              yAxisId="left"
-              type="monotone"
-              dataKey="wpm"
-              stroke="rgba(203,109,200,0.9)"
-              strokeWidth={2.5}
-              dot={false}
-              name="WPM"
+            <Legend
+              wrapperStyle={{ paddingTop: '20px', fontSize: '11px', opacity: 0.9 }}
+              iconType="circle"
+              iconSize={8}
             />
-            <Line
-              yAxisId="right"
-              type="monotone"
-              dataKey="accuracy"
-              stroke="rgba(109,259,157,0.9)"
-              strokeWidth={2.5}
-              dot={false}
-              name="Accuracy"
-            />
+            {/* Zen Score - The main metric */}
             <Line
               yAxisId="left"
               type="monotone"
               dataKey="zenScore"
-              stroke="rgba(243,208,58,0.9)"
-              strokeWidth={2.5}
+              stroke={THEME.charts.lines.primary}
+              strokeWidth={3}
+              activeDot={{ r: 6, fill: THEME.charts.lines.primary, stroke: '#fff', strokeWidth: 2 }}
               dot={false}
               name="Zen Score"
+              animationDuration={1500}
+            />
+            {/* WPM - Secondary */}
+            <Line
+              yAxisId="left"
+              type="monotone"
+              dataKey="wpm"
+              stroke={THEME.charts.lines.secondary}
+              strokeWidth={2}
+              strokeDasharray="4 4"
+              dot={false}
+              name="WPM"
+              role="img"
+              opacity={0.8}
+              animationDuration={1500}
+            />
+            {/* Accuracy - Accent */}
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey="accuracy"
+              stroke={THEME.charts.lines.accent}
+              strokeWidth={1.5}
+              dot={false}
+              name="Accuracy"
+              opacity={0.7}
+              animationDuration={1500}
             />
           </LineChart>
         </ResponsiveContainer>
