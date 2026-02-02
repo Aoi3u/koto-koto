@@ -1,4 +1,5 @@
 import { calculateZenScore } from '@/lib/formatters';
+import { calculateRank } from '@/features/result/utils/rankLogic';
 import type { HistoryChartPoint, HistoryItem, HistoryStats } from '../types';
 
 const formatDayKey = (date: Date) => {
@@ -21,6 +22,7 @@ export const computeHistoryStats = (items: HistoryItem[]): HistoryStats => {
       bestAccuracy: 0,
       avgZenScore: 0,
       bestZenScore: 0,
+      bestZenRank: null,
       currentStreak: 0,
       longestStreak: 0,
     };
@@ -34,7 +36,11 @@ export const computeHistoryStats = (items: HistoryItem[]): HistoryStats => {
       acc.totalZen += zenScore;
       acc.bestWpm = Math.max(acc.bestWpm, item.wpm);
       acc.bestAccuracy = Math.max(acc.bestAccuracy, item.accuracy);
-      acc.bestZenScore = Math.max(acc.bestZenScore, zenScore);
+
+      if (zenScore > acc.bestZenScore) {
+        acc.bestZenScore = zenScore;
+        acc.bestZenItem = item;
+      }
       return acc;
     },
     {
@@ -44,8 +50,13 @@ export const computeHistoryStats = (items: HistoryItem[]): HistoryStats => {
       bestWpm: 0,
       bestAccuracy: 0,
       bestZenScore: 0,
+      bestZenItem: null as HistoryItem | null,
     }
   );
+
+  const bestZenRank = stats.bestZenItem
+    ? calculateRank(stats.bestZenItem.wpm, stats.bestZenItem.accuracy)
+    : null;
 
   const uniqueDays = new Map<number, string>();
   items.forEach((item) => {
@@ -82,6 +93,7 @@ export const computeHistoryStats = (items: HistoryItem[]): HistoryStats => {
     bestAccuracy: Math.round(stats.bestAccuracy * 10) / 10,
     avgZenScore: Math.round(stats.totalZen / items.length),
     bestZenScore: Math.round(stats.bestZenScore),
+    bestZenRank,
     currentStreak,
     longestStreak,
   };

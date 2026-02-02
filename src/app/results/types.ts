@@ -24,6 +24,7 @@ export type HistoryStats = {
   bestAccuracy: number;
   avgZenScore: number;
   bestZenScore: number;
+  bestZenRank: { title: string; grade: string; color: string } | null;
   currentStreak: number;
   longestStreak: number;
 };

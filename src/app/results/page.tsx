@@ -37,7 +37,8 @@ function ResultsPageContent() {
     loading: boolean;
     error: string | null;
     data: HistoryItem[];
-  }>({ loading: false, error: null, data: [] });
+    allData: HistoryItem[];
+  }>({ loading: false, error: null, data: [], allData: [] });
   const [rankings, setRankings] = useState<{
     loading: boolean;
     error: string | null;
@@ -104,14 +105,24 @@ function ResultsPageContent() {
     try {
       const res = await fetch('/api/game-results', { cache: 'no-store' });
       if (res.status === 401) {
-        setHistory({ loading: false, error: 'Sign in to view your history.', data: [] });
+        setHistory({
+          loading: false,
+          error: 'Sign in to view your history.',
+          data: [],
+          allData: [],
+        });
         return;
       }
       if (!res.ok) throw new Error('Failed to fetch history');
       const body = await res.json();
-      setHistory({ loading: false, error: null, data: body.results ?? [] });
+      setHistory({
+        loading: false,
+        error: null,
+        data: body.results ?? [],
+        allData: body.allResults ?? [],
+      });
     } catch {
-      setHistory({ loading: false, error: 'Failed to load history', data: [] });
+      setHistory({ loading: false, error: 'Failed to load history', data: [], allData: [] });
       addToast('Failed to load history', 'error');
     }
   }, [session?.user, addToast]);
@@ -156,8 +167,8 @@ function ResultsPageContent() {
     };
   }, []);
 
-  const historyStats = useMemo(() => computeHistoryStats(history.data), [history.data]);
-  const historyChartData = useMemo(() => buildHistoryChart(history.data), [history.data]);
+  const historyStats = useMemo(() => computeHistoryStats(history.allData), [history.allData]);
+  const historyChartData = useMemo(() => buildHistoryChart(history.allData), [history.allData]);
 
   const historyContent = useMemo(() => {
     if (status !== 'authenticated') {
