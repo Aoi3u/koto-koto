@@ -11,7 +11,7 @@ export const natsumeSosekiSentences: Sentence[] = [
   {
     id: 'soseki_kokoro_02',
     display: '精神的に向上心のないものは、馬鹿だ。',
-    reading: 'せいしんてきにこうじょうしんのないものはばかだ。',
+    reading: 'せいしんてきにこうじょうしんのないものは、ばかだ。',
     meta: { author: '夏目漱石', title: 'こころ' },
   },
   {
