@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/components/ToastProvider';
-import { useSeasonalTheme } from '@/contexts/SeasonalContext';
+import { useThemePalette } from '@/contexts/SeasonalContext';
 import CustomSelect from './components/CustomSelect';
 import HistoryList from './components/HistoryList';
 import HistoryStatsGrid from './components/HistoryStatsGrid';
@@ -26,10 +26,11 @@ const limitOptions = [50, 100, 200];
 function ResultsPageContent() {
   const { data: session, status } = useSession();
   const { addToast } = useToast();
-  const seasonalTheme = useSeasonalTheme();
+  const { palette } = useThemePalette('dynamic');
   const searchParams = useSearchParams();
 
   const [tab, setTab] = useState<'history' | 'rankings'>('history');
+  const [rankingMode, setRankingMode] = useState<'runs' | 'users'>('users');
 
   // Data states
   const [history, setHistory] = useState<{
@@ -129,7 +130,11 @@ function ResultsPageContent() {
   const fetchRankings = useCallback(async () => {
     setRankings((prev) => ({ ...prev, loading: true, error: null }));
     try {
-      const params = new URLSearchParams({ timeframe, limit: String(limit) });
+      const params = new URLSearchParams({
+        timeframe,
+        limit: String(limit),
+        mode: rankingMode,
+      });
       const res = await fetch(`/api/rankings?${params.toString()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error('Failed to fetch rankings');
       const body = await res.json();
@@ -138,7 +143,7 @@ function ResultsPageContent() {
       setRankings({ loading: false, error: 'Failed to load rankings', data: [] });
       addToast('Failed to load rankings', 'error');
     }
-  }, [timeframe, limit, addToast]);
+  }, [timeframe, limit, rankingMode, addToast]);
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -185,10 +190,7 @@ function ResultsPageContent() {
     return (
       <div className="space-y-8">
         <HistoryStatsGrid stats={historyStats} />
-        <HistoryTrendChart
-          data={historyChartData}
-          accentColor={seasonalTheme.adjustedColors.primary}
-        />
+        <HistoryTrendChart data={historyChartData} />
         <HistoryList
           items={history.data}
           scrollRef={historyScrollRef}
@@ -197,15 +199,7 @@ function ResultsPageContent() {
         />
       </div>
     );
-  }, [
-    history,
-    status,
-    seasonalTheme,
-    historyScrollState,
-    handleScroll,
-    historyStats,
-    historyChartData,
-  ]);
+  }, [history, status, historyScrollState, handleScroll, historyStats, historyChartData]);
 
   const rankingsContent = useMemo(() => {
     if (rankings.loading) return <div className="text-subtle-gray text-sm py-8">Loading...</div>;
@@ -243,7 +237,7 @@ function ResultsPageContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="text-4xl font-zen-old-mincho text-off-white transition-all duration-1000"
-              style={{ textShadow: `0 0 30px ${seasonalTheme.adjustedColors.glow}` }}
+              style={{ textShadow: `0 0 30px ${palette.glow}` }}
             >
               Records
             </motion.h1>
@@ -261,7 +255,7 @@ function ResultsPageContent() {
                 <motion.div
                   layoutId="tab-indicator"
                   className="absolute bottom-0 left-0 right-0 h-0.5"
-                  style={{ backgroundColor: seasonalTheme.adjustedColors.primary }}
+                  style={{ backgroundColor: palette.primary }}
                 />
               )}
             </button>
@@ -276,7 +270,7 @@ function ResultsPageContent() {
                 <motion.div
                   layoutId="tab-indicator"
                   className="absolute bottom-0 left-0 right-0 h-0.5"
-                  style={{ backgroundColor: seasonalTheme.adjustedColors.primary }}
+                  style={{ backgroundColor: palette.primary }}
                 />
               )}
             </button>
@@ -303,19 +297,45 @@ function ResultsPageContent() {
               transition={{ duration: 0.3 }}
               className="space-y-8"
             >
-              <div className="flex gap-6 justify-end mb-4">
-                <CustomSelect
-                  value={timeframe}
-                  options={[...timeframeOptions]}
-                  onChange={(val) => setTimeframe(val)}
-                  label="Period"
-                />
-                <CustomSelect
-                  value={limit}
-                  options={limitOptions.map((l) => ({ value: l, label: `${l} rows` }))}
-                  onChange={(val) => setLimit(val)}
-                  label="Show"
-                />
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div className="inline-flex rounded-full border border-white/15 bg-white/5 p-1 text-xs uppercase tracking-[0.2em]">
+                  <button
+                    type="button"
+                    onClick={() => setRankingMode('users')}
+                    className={`px-4 py-1 rounded-full transition-colors ${
+                      rankingMode === 'users'
+                        ? 'bg-off-white text-zen-dark'
+                        : 'text-subtle-gray hover:text-off-white'
+                    }`}
+                  >
+                    Players
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRankingMode('runs')}
+                    className={`px-4 py-1 rounded-full transition-colors ${
+                      rankingMode === 'runs'
+                        ? 'bg-off-white text-zen-dark'
+                        : 'text-subtle-gray hover:text-off-white'
+                    }`}
+                  >
+                    Runs
+                  </button>
+                </div>
+                <div className="flex gap-6 justify-end">
+                  <CustomSelect
+                    value={timeframe}
+                    options={[...timeframeOptions]}
+                    onChange={(val) => setTimeframe(val)}
+                    label="Period"
+                  />
+                  <CustomSelect
+                    value={limit}
+                    options={limitOptions.map((l) => ({ value: l, label: `${l} rows` }))}
+                    onChange={(val) => setLimit(val)}
+                    label="Show"
+                  />
+                </div>
               </div>
               {rankingsContent}
             </motion.div>

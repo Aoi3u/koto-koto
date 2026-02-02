@@ -100,5 +100,6 @@ export default function useGameController() {
     errorCount,
     currentCombo,
     maxCombo,
+    nextWordItem: wordList[currentWordIndex + 1],
   };
 }

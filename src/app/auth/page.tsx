@@ -7,13 +7,13 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Edit2, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
-import { useSeasonalTheme } from '@/contexts/SeasonalContext';
+import { useThemePalette } from '@/contexts/SeasonalContext';
 
 export default function AuthPage() {
   const { data: session, status, update } = useSession();
   const router = useRouter();
   const { addToast } = useToast();
-  const seasonalTheme = useSeasonalTheme();
+  const { palette } = useThemePalette('dynamic');
 
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
@@ -103,11 +103,11 @@ export default function AuthPage() {
       <div className="absolute inset-0 pointer-events-none transition-colors duration-1000">
         <div
           className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-10 transition-colors duration-1000"
-          style={{ backgroundColor: seasonalTheme.adjustedColors.primary }}
+          style={{ backgroundColor: palette.primary }}
         />
         <div
           className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full blur-3xl opacity-10 transition-colors duration-1000"
-          style={{ backgroundColor: seasonalTheme.adjustedColors.secondary }}
+          style={{ backgroundColor: palette.secondary }}
         />
       </div>
 
@@ -121,7 +121,7 @@ export default function AuthPage() {
           <p className="text-subtle-gray text-xs uppercase tracking-[0.4em] mb-4">Authentication</p>
           <h1
             className="text-4xl md:text-5xl font-zen-old-mincho text-off-white tracking-wide transition-all duration-1000"
-            style={{ textShadow: `0 0 30px ${seasonalTheme.adjustedColors.glow}` }}
+            style={{ textShadow: `0 0 30px ${palette.glow}` }}
           >
             Koto-Koto
           </h1>
@@ -137,7 +137,7 @@ export default function AuthPage() {
             <div className="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm relative overflow-hidden group">
               <div
                 className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700"
-                style={{ backgroundColor: seasonalTheme.adjustedColors.primary }}
+                style={{ backgroundColor: palette.primary }}
               />
 
               <div className="relative z-10">
@@ -170,10 +170,8 @@ export default function AuthPage() {
                   <div className="space-y-4">
                     <input
                       className="w-full bg-transparent border-b border-white/20 py-2 text-off-white placeholder-white/20 focus:outline-none transition-colors font-zen-old-mincho text-xl text-center"
-                      style={{ caretColor: seasonalTheme.adjustedColors.primary }}
-                      onFocus={(e) =>
-                        (e.target.style.borderColor = seasonalTheme.adjustedColors.primary)
-                      }
+                      style={{ caretColor: palette.primary }}
+                      onFocus={(e) => (e.target.style.borderColor = palette.primary)}
                       onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.2)')}
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
@@ -210,7 +208,7 @@ export default function AuthPage() {
                 href="/results"
                 className="w-full py-3 rounded-full bg-white/5 hover:bg-white/10 text-off-white font-zen-old-mincho tracking-widest transition-all duration-300 border border-white/10"
                 style={{
-                  boxShadow: `0 0 20px ${seasonalTheme.adjustedColors.glow}10`,
+                  boxShadow: `0 0 20px ${palette.glow}10`,
                 }}
               >
                 VIEW RESULTS
@@ -248,10 +246,8 @@ export default function AuthPage() {
                 >
                   <input
                     className="w-full bg-transparent border-b border-white/20 py-2 text-off-white placeholder-white/20 focus:outline-none transition-colors font-zen-old-mincho text-lg text-center"
-                    style={{ caretColor: seasonalTheme.adjustedColors.primary }}
-                    onFocus={(e) =>
-                      (e.target.style.borderColor = seasonalTheme.adjustedColors.primary)
-                    }
+                    style={{ caretColor: palette.primary }}
+                    onFocus={(e) => (e.target.style.borderColor = palette.primary)}
                     onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.2)')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -265,8 +261,8 @@ export default function AuthPage() {
             <div>
               <input
                 className="w-full bg-transparent border-b border-white/20 py-2 text-off-white placeholder-white/20 focus:outline-none transition-colors font-zen-old-mincho text-lg text-center"
-                style={{ caretColor: seasonalTheme.adjustedColors.primary }}
-                onFocus={(e) => (e.target.style.borderColor = seasonalTheme.adjustedColors.primary)}
+                style={{ caretColor: palette.primary }}
+                onFocus={(e) => (e.target.style.borderColor = palette.primary)}
                 onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.2)')}
                 type="email"
                 value={email}
@@ -280,8 +276,8 @@ export default function AuthPage() {
             <div>
               <input
                 className="w-full bg-transparent border-b border-white/20 py-2 text-off-white placeholder-white/20 focus:outline-none transition-colors font-zen-old-mincho text-lg text-center"
-                style={{ caretColor: seasonalTheme.adjustedColors.primary }}
-                onFocus={(e) => (e.target.style.borderColor = seasonalTheme.adjustedColors.primary)}
+                style={{ caretColor: palette.primary }}
+                onFocus={(e) => (e.target.style.borderColor = palette.primary)}
                 onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.2)')}
                 type="password"
                 value={password}
@@ -298,7 +294,7 @@ export default function AuthPage() {
                 disabled={loading}
                 className="w-full py-3 rounded-full bg-white/5 hover:bg-white/10 text-off-white font-zen-old-mincho tracking-widest transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed border border-white/10"
                 style={{
-                  boxShadow: `0 0 20px ${seasonalTheme.adjustedColors.glow}20`,
+                  boxShadow: `0 0 20px ${palette.glow}20`,
                 }}
               >
                 {loading ? 'PROCESSING...' : mode === 'login' ? 'ENTER' : 'JOIN'}
@@ -323,7 +319,7 @@ export default function AuthPage() {
                 disabled={loading}
                 className="w-full py-3 rounded-full bg-white/5 hover:bg-white/10 text-off-white font-zen-old-mincho tracking-widest transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed border border-white/10 flex items-center justify-center gap-3"
                 style={{
-                  boxShadow: `0 0 20px ${seasonalTheme.adjustedColors.glow}10`,
+                  boxShadow: `0 0 20px ${palette.glow}10`,
                 }}
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

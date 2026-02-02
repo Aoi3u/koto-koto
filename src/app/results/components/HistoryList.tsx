@@ -4,7 +4,7 @@ import type React from 'react';
 import { motion } from 'framer-motion';
 import { calculateRank } from '@/features/result/utils/rankLogic';
 import { calculateZenScore } from '@/lib/formatters';
-import { useSeasonalTheme } from '@/contexts/SeasonalContext';
+import { useThemePalette } from '@/contexts/SeasonalContext';
 import type { HistoryItem } from '../types';
 
 export default function HistoryList({
@@ -18,7 +18,7 @@ export default function HistoryList({
   scrollState: { top: boolean; bottom: boolean };
   onScroll: (event: React.UIEvent<HTMLDivElement>) => void;
 }) {
-  const seasonalTheme = useSeasonalTheme();
+  const { palette } = useThemePalette('dynamic');
 
   return (
     <div
@@ -43,8 +43,8 @@ export default function HistoryList({
               borderColor: 'rgba(255,255,255,0.05)',
             }}
             whileHover={{
-              borderColor: seasonalTheme.adjustedColors.primary,
-              boxShadow: `0 0 15px ${seasonalTheme.adjustedColors.glow}20`,
+              borderColor: palette.primary,
+              boxShadow: `0 0 15px ${palette.glow}20`,
             }}
           >
             <div className="flex items-center gap-6">
