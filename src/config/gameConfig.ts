@@ -6,6 +6,16 @@ export const GAME_CONFIG = {
 };
 
 export const RANK_THRESHOLDS = {
+  PARINIRVANA_10: { score: 150, grade: 'SSS+ 十界', title: 'Parinirvana (涅槃寂静)' },
+  PARINIRVANA_9: { score: 145, grade: 'SSS+ 九界', title: 'Parinirvana (涅槃寂静)' },
+  PARINIRVANA_8: { score: 140, grade: 'SSS+ 八界', title: 'Parinirvana (涅槃寂静)' },
+  PARINIRVANA_7: { score: 135, grade: 'SSS+ 七界', title: 'Parinirvana (涅槃寂静)' },
+  PARINIRVANA_6: { score: 130, grade: 'SSS+ 六界', title: 'Parinirvana (涅槃寂静)' },
+  PARINIRVANA_5: { score: 125, grade: 'SSS+ 五界', title: 'Parinirvana (涅槃寂静)' },
+  PARINIRVANA_4: { score: 120, grade: 'SSS+ 四界', title: 'Parinirvana (涅槃寂静)' },
+  PARINIRVANA_3: { score: 115, grade: 'SSS+ 三界', title: 'Parinirvana (涅槃寂静)' },
+  PARINIRVANA_2: { score: 110, grade: 'SSS+ 二界', title: 'Parinirvana (涅槃寂静)' },
+  PARINIRVANA_1: { score: 105, grade: 'SSS+ 一界', title: 'Parinirvana (涅槃寂静)' },
   NIRVANA_MASTER: { score: 100, grade: 'SSS 大師', title: 'Nirvana (涅槃)' },
   NIRVANA_9: { score: 98, grade: 'SSS 九段', title: 'Nirvana (涅槃)' },
   NIRVANA_8: { score: 96, grade: 'SSS 八段', title: 'Nirvana (涅槃)' },
