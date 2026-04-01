@@ -5,6 +5,7 @@ export interface SoundProfileConfig {
 }
 
 export const SOUND_PROFILES = {
+  mute: { name: 'Mute', folder: '', variants: 0 },
   alpaca: { name: 'Alpaca', folder: 'alpaca', variants: 5 },
   blackink: { name: 'Black Ink', folder: 'blackink', variants: 5 },
   bluealps: { name: 'Blue Alps', folder: 'bluealps', variants: 5 },

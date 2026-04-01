@@ -20,6 +20,8 @@ export default function useKeySound({
   hasAudioSupport,
 }: UseKeySoundOptions) {
   const playKeySound = useCallback(() => {
+    if (currentProfile === 'mute') return;
+
     const audioContext = getAudioContext();
     if (!audioContext || isLoading || isProfileLoading || !hasAudioSupport) return;
 

@@ -16,7 +16,7 @@ export default function useSoundProfile({
 }: UseSoundProfileOptions) {
   const audioBuffersRef = useRef<Map<string, AudioBuffer[]>>(new Map());
   const loadedProfilesRef = useRef<Set<string>>(new Set());
-  const [currentProfile, setCurrentProfile] = useState<KeyboardSoundProfile>('topre');
+  const [currentProfile, setCurrentProfile] = useState<KeyboardSoundProfile>('mute');
   const [isLoading, setIsLoading] = useState(true);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
 
@@ -65,7 +65,7 @@ export default function useSoundProfile({
     }
 
     // Resolve initial profile (from localStorage) without depending on state
-    let initialProfile: KeyboardSoundProfile = 'topre';
+    let initialProfile: KeyboardSoundProfile = 'mute';
     try {
       const savedProfile = localStorage.getItem(
         'keyboard-sound-profile'
