@@ -163,16 +163,17 @@ export default function useTypingEngine() {
           type: 'MARK_MATCH',
           payload: { matched, kanaMatched, newTarget, newPending, comboIncrement },
         });
-        return { isWordComplete: newTarget === '' };
+        return { isWordComplete: newTarget === '', isError: false };
       } else {
         if (isValidPrefix(state.remainingTarget, nextInput)) {
           playKeySound();
           dispatch({ type: 'MARK_PREFIX', payload: nextInput });
+          return { isWordComplete: false, isError: false };
         } else {
           dispatch({ type: 'MARK_ERROR' });
           setTimeout(() => dispatch({ type: 'SET_SHAKE', payload: false }), 300);
+          return { isWordComplete: false, isError: true };
         }
-        return { isWordComplete: false };
       }
     },
     [state.pendingInput, state.remainingTarget, processInput, playKeySound]

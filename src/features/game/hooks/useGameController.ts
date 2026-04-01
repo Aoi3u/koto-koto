@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import useGameSession from './useGameSession';
 import useTypingEngine from './useTypingEngine';
 import { GAME_CONFIG } from '../../../config/gameConfig';
@@ -39,6 +39,20 @@ export default function useGameController({
     setTarget,
     resetEngine,
   } = useTypingEngine();
+  const [mistypedKeyCounts, setMistypedKeyCounts] = useState<Record<string, number>>({});
+
+  const startSession = useCallback(
+    (mode: GameMode = preferredStartMode) => {
+      setMistypedKeyCounts({});
+      startGame(mode);
+    },
+    [preferredStartMode, startGame]
+  );
+
+  const quitSession = useCallback(() => {
+    setMistypedKeyCounts({});
+    quitGame();
+  }, [quitGame]);
 
   // Sync Engine with Session Word
   useEffect(() => {
@@ -56,7 +70,7 @@ export default function useGameController({
     (e: KeyboardEvent) => {
       if (gameState === 'waiting') {
         if (e.key === 'Enter') {
-          startGame(preferredStartMode);
+          startSession(preferredStartMode);
         }
         return;
       }
@@ -67,6 +81,12 @@ export default function useGameController({
       e.preventDefault();
 
       const result = handleInput(e.key.toLowerCase());
+      if (result?.isError) {
+        setMistypedKeyCounts((prev) => ({
+          ...prev,
+          [e.key.toLowerCase()]: (prev[e.key.toLowerCase()] ?? 0) + 1,
+        }));
+      }
 
       if (result && result.isWordComplete) {
         if (gameMode === 'word-endless') {
@@ -87,7 +107,7 @@ export default function useGameController({
       gameState,
       gameMode,
       preferredStartMode,
-      startGame,
+      startSession,
       handleInput,
       nextWord,
       endGame,
@@ -108,11 +128,13 @@ export default function useGameController({
     gameMode,
     currentWord,
     elapsedTime,
-    startGame,
-    quitGame,
+    startGame: startSession,
+    quitGame: quitSession,
     currentWordIndex,
     totalSentences: wordList.length,
     isEndlessMode: gameMode === 'word-endless',
+    finishSession: endGame,
+    mistypedKeyCounts,
 
     // Engine / Stats
     matchedRomaji,

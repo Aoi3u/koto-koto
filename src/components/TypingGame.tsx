@@ -7,14 +7,15 @@ import TypingArea from '../features/game/components/TypingArea';
 import TitleScreen from '../features/game/components/TitleScreen';
 import GameHeader from '../features/game/components/GameHeader';
 import ResultScreen from '../features/result/components/ResultScreen';
+import EndlessResultScreen from '../features/result/components/EndlessResultScreen';
 import MobileBlocker from './MobileBlocker';
 import SeasonalParticles from './SeasonalParticles';
 import { SeasonalProvider, useSeasonalTheme, useThemePalette } from '../contexts/SeasonalContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { calculateAccuracy, calculateWPM } from '../lib/formatters';
 import { useToast } from './ToastProvider';
 import type { GameResultPayload } from '@/types/game';
 import type { GameMode } from '../features/game/hooks/useGameSession';
+import { buildSessionMetrics } from '../features/result/utils/sessionMetrics';
 
 function TypingGameInner() {
   const seasonalTheme = useSeasonalTheme();
@@ -38,9 +39,11 @@ function TypingGameInner() {
     ripple,
     startGame,
     quitGame,
+    finishSession,
     correctKeyCount,
     errorCount,
     maxCombo,
+    mistypedKeyCounts,
     currentWordIndex,
     totalSentences,
     nextWordItem,
@@ -63,13 +66,14 @@ function TypingGameInner() {
       return;
     }
 
-    const totalKeystrokes = correctKeyCount + errorCount;
-    const minutes = elapsedTime / 60;
-    const wpm = calculateWPM(correctKeyCount, minutes);
-    const accuracy = calculateAccuracy(correctKeyCount, totalKeystrokes);
+    const { totalKeystrokes, netWpm, accuracy } = buildSessionMetrics(
+      correctKeyCount,
+      errorCount,
+      elapsedTime
+    );
 
     const payload: GameResultPayload = {
-      wpm,
+      wpm: netWpm,
       accuracy,
       keystrokes: totalKeystrokes,
       correctKeystrokes: correctKeyCount,
@@ -142,6 +146,7 @@ function TypingGameInner() {
           currentWordIndex={currentWordIndex}
           totalSentences={totalSentences}
           isEndlessMode={isEndlessMode}
+          onFinishEndless={isEndlessMode ? finishSession : undefined}
           onQuit={quitGame}
         />
       )}
@@ -197,6 +202,16 @@ function TypingGameInner() {
                 onRestart={quitGame}
               />
             </motion.div>
+          )}
+
+          {gameState === 'finished' && isEndlessMode && (
+            <EndlessResultScreen
+              correctKeyCount={correctKeyCount}
+              errorCount={errorCount}
+              duration={elapsedTime}
+              mistypedKeyCounts={mistypedKeyCounts}
+              onRestart={quitGame}
+            />
           )}
         </AnimatePresence>
       </div>
