@@ -10,6 +10,7 @@ interface GameHeaderProps {
   elapsedTime: number;
   currentWordIndex: number;
   totalSentences: number;
+  isEndlessMode?: boolean;
   onQuit: () => void;
 }
 
@@ -17,6 +18,7 @@ export default function GameHeader({
   elapsedTime,
   currentWordIndex,
   totalSentences,
+  isEndlessMode = false,
   onQuit,
 }: GameHeaderProps) {
   const seasonalTheme = useSeasonalTheme();
@@ -59,7 +61,7 @@ export default function GameHeader({
         <span className="text-xl font-inter font-light tracking-wider text-off-white">
           {currentWordIndex + 1}
           <span className="text-sm text-subtle-gray mx-1 opacity-50">/</span>
-          {totalSentences}
+          {isEndlessMode ? '∞' : totalSentences}
         </span>
       </div>
     </motion.header>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import useGameController from '../features/game/hooks/useGameController';
 import TypingArea from '../features/game/components/TypingArea';
@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { calculateAccuracy, calculateWPM } from '../lib/formatters';
 import { useToast } from './ToastProvider';
 import type { GameResultPayload } from '@/types/game';
+import type { GameMode } from '../features/game/hooks/useGameSession';
 
 function TypingGameInner() {
   const seasonalTheme = useSeasonalTheme();
@@ -21,9 +22,12 @@ function TypingGameInner() {
   const { data: session, status } = useSession();
   const { addToast } = useToast();
   const postedRef = useRef(false);
+  const [selectedMode, setSelectedMode] = useState<GameMode>('classic');
 
   const {
     gameState,
+    gameMode,
+    isEndlessMode,
     currentWord,
     matchedRomaji,
     pendingInput,
@@ -40,7 +44,7 @@ function TypingGameInner() {
     currentWordIndex,
     totalSentences,
     nextWordItem,
-  } = useGameController();
+  } = useGameController({ preferredStartMode: selectedMode });
 
   useEffect(() => {
     if (gameState !== 'finished') {
@@ -49,6 +53,7 @@ function TypingGameInner() {
   }, [gameState]);
 
   useEffect(() => {
+    if (gameMode === 'word-endless') return;
     if (gameState !== 'finished' || postedRef.current) return;
 
     postedRef.current = true;
@@ -99,7 +104,16 @@ function TypingGameInner() {
     return () => {
       abortController.abort();
     };
-  }, [gameState, session?.user?.id, status, elapsedTime, correctKeyCount, errorCount, addToast]);
+  }, [
+    gameMode,
+    gameState,
+    session?.user?.id,
+    status,
+    elapsedTime,
+    correctKeyCount,
+    errorCount,
+    addToast,
+  ]);
 
   return (
     <div
@@ -127,6 +141,7 @@ function TypingGameInner() {
           elapsedTime={elapsedTime}
           currentWordIndex={currentWordIndex}
           totalSentences={totalSentences}
+          isEndlessMode={isEndlessMode}
           onQuit={quitGame}
         />
       )}
@@ -135,7 +150,13 @@ function TypingGameInner() {
       <div className="w-full max-w-5xl px-8 flex flex-col items-center relative z-10">
         <AnimatePresence mode="wait">
           {/* Waiting State / Intro */}
-          {gameState === 'waiting' && <TitleScreen onStart={startGame} />}
+          {gameState === 'waiting' && (
+            <TitleScreen
+              selectedMode={selectedMode}
+              onModeChange={setSelectedMode}
+              onStart={() => startGame(selectedMode)}
+            />
+          )}
 
           {/* Playing State */}
           {gameState === 'playing' && currentWord && (
@@ -160,7 +181,7 @@ function TypingGameInner() {
           )}
 
           {/* Finished State */}
-          {gameState === 'finished' && (
+          {gameState === 'finished' && !isEndlessMode && (
             <motion.div
               key="finished"
               initial={{ opacity: 0 }}
