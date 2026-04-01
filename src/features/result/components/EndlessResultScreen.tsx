@@ -1,75 +1,63 @@
 'use client';
 
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { RefreshCw, Share2 } from 'lucide-react';
-import { calculateRank } from '../utils/rankLogic';
+import { RefreshCw } from 'lucide-react';
 import { useSeasonalTheme } from '../../../contexts/SeasonalContext';
-import { calculateZenScore } from '../../../lib/formatters';
+import { getTopMistypedKeys } from '../utils/endlessAdvice';
 import { buildSessionMetrics } from '../utils/sessionMetrics';
 
-interface ResultScreenProps {
+type EndlessResultScreenProps = {
   correctKeyCount: number;
   errorCount: number;
-  maxCombo: number;
-  duration: number; // usually 60s
+  duration: number;
+  mistypedKeyCounts: Record<string, number>;
   onRestart: () => void;
-}
+};
 
-export default function ResultScreen({
+export default function EndlessResultScreen({
   correctKeyCount,
   errorCount,
-  maxCombo,
-  duration, // This is now elapsedTime in seconds
+  duration,
+  mistypedKeyCounts,
   onRestart,
-}: ResultScreenProps) {
+}: EndlessResultScreenProps) {
   const seasonalTheme = useSeasonalTheme();
-
-  const { totalKeystrokes, netWpm, kpm, timeStr, accuracy } = buildSessionMetrics(
+  const { totalKeystrokes, netWpm, kpm, accuracy, timeStr } = buildSessionMetrics(
     correctKeyCount,
     errorCount,
     duration
   );
+  const topMistypedKeys = getTopMistypedKeys(mistypedKeyCounts);
 
-  const { grade, title, color } = calculateRank(netWpm, accuracy);
-  const zenScore = calculateZenScore(netWpm, accuracy);
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        onRestart();
+      }
+    };
 
-  const handleShare = () => {
-    const text = `Koto-Koto Evaluation Result\n━━━━━━━━━━━━━━━━━━\nRank: ${grade} "${title}"\nZen Score: ${zenScore}\nWPM: ${netWpm} / ACC: ${accuracy}%\n━━━━━━━━━━━━━━━━━━\nVerify your limits!\nhttps://koto-koto.vercel.app/`;
-    navigator.clipboard.writeText(text);
-    alert('Result copied to clipboard!');
-  };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onRestart]);
 
   return (
     <motion.div
-      key="finished"
+      key="finished-endless"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
       className="flex flex-col items-center justify-center w-full max-w-xl z-10 text-off-white px-4"
     >
       <h2 className="text-xs md:text-sm font-inter tracking-[0.3em] text-subtle-gray mb-2 md:mb-4 uppercase">
         Session Complete
       </h2>
-
-      {/* Grade Display (Visible!) */}
-      <motion.div
-        initial={{ scale: 0.5, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.2, type: 'spring' }}
-        className={`text-7xl md:text-8xl font-zen-old-mincho tracking-tighter mb-2 ${color} transition-all duration-1000`}
-        style={{
-          filter: `drop-shadow(0 0 30px ${seasonalTheme.adjustedColors.glow})`,
-        }}
-      >
-        {grade}
-      </motion.div>
-
-      {/* Title Display */}
       <h1 className="text-xl md:text-2xl font-zen-old-mincho font-bold mb-6 md:mb-8 text-off-white tracking-widest opacity-90 text-center">
-        {title}
+        Endless Mode
       </h1>
 
       <div className="grid grid-cols-2 gap-4 w-full mb-6 md:mb-8">
-        {/* Main Stats */}
         <div
           className="col-span-1 bg-white/5 rounded-lg p-4 md:p-5 flex flex-col items-center justify-center backdrop-blur-sm border transition-colors duration-1000"
           style={{
@@ -84,6 +72,7 @@ export default function ResultScreen({
             KPM: {kpm}
           </span>
         </div>
+
         <div
           className="col-span-1 bg-white/5 rounded-lg p-4 md:p-5 flex flex-col items-center justify-center backdrop-blur-sm border transition-colors duration-1000"
           style={{
@@ -99,30 +88,7 @@ export default function ResultScreen({
           </span>
         </div>
 
-        {/* Detail Stats Row */}
         <div className="col-span-2 grid grid-cols-3 gap-3">
-          <div
-            className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000 relative group/zen"
-            style={{
-              borderColor: `${seasonalTheme.adjustedColors.primary}20`,
-            }}
-          >
-            <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
-              Zen Score
-            </span>
-            <span className="text-base md:text-lg font-inter font-semibold mt-1 cursor-help">
-              {zenScore}
-            </span>
-            {/* Tooltip for Zen Score */}
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-              <div className="text-[10px] text-off-white font-mono mb-1">
-                Zen Score = WPM × Accuracy ÷ 100
-              </div>
-              <div className="text-[9px] text-subtle-gray font-mono">
-                = {netWpm} × {accuracy}% ÷ 100
-              </div>
-            </div>
-          </div>
           <div
             className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000"
             style={{
@@ -159,21 +125,15 @@ export default function ResultScreen({
             }}
           >
             <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
-              Max Combo
+              Frequent Mistypes
             </span>
-            <span className="text-base md:text-lg font-inter mt-1">{maxCombo}</span>
-          </div>
-          <div
-            className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-all duration-300 border"
-            style={{
-              borderColor: `${seasonalTheme.colors.primary}20`,
-            }}
-            onClick={handleShare}
-          >
-            <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
-              Share
-            </span>
-            <Share2 className="w-4 h-4 md:w-5 md:h-5 mt-1 transition-colors duration-1000" />
+            {topMistypedKeys.length > 0 ? (
+              <span className="text-base md:text-lg font-inter mt-1 text-center">
+                {topMistypedKeys.map((item) => `${item.key}x${item.count}`).join(', ')}
+              </span>
+            ) : (
+              <span className="text-[10px] text-subtle-gray mt-2">None</span>
+            )}
           </div>
         </div>
       </div>

@@ -1,11 +1,19 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import useGameSession from './useGameSession';
 import useTypingEngine from './useTypingEngine';
 import { GAME_CONFIG } from '../../../config/gameConfig';
+import type { GameMode } from './useGameSession';
 
-export default function useGameController() {
+type UseGameControllerOptions = {
+  preferredStartMode?: GameMode;
+};
+
+export default function useGameController({
+  preferredStartMode = 'classic',
+}: UseGameControllerOptions = {}) {
   const {
     gameState,
+    gameMode,
     currentWord,
     elapsedTime,
     startGame,
@@ -31,6 +39,20 @@ export default function useGameController() {
     setTarget,
     resetEngine,
   } = useTypingEngine();
+  const [mistypedKeyCounts, setMistypedKeyCounts] = useState<Record<string, number>>({});
+
+  const startSession = useCallback(
+    (mode: GameMode = preferredStartMode) => {
+      setMistypedKeyCounts({});
+      startGame(mode);
+    },
+    [preferredStartMode, startGame]
+  );
+
+  const quitSession = useCallback(() => {
+    setMistypedKeyCounts({});
+    quitGame();
+  }, [quitGame]);
 
   // Sync Engine with Session Word
   useEffect(() => {
@@ -48,7 +70,7 @@ export default function useGameController() {
     (e: KeyboardEvent) => {
       if (gameState === 'waiting') {
         if (e.key === 'Enter') {
-          startGame();
+          startSession(preferredStartMode);
         }
         return;
       }
@@ -59,8 +81,19 @@ export default function useGameController() {
       e.preventDefault();
 
       const result = handleInput(e.key.toLowerCase());
+      if (result?.isError) {
+        setMistypedKeyCounts((prev) => ({
+          ...prev,
+          [e.key.toLowerCase()]: (prev[e.key.toLowerCase()] ?? 0) + 1,
+        }));
+      }
 
       if (result && result.isWordComplete) {
+        if (gameMode === 'word-endless') {
+          setTimeout(() => nextWord(), GAME_CONFIG.WORD_TRANSITION_DELAY_MS);
+          return;
+        }
+
         // Check for Game Over immediately
         if (currentWordIndex + 1 >= wordList.length) {
           endGame();
@@ -70,7 +103,17 @@ export default function useGameController() {
         }
       }
     },
-    [gameState, startGame, handleInput, nextWord, endGame, currentWordIndex, wordList.length]
+    [
+      gameState,
+      gameMode,
+      preferredStartMode,
+      startSession,
+      handleInput,
+      nextWord,
+      endGame,
+      currentWordIndex,
+      wordList.length,
+    ]
   );
 
   // Attach Listeners
@@ -82,12 +125,16 @@ export default function useGameController() {
   return {
     // Session
     gameState,
+    gameMode,
     currentWord,
     elapsedTime,
-    startGame,
-    quitGame,
+    startGame: startSession,
+    quitGame: quitSession,
     currentWordIndex,
     totalSentences: wordList.length,
+    isEndlessMode: gameMode === 'word-endless',
+    finishSession: endGame,
+    mistypedKeyCounts,
 
     // Engine / Stats
     matchedRomaji,

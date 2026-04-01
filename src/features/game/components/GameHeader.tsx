@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Flag } from 'lucide-react';
 import { formatTime } from '../../../lib/formatters';
 import { useSeasonalTheme, useThemePalette } from '../../../contexts/SeasonalContext';
 
@@ -10,6 +10,8 @@ interface GameHeaderProps {
   elapsedTime: number;
   currentWordIndex: number;
   totalSentences: number;
+  isEndlessMode?: boolean;
+  onFinishEndless?: () => void;
   onQuit: () => void;
 }
 
@@ -17,6 +19,8 @@ export default function GameHeader({
   elapsedTime,
   currentWordIndex,
   totalSentences,
+  isEndlessMode = false,
+  onFinishEndless,
   onQuit,
 }: GameHeaderProps) {
   const seasonalTheme = useSeasonalTheme();
@@ -51,16 +55,27 @@ export default function GameHeader({
         </span>
       </div>
 
-      {/* Right: Progress */}
-      <div className="flex flex-col items-end">
-        <span className="text-[10px] tracking-[0.3em] uppercase mb-1 opacity-60 font-zen-old-mincho">
-          Progress
-        </span>
-        <span className="text-xl font-inter font-light tracking-wider text-off-white">
-          {currentWordIndex + 1}
-          <span className="text-sm text-subtle-gray mx-1 opacity-50">/</span>
-          {totalSentences}
-        </span>
+      {/* Right: Progress / End Endless */}
+      <div className="flex flex-col items-end gap-2 pointer-events-auto">
+        {isEndlessMode && onFinishEndless && (
+          <button
+            onClick={onFinishEndless}
+            className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1 text-[10px] tracking-widest uppercase font-inter text-off-white/80 hover:text-off-white hover:border-white/35 transition-colors duration-300"
+          >
+            <Flag className="w-3 h-3" />
+            End
+          </button>
+        )}
+        <div className="flex flex-col items-end">
+          <span className="text-[10px] tracking-[0.3em] uppercase mb-1 opacity-60 font-zen-old-mincho">
+            Progress
+          </span>
+          <span className="text-xl font-inter font-light tracking-wider text-off-white">
+            {currentWordIndex + 1}
+            <span className="text-sm text-subtle-gray mx-1 opacity-50">/</span>
+            {isEndlessMode ? '∞' : totalSentences}
+          </span>
+        </div>
       </div>
     </motion.header>
   );
