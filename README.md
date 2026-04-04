@@ -10,13 +10,12 @@ A minimalist, zen-inspired Japanese typing game designed to induce a state of fl
 
 ## ✨ Key Features
 
+- **Dual Play Modes**: Classic (fixed set, saved result) and Word Endless (infinite stream, no save)
 - **Dynamic Seasonal Atmosphere**: Real-time visual themes based on Japan's 4 seasons with particle animations
 - **Intelligent Typing Engine**: Trie-based Romaji-to-Kana converter with flexible input styles (`si`/`shi`, `tu`/`tsu`, etc.)
 - **13 Keyboard Sound Profiles**: Authentic mechanical switch sounds (Cherry MX, Topre, Holy Panda, Gateron, Alps, etc.)
 - **User Authentication**: Google OAuth 2.0 and email/password login with NextAuth.js
 - **Global Rankings & History**: Period-based leaderboard with Zen Score (WPM × Accuracy ÷ 100)
-- **History Analytics**: Trend chart and summary stats with session streaks
-- **Strict Grading System**: Ranks from Seed → SSS with accuracy-gated S-ranks
 
 ## 🛠️ Tech Stack
 
@@ -46,8 +45,7 @@ cd koto-koto
 npm install
 
 # Setup environment variables
-cp .env.local.example .env.local
-# Fill in: DATABASE_URL, DIRECT_URL, NEXTAUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+# Create .env.local and fill in: DATABASE_URL, DIRECT_URL, NEXTAUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 
 # Generate Prisma client
 npx prisma generate
@@ -63,6 +61,7 @@ Open [http://localhost:3000](http://localhost:3000)
 ```bash
 npm run lint       # ESLint check
 npm run format     # Prettier format
+npm run build      # Production build
 npm test           # Run Jest tests
 npm run test:cov   # Test with coverage
 ```
@@ -74,7 +73,3 @@ For detailed technical documentation, see:
 - [ARCHITECTURE.md](ARCHITECTURE.md) - System architecture and design patterns
 - [Project Structure](ARCHITECTURE.md#プロジェクト構造) - Directory organization
 - [API Documentation](ARCHITECTURE.md#api-endpoints) - API endpoints reference
-
-## 🤝 Contributing
-
-Contributions are welcome! Please submit Pull Requests.
