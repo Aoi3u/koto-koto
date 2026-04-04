@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useSeasonalTheme, useThemePalette } from '../../../contexts/SeasonalContext';
-import ChipButton from '@/components/ui/ChipButton';
 import SegmentedControl from '@/components/ui/SegmentedControl';
 import type { GameMode } from '../hooks/useGameSession';
 
@@ -16,7 +15,6 @@ interface TitleScreenProps {
 export default function TitleScreen({ selectedMode, onModeChange, onStart }: TitleScreenProps) {
   const seasonalTheme = useSeasonalTheme();
   const { palette } = useThemePalette('dynamic');
-  const [showModePanel, setShowModePanel] = useState(false);
   const modeOptions: Array<{ value: GameMode; label: string }> = [
     { value: 'classic', label: 'Classic' },
     { value: 'word-endless', label: 'Word Endless' },
@@ -30,7 +28,7 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
       exit={{ opacity: 0 }}
       className="flex flex-col items-center text-center space-y-8"
     >
-      <p className="my-4 text-md font-inter tracking-[0.2em] text-subtle-gray">
+      <p className="mt-12 mb-2 text-md font-inter tracking-[0.2em] text-subtle-gray">
         Japanese Zen Typing
       </p>
       <h1
@@ -48,25 +46,7 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
         {seasonalTheme.haiku}
       </p>
 
-      <div className="mt-12 flex flex-col items-center gap-3">
-        <ChipButton
-          onClick={() => setShowModePanel((prev) => !prev)}
-          className="gap-2 border-white/20 bg-white/5 px-5 py-2 text-[10px] tracking-[0.22em] text-off-white/75 hover:text-off-white hover:border-white/35"
-          aria-expanded={showModePanel}
-          aria-controls="mode-panel"
-        >
-          <motion.span
-            animate={{ rotate: showModePanel ? 90 : 0 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="inline-block text-[8px] leading-none"
-            aria-hidden="true"
-          >
-            ▶
-          </motion.span>
-          Mode
-        </ChipButton>
-
-        {showModePanel && (
+      <div className="mt-20 flex flex-col items-center gap-3">
           <div>
             <SegmentedControl
               id="mode-panel"
@@ -75,7 +55,7 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
               options={modeOptions}
               onChange={onModeChange}
               className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1 backdrop-blur-sm"
-              itemClassName="px-4 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase font-inter transition-colors duration-300"
+              itemClassName="px-3 py-1 rounded-full text-[10px] tracking-[0.2em] uppercase font-inter transition-colors duration-300"
               activeItemClassName="bg-white/20 text-off-white"
               inactiveItemClassName="text-off-white/60 hover:text-off-white/85"
             />
@@ -85,7 +65,6 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
                 : 'infinite words • no save'}
             </p>
           </div>
-        )}
       </div>
 
       <div className="flex flex-col items-center gap-4">
