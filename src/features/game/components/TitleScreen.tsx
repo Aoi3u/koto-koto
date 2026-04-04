@@ -24,17 +24,17 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
       exit={{ opacity: 0 }}
       className="flex flex-col items-center text-center space-y-8"
     >
+      <p className="my-4 text-md font-inter tracking-[0.2em] text-subtle-gray">
+        Japanese Zen Typing
+      </p>
       <h1
-        className="text-6xl md:text-8xl font-thin tracking-widest text-transparent bg-clip-text mb-4 opacity-90 transition-all duration-1000"
+        className="text-6xl md:text-8xl font-thin tracking-widest text-transparent bg-clip-text opacity-90 transition-all duration-1000"
         style={{
           backgroundImage: `linear-gradient(to bottom, ${palette.text}, ${palette.primary})`,
         }}
       >
         Koto-Koto
       </h1>
-      <p className="mt-4 text-md font-inter tracking-[0.4em] text-subtle-gray">
-        Japanese Zen Typing
-      </p>
       <p
         className="text-xs font-zen-old-mincho opacity-60 transition-colors duration-1000"
         style={{ color: palette.primary }}
@@ -53,7 +53,7 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
           <motion.span
             animate={{ rotate: showModePanel ? 90 : 0 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="inline-block text-[11px] leading-none"
+            className="inline-block text-[8px] leading-none"
             aria-hidden="true"
           >
             ▶
