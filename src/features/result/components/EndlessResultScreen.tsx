@@ -54,11 +54,11 @@ export default function EndlessResultScreen({
       <h2 className="text-xs md:text-sm font-inter tracking-[0.3em] text-subtle-gray mb-2 md:mb-4 uppercase">
         Session Complete
       </h2>
-      <h1 className="text-xl md:text-2xl font-zen-old-mincho font-bold mb-6 md:mb-8 text-off-white tracking-widest opacity-90 text-center">
+      <h1 className="text-xl md:text-2xl font-zen-old-mincho font-bold mb-5 md:mb-6 text-off-white tracking-widest opacity-90 text-center">
         Endless Mode
       </h1>
 
-      <div className="grid grid-cols-2 gap-4 w-full mb-6 md:mb-8">
+      <div className="grid grid-cols-2 gap-3 w-full mb-5 md:mb-6">
         <div
           className="col-span-1 bg-white/5 rounded-lg p-4 md:p-5 flex flex-col items-center justify-center backdrop-blur-sm border transition-colors duration-1000"
           style={{
@@ -142,7 +142,7 @@ export default function EndlessResultScreen({
       <PillActionButton
         onClick={onRestart}
         autoFocus
-        className="group relative px-8 py-3 md:px-10 md:py-4 overflow-hidden rounded-full font-inter font-bold tracking-widest transition-colors duration-300"
+        className="group relative px-7 py-2.5 md:px-8 md:py-3 overflow-hidden rounded-full font-inter font-bold tracking-widest transition-colors duration-300"
         style={{
           backgroundColor: seasonalTheme.colors.primary,
           color: seasonalTheme.colors.background,
@@ -150,7 +150,7 @@ export default function EndlessResultScreen({
         }}
       >
         <span className="relative z-10 flex items-center gap-2 text-sm md:text-base">
-          <RefreshCw className="w-3 h-3 md:w-4 md:h-4" /> PLAY AGAIN
+          <RefreshCw className="w-3 h-3" /> PLAY AGAIN
         </span>
       </PillActionButton>
     </motion.div>
