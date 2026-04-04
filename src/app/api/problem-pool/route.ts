@@ -32,21 +32,6 @@ const parseMode = (value: string | null): QueryMode | null => {
   return null;
 };
 
-const sampleWithoutReplacement = <T>(items: T[], count: number) => {
-  const pool = [...items];
-  const limit = Math.min(count, pool.length);
-
-  for (let i = 0; i < limit; i += 1) {
-    const j = i + Math.floor(Math.random() * (pool.length - i));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-
-  return pool.slice(0, limit);
-};
-
-const sampleWithReplacement = <T>(items: T[], count: number) =>
-  Array.from({ length: count }, () => items[Math.floor(Math.random() * items.length)]);
-
 export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
 
@@ -58,7 +43,7 @@ export const GET = async (req: Request) => {
 
   const dbMode = mode === 'classic' ? 'CLASSIC' : 'WORD_ENDLESS';
 
-  const pool = await prisma.$queryRawUnsafe<TypingProblemRow[]>(
+  const sampled = await prisma.$queryRawUnsafe<TypingProblemRow[]>(
     `
     SELECT
       tp."problemKey",
@@ -69,16 +54,16 @@ export const GET = async (req: Request) => {
     FROM "TypingProblem" tp
     WHERE tp."mode" = $1::"ProblemMode"
       AND tp."isActive" = true
+    ORDER BY RANDOM()
+    LIMIT $2
     `,
-    dbMode
+    dbMode,
+    count
   );
 
-  if (pool.length === 0) {
+  if (sampled.length === 0) {
     return NextResponse.json({ error: 'Problem pool is empty' }, { status: 503 });
   }
-
-  const sampled =
-    mode === 'classic' ? sampleWithoutReplacement(pool, count) : sampleWithReplacement(pool, count);
 
   const problems: Sentence[] = sampled
     .map((problem, index) => {
