@@ -11,17 +11,19 @@ src/
 ├── app/                    # Next.js App Router
 │   ├── auth/               # 認証・プロフィール管理
 │   ├── results/            # 履歴・ランキング表示
-│   └── api/                # API routes (auth, game-results, rankings, user)
+│   └── api/                # API routes (auth, game-results, rankings, problem-pool, user)
 ├── components/             # 共有UIコンポーネント
+│   └── ui/                 # 共通UIプリミティブ (Button / Toggle / Tabs)
 ├── contexts/               # React Context (Seasonal, Sound)
 ├── features/               # 機能別モジュール
 │   ├── game/               # ゲームロジック (components + hooks)
-│   └── result/             # リザルト画面
+│   └── result/             # リザルト画面 (classic/endless)
 ├── config/                 # 設定ファイル (seasons, timeOfDay, theme, gameConfig)
-├── data/                   # 文章データ (作者別)
+├── data/                   # 問題データの canonical source / 型定義
 ├── lib/                    # ユーティリティ
 │   ├── auth.ts             # NextAuth設定
 │   ├── prisma.ts           # Prismaクライアント
+│   ├── problemPool.ts      # 問題データ検証
 │   ├── romaji-trie.ts      # ローマ字変換エンジン
 │   ├── romaji.ts           # ローマ字変換ラッパー
 │   ├── gameUtils.ts        # ゲームスコア計算関数
@@ -35,6 +37,13 @@ src/
 └── __tests__/              # Jestテスト
 ```
 
+### 問題プール運用
+
+- **Canonical source**: `src/data/sentences/` と `src/data/words.ts` が問題データの正本
+- **Validation**: `src/lib/problemPool.ts` で読み仮名の形式、空値、重複キー、重複内容を検証
+- **Sync script**: `scripts/sync-problem-pool.ts` が検証済みデータを `TypingProblem` テーブルへ upsert する
+- **Runtime read path**: ゲーム開始時は `useGameSession` → `/api/problem-pool` → DB の順で取得する
+
 ## 設計原則
 
 - **単一責任の原則**: 各コンポーネントは1つの責任のみ
@@ -47,6 +56,22 @@ src/
 - **パフォーマンス重視**: useMemo/useCallbackによるメモ化、アニメーション最適化
 
 ## コアシステム
+
+### 共通UIコンポーネントシステム
+
+同じ役割のUI要素は `src/components/ui/` 配下に集約し、ページ間で挙動とアクセシビリティを統一する。
+
+- **ChipButton**: 小型アクション用のピルボタン（例: モード展開、ゲーム内補助操作）
+- **PillActionButton**: 主要CTAボタン（例: 認証送信、リザルト再開）
+- **IconActionButton**: ヘッダーなどのアイコン操作（Link/Button両対応）
+- **SegmentedControl**: 2択/複数択のセグメント切替
+- **UnderlineTabs**: 下線インジケーター付きタブ切替
+
+**適用方針:**
+
+- 見た目の差分は `className` 注入で吸収し、役割と挙動は共通化コンポーネント側で管理
+- `aria-*` 付与と状態表現（`aria-pressed`, `aria-selected`）を共通化
+- 既存デザイン言語（余白、色、透明感、タイポ）を維持しつつ再利用性を向上
 
 ### 季節×時間帯システム
 
@@ -85,6 +110,15 @@ useSound()
 **最適化:** プリロード (65ファイル), AudioBuffer再利用, 低レイテンシ再生
 
 ### タイピングエンジン
+
+### ゲームモードと問題供給
+
+- **Classic モード**: 固定数の問題でセッションを終了し、結果を保存
+- **Word Endless モード**: 問題を継続補充しながら無限プレイ、終了時はローカル集計のみ（保存なし）
+- **問題取得経路**: `useGameSession` → `/api/problem-pool?mode=classic|word-endless&count=n` → Prisma `TypingProblem`
+- **補充戦略**: Endless では残数が閾値を下回ると次バッチを非同期取得
+- **開始タイミング**: 問題取得完了後に `playing` へ遷移し、タイマーを開始する
+- **エラー処理**: 問題プール取得失敗時は開始せず、タイトル画面でエラー表示する
 
 **Trie-based Romaji Matcher:**
 
@@ -211,6 +245,42 @@ const validated = result.data;
 
 ## API Endpoints
 
+### `/api/problem-pool` (GET)
+
+- **Auth**: 不要 (読み取り専用)
+- **Query**:
+  - `mode=classic|word-endless`（省略時 `classic`）
+  - `count=1..100`（省略時 10）
+- **Response**: `{ problems: Sentence[] }`
+- **Behavior**:
+  - DB の `TypingProblem` からモード別にランダム抽出
+  - `word-endless` は同一問題重複時もID衝突しないようランタイムID化
+  - プール空/不正データ時は 5xx を返却
+  - 問題データ自体は実行時にハードコード配列を参照せず、DBのみを参照する
+
+### 問題プール同期
+
+**同期コマンド:**
+
+- `npm run db:validate-problem-pool` → 検証のみ実行
+- `npm run db:sync-problem-pool` → 検証後に `TypingProblem` を upsert
+
+**同期フロー:**
+
+```
+src/data/sentences/ + src/data/words.ts
+  ↓
+src/lib/problemPool.ts (validation)
+  ↓
+scripts/sync-problem-pool.ts
+  ↓
+TypingProblem テーブル
+  ↓
+/api/problem-pool
+  ↓
+useGameSession
+```
+
 ### `/api/game-results` (GET/POST)
 
 - **Auth**: NextAuth JWT (必須)
@@ -286,19 +356,19 @@ D (Seed) → C (Sprout) → B (Wind in Pines) → A (Clear Sky)
 - **環境**: jsdom
 - **設定**: [jest.config.ts](jest.config.ts), [jest.setup.ts](jest.setup.ts)
 - **配置**: `src/__tests__/`
-- **テストスイート**: 7スイート、65+ テストケース
+- **テストスイート**: 8スイート、74テストケース（2026-04-04 時点）
 
 ### テストカバレッジ
 
-| カテゴリ       | ファイル                            | テスト内容                         |
-| -------------- | ----------------------------------- | ---------------------------------- |
-| **Core Logic** | romaji.test.ts, romaji-trie.test.ts | ローマ字変換、Trie構造             |
-| **Utilities**  | formatters.test.ts                  | WPM/KPM/Accuracy/ZenScore計算      |
-| **Hooks**      | useTypingEngine.test.tsx            | useReducerロジック、状態遷移       |
-| **Validation** | validation.test.ts                  | Zodスキーマ検証（厳密/柔軟モード） |
-| **Rankings**   | rankLogic.test.ts                   | Grade/Title算出ロジック            |
-| **API**        | rankings.api.test.ts                | ランキングAPI統合テスト            |
-| **Device**     | device-detection.test.ts            | デバイス判定                       |
+| カテゴリ       | ファイル                 | テスト内容                         |
+| -------------- | ------------------------ | ---------------------------------- |
+| **Core Logic** | romaji.test.ts           | ローマ字変換、Trie構造             |
+| **Utilities**  | formatters.test.ts       | WPM/KPM/Accuracy/ZenScore計算      |
+| **Hooks**      | useTypingEngine.test.tsx | useReducerロジック、状態遷移       |
+| **Validation** | validation.test.ts       | Zodスキーマ検証（厳密/柔軟モード） |
+| **Rankings**   | rankLogic.test.ts        | Grade/Title算出ロジック            |
+| **API**        | rankings.api.test.ts     | ランキングAPI統合テスト            |
+| **Device**     | device-detection.test.ts | デバイス判定                       |
 
 ### カバレッジ目標
 
@@ -309,8 +379,8 @@ D (Seed) → C (Sprout) → B (Wind in Pines) → A (Clear Sky)
 ### テスト結果
 
 ```
-✅ 7 test suites passed
-✅ 65 tests passed (0 failures)
+✅ 8 test suites passed
+✅ 74 tests passed (0 failures)
 ✅ Validation tests: 5/5 passing
 ```
 
@@ -396,8 +466,7 @@ GOOGLE_CLIENT_SECRET="..."
 npm install
 
 # 環境変数設定
-cp .env.local.example .env.local
-# Fill in: DATABASE_URL, DIRECT_URL, NEXTAUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+# .env.local を作成して DATABASE_URL などの必須値を設定
 
 # Prisma生成
 npx prisma generate
