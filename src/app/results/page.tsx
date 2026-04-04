@@ -161,8 +161,9 @@ function ResultsPageContent() {
   }, [status, fetchHistory]);
 
   useEffect(() => {
+    if (tab !== 'rankings') return;
     fetchRankings();
-  }, [fetchRankings]);
+  }, [tab, fetchRankings]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
