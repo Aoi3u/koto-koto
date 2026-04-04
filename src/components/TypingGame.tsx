@@ -28,6 +28,8 @@ function TypingGameInner() {
   const {
     gameState,
     gameMode,
+    isProblemLoading,
+    problemLoadError,
     isEndlessMode,
     currentWord,
     matchedRomaji,
@@ -160,6 +162,8 @@ function TypingGameInner() {
               selectedMode={selectedMode}
               onModeChange={setSelectedMode}
               onStart={() => startGame(selectedMode)}
+              isLoading={isProblemLoading}
+              errorMessage={problemLoadError}
             />
           )}
 

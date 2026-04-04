@@ -16,6 +16,8 @@ export default function useGameController({
     gameMode,
     currentWord,
     elapsedTime,
+    isProblemLoading,
+    problemLoadError,
     startGame,
     quitGame,
     nextWord,
@@ -44,7 +46,7 @@ export default function useGameController({
   const startSession = useCallback(
     (mode: GameMode = preferredStartMode) => {
       setMistypedKeyCounts({});
-      startGame(mode);
+      void startGame(mode);
     },
     [preferredStartMode, startGame]
   );
@@ -126,6 +128,8 @@ export default function useGameController({
     // Session
     gameState,
     gameMode,
+    isProblemLoading,
+    problemLoadError,
     currentWord,
     elapsedTime,
     startGame: startSession,

@@ -13,7 +13,9 @@
     "format:check": "prettier --check .",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
+    "test:cov": "jest --coverage",
+    "db:validate-problem-pool": "tsx scripts/sync-problem-pool.ts --validate-only",
+    "db:sync-problem-pool": "tsx scripts/sync-problem-pool.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
@@ -48,6 +50,7 @@
     "prettier": "^3",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

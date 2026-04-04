@@ -1,11 +1,9 @@
-import type { Sentence } from './sentences';
-
 export type TypingWord = {
   display: string;
   reading: string;
 };
 
-const WORD_POOL: TypingWord[] = [
+export const WORD_POOL: TypingWord[] = [
   { display: '青葉', reading: 'あおば' },
   { display: '青海', reading: 'あおうみ' },
   { display: '青空', reading: 'あおぞら' },
@@ -279,16 +277,3 @@ const WORD_POOL: TypingWord[] = [
   { display: '天幕', reading: 'てんまく' },
   { display: '天窓', reading: 'てんまど' },
 ];
-
-const pickRandomWord = () => WORD_POOL[Math.floor(Math.random() * WORD_POOL.length)];
-
-export function buildRandomWordBatch(count: number, startIndex = 0): Sentence[] {
-  return Array.from({ length: count }, (_, i) => {
-    const word = pickRandomWord();
-    return {
-      id: `word-mode-${startIndex + i}`,
-      display: word.display,
-      reading: word.reading,
-    } satisfies Sentence;
-  });
-}
