@@ -28,6 +28,17 @@ body {
   overflow: hidden; /* Prevent scrolling for the game app feel */
 }
 
+/* Keep interactive controls consistent across browsers and Tailwind preflight. */
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']) {
+  cursor: pointer;
+}
+
+button:disabled,
+[role='button'][aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
 /* Noise overlay */
 .noise-overlay {
   position: fixed;
