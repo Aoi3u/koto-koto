@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useSeasonalTheme, useThemePalette } from '../../../contexts/SeasonalContext';
+import SegmentedControl from '@/components/ui/SegmentedControl';
 import type { GameMode } from '../hooks/useGameSession';
 
 interface TitleScreenProps {
@@ -14,7 +15,10 @@ interface TitleScreenProps {
 export default function TitleScreen({ selectedMode, onModeChange, onStart }: TitleScreenProps) {
   const seasonalTheme = useSeasonalTheme();
   const { palette } = useThemePalette('dynamic');
-  const [showModePanel, setShowModePanel] = useState(false);
+  const modeOptions: Array<{ value: GameMode; label: string }> = [
+    { value: 'classic', label: 'Classic' },
+    { value: 'word-endless', label: 'Word Endless' },
+  ];
 
   return (
     <motion.div
@@ -24,17 +28,17 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
       exit={{ opacity: 0 }}
       className="flex flex-col items-center text-center space-y-8"
     >
+      <p className="mt-12 mb-2 text-md font-inter tracking-[0.2em] text-subtle-gray">
+        Japanese Zen Typing
+      </p>
       <h1
-        className="text-6xl md:text-8xl font-thin tracking-widest text-transparent bg-clip-text mb-4 opacity-90 transition-all duration-1000"
+        className="text-6xl md:text-8xl font-thin tracking-widest text-transparent bg-clip-text opacity-90 transition-all duration-1000"
         style={{
           backgroundImage: `linear-gradient(to bottom, ${palette.text}, ${palette.primary})`,
         }}
       >
         Koto-Koto
       </h1>
-      <p className="mt-4 text-md font-inter tracking-[0.4em] text-subtle-gray">
-        Japanese Zen Typing
-      </p>
       <p
         className="text-xs font-zen-old-mincho opacity-60 transition-colors duration-1000"
         style={{ color: palette.primary }}
@@ -42,61 +46,25 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
         {seasonalTheme.haiku}
       </p>
 
-      <div className="mt-12 flex flex-col items-center gap-3">
-        <button
-          type="button"
-          onClick={() => setShowModePanel((prev) => !prev)}
-          className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-2 text-[10px] tracking-[0.22em] uppercase font-inter text-off-white/75 hover:text-off-white hover:border-white/35 transition-colors duration-300"
-          aria-expanded={showModePanel}
-          aria-controls="mode-panel"
-        >
-          <motion.span
-            animate={{ rotate: showModePanel ? 90 : 0 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="inline-block text-[11px] leading-none"
-            aria-hidden="true"
-          >
-            ▶
-          </motion.span>
-          Mode
-        </button>
-
-        {showModePanel && (
-          <div>
-            <div
-              id="mode-panel"
-              className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1 backdrop-blur-sm"
-            >
-              <button
-                type="button"
-                onClick={() => onModeChange('classic')}
-                className={`px-4 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase font-inter transition-colors duration-300 ${
-                  selectedMode === 'classic'
-                    ? 'bg-white/20 text-off-white'
-                    : 'text-off-white/60 hover:text-off-white/85'
-                }`}
-              >
-                Classic
-              </button>
-              <button
-                type="button"
-                onClick={() => onModeChange('word-endless')}
-                className={`px-4 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase font-inter transition-colors duration-300 ${
-                  selectedMode === 'word-endless'
-                    ? 'bg-white/20 text-off-white'
-                    : 'text-off-white/60 hover:text-off-white/85'
-                }`}
-              >
-                Word Endless
-              </button>
-            </div>
-            <p className="mt-4 text-[11px] font-inter tracking-widest text-off-white/60">
-              {selectedMode === 'classic'
-                ? '10 sentences • result saved'
-                : 'infinite words • no save'}
-            </p>
-          </div>
-        )}
+      <div className="mt-20 flex flex-col items-center gap-3">
+        <div>
+          <SegmentedControl
+            id="mode-panel"
+            ariaLabel="Select game mode"
+            value={selectedMode}
+            options={modeOptions}
+            onChange={onModeChange}
+            className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1 backdrop-blur-sm"
+            itemClassName="px-3 py-1 rounded-full text-[10px] tracking-[0.2em] uppercase font-inter transition-colors duration-300"
+            activeItemClassName="bg-white/20 text-off-white"
+            inactiveItemClassName="text-off-white/60 hover:text-off-white/85"
+          />
+          <p className="mt-4 text-[11px] font-inter tracking-widest text-off-white/60">
+            {selectedMode === 'classic'
+              ? '10 sentences • result saved'
+              : 'infinite words • no save'}
+          </p>
+        </div>
       </div>
 
       <div className="flex flex-col items-center gap-4">

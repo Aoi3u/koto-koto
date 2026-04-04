@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/components/ToastProvider';
+import UnderlineTabs from '@/components/ui/UnderlineTabs';
 import { useThemePalette } from '@/contexts/SeasonalContext';
 import CustomSelect from './components/CustomSelect';
 import HistoryList from './components/HistoryList';
@@ -22,6 +23,14 @@ const timeframeOptions = [
 ] as const;
 
 const limitOptions = [50, 100, 200];
+const rankingModeOptions: Array<{ value: 'users' | 'runs'; label: string }> = [
+  { value: 'users', label: 'Players' },
+  { value: 'runs', label: 'Runs' },
+];
+const recordTabOptions: Array<{ value: 'history' | 'rankings'; label: string }> = [
+  { value: 'history', label: 'History' },
+  { value: 'rankings', label: 'Leaderboard' },
+];
 
 function ResultsPageContent() {
   const { data: session, status } = useSession();
@@ -243,38 +252,19 @@ function ResultsPageContent() {
             </motion.h1>
           </div>
 
-          <div className="flex gap-8 border-b border-white/10 pb-1">
-            <button
-              onClick={() => setTab('history')}
-              className={`pb-2 text-sm tracking-widest uppercase transition-colors duration-300 relative ${
-                tab === 'history' ? 'text-off-white' : 'text-subtle-gray hover:text-off-white'
-              }`}
-            >
-              History
-              {tab === 'history' && (
-                <motion.div
-                  layoutId="tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5"
-                  style={{ backgroundColor: palette.primary }}
-                />
-              )}
-            </button>
-            <button
-              onClick={() => setTab('rankings')}
-              className={`pb-2 text-sm tracking-widest uppercase transition-colors duration-300 relative ${
-                tab === 'rankings' ? 'text-off-white' : 'text-subtle-gray hover:text-off-white'
-              }`}
-            >
-              Leaderboard
-              {tab === 'rankings' && (
-                <motion.div
-                  layoutId="tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5"
-                  style={{ backgroundColor: palette.primary }}
-                />
-              )}
-            </button>
-          </div>
+          <UnderlineTabs
+            ariaLabel="Switch records tab"
+            value={tab}
+            options={recordTabOptions}
+            onChange={setTab}
+            className="flex gap-8 border-b border-white/10 pb-1"
+            itemClassName="pb-2 text-sm tracking-widest uppercase transition-colors duration-300 relative"
+            activeItemClassName="text-off-white"
+            inactiveItemClassName="text-subtle-gray hover:text-off-white"
+            indicatorClassName="absolute bottom-0 left-0 right-0 h-0.5"
+            indicatorColor={palette.primary}
+            layoutId="tab-indicator"
+          />
         </header>
 
         <AnimatePresence mode="wait">
@@ -298,30 +288,19 @@ function ResultsPageContent() {
               className="space-y-8"
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                <div className="inline-flex rounded-full border border-white/15 bg-white/5 p-1 text-xs uppercase tracking-[0.2em]">
-                  <button
-                    type="button"
-                    onClick={() => setRankingMode('users')}
-                    className={`px-4 py-1 rounded-full transition-colors ${
-                      rankingMode === 'users'
-                        ? 'bg-off-white text-zen-dark'
-                        : 'text-subtle-gray hover:text-off-white'
-                    }`}
-                  >
-                    Players
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setRankingMode('runs')}
-                    className={`px-4 py-1 rounded-full transition-colors ${
-                      rankingMode === 'runs'
-                        ? 'bg-off-white text-zen-dark'
-                        : 'text-subtle-gray hover:text-off-white'
-                    }`}
-                  >
-                    Runs
-                  </button>
-                </div>
+                <UnderlineTabs
+                  ariaLabel="Switch leaderboard type"
+                  value={rankingMode}
+                  options={rankingModeOptions}
+                  onChange={setRankingMode}
+                  className="inline-flex gap-8 border-b border-white/10 pb-1"
+                  itemClassName="pb-2 text-xs tracking-[0.2em] uppercase transition-colors duration-300 relative"
+                  activeItemClassName="text-off-white"
+                  inactiveItemClassName="text-subtle-gray hover:text-off-white"
+                  indicatorClassName="absolute bottom-0 left-0 right-0 h-0.5"
+                  indicatorColor={palette.primary}
+                  layoutId="ranking-mode-tab-indicator"
+                />
                 <div className="flex gap-6 justify-end">
                   <CustomSelect
                     value={timeframe}
