@@ -25,15 +25,3 @@ export const sentences: Sentence[] = [
   ...poetrySentences,
   ...classicsSentences,
 ];
-
-export function getRandomSentences(count: number): Sentence[] {
-  const arr = [...sentences];
-  const n = arr.length;
-  count = Math.min(count, n);
-
-  for (let i = 0; i < count; i++) {
-    const j = i + Math.floor(Math.random() * (n - i));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr.slice(0, count);
-}

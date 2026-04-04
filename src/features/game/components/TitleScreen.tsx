@@ -10,9 +10,17 @@ interface TitleScreenProps {
   selectedMode: GameMode;
   onModeChange: (mode: GameMode) => void;
   onStart: () => void;
+  isLoading?: boolean;
+  errorMessage?: string | null;
 }
 
-export default function TitleScreen({ selectedMode, onModeChange, onStart }: TitleScreenProps) {
+export default function TitleScreen({
+  selectedMode,
+  onModeChange,
+  onStart,
+  isLoading = false,
+  errorMessage = null,
+}: TitleScreenProps) {
   const seasonalTheme = useSeasonalTheme();
   const { palette } = useThemePalette('dynamic');
   const modeOptions: Array<{ value: GameMode; label: string }> = [
@@ -70,7 +78,8 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
       <div className="flex flex-col items-center gap-4">
         <button
           onClick={onStart}
-          className="group relative px-8 py-3 overflow-hidden rounded-full transition-all duration-500"
+          disabled={isLoading}
+          className="group relative px-8 py-3 overflow-hidden rounded-full transition-all duration-500 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <span
             className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
@@ -80,10 +89,13 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
             className="relative text-sm font-zen-old-mincho tracking-[0.3em] text-off-white transition-all duration-500 group-hover:tracking-[0.4em]"
             style={{ textShadow: `0 0 10px ${palette.glow}` }}
           >
-            PRESS ENTER TO START
+            {isLoading ? 'LOADING PROBLEMS...' : 'PRESS ENTER TO START'}
           </span>
           <motion.div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-px w-0 bg-off-white/50 group-hover:w-1/2 transition-all duration-500" />
         </button>
+        {errorMessage && (
+          <p className="text-xs font-inter text-red-300 tracking-wide">{errorMessage}</p>
+        )}
       </div>
     </motion.div>
   );

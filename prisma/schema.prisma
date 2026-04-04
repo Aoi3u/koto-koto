@@ -12,6 +12,11 @@ datasource db {
   provider  = "postgresql"
 }
 
+enum ProblemMode {
+  CLASSIC
+  WORD_ENDLESS
+}
+
 // User model for authentication
 model User {
   id            String    @id @default(cuid())
@@ -50,6 +55,24 @@ model GameResult {
   @@index([userId])
   @@index([createdAt])
   @@index([zenScore(sort: Desc)])
+}
+
+// Typing problem pool
+model TypingProblem {
+  id          String      @id @default(cuid())
+  mode        ProblemMode
+  problemKey  String      @unique
+  display     String
+  reading     String
+  author      String?
+  title       String?
+  contentHash String      @unique
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([mode, isActive])
+  @@index([mode, updatedAt(sort: Desc)])
 }
 
 // NextAuth accounts
