@@ -30,14 +30,11 @@ const baseClassName =
 export default function IconActionButton(props: IconActionButtonProps) {
   const className = joinClassNames(baseClassName, props.className);
 
-  if ('href' in props) {
+  if ('href' in props && typeof props.href === 'string') {
+    const href = props.href;
+
     return (
-      <Link
-        href={props.href}
-        onClick={props.onClick}
-        aria-label={props.ariaLabel}
-        className={className}
-      >
+      <Link href={href} onClick={props.onClick} aria-label={props.ariaLabel} className={className}>
         {props.children}
       </Link>
     );
