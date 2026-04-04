@@ -43,7 +43,7 @@ export default function AppHeader() {
       <div className="pointer-events-auto">
         <Link
           href="/"
-          className="text-off-white font-zen-old-mincho tracking-[0.2em] text-md transition-colors duration-500"
+          className="text-off-white font-zen-old-mincho tracking-widest text-md transition-colors duration-500 font-semibold"
           style={{
             textShadow: `0 0 20px ${palette.glow}40`,
           }}

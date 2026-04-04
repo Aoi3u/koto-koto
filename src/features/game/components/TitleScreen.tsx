@@ -40,7 +40,7 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
         Koto-Koto
       </h1>
       <p
-        className="text-xs font-zen-old-mincho opacity-60 transition-colors duration-1000"
+        className="text-xs font-zen-old-mincho transition-colors duration-1000"
         style={{ color: palette.primary }}
       >
         {seasonalTheme.haiku}

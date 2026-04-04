@@ -21,6 +21,7 @@ jest.mock('@/lib/auth', () => ({
 
 jest.mock('../lib/prisma', () => ({
   prisma: {
+    $queryRawUnsafe: jest.fn(),
     gameResult: {
       findMany: jest.fn(),
     },
@@ -45,11 +46,13 @@ const getHandler = async () => {
 
 describe('Rankings API', () => {
   const mockFindMany = () => prisma.gameResult.findMany as jest.Mock;
+  const mockQueryRawUnsafe = () => prisma.$queryRawUnsafe as jest.Mock;
 
   beforeEach(() => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date('2025-12-30T12:00:00.000Z'));
     mockFindMany().mockReset();
+    mockQueryRawUnsafe().mockReset();
   });
 
   afterEach(() => {
@@ -139,32 +142,22 @@ describe('Rankings API', () => {
   });
 
   it('aggregates best result per user when mode=users', async () => {
-    mockFindMany().mockResolvedValueOnce([
-      // Alice: 2 プレイ（より高い ZenScore の方を採用）
+    mockQueryRawUnsafe().mockResolvedValueOnce([
       {
-        wordsPerMinute: 200,
-        accuracy: 95,
-        createdAt: new Date('2025-12-02T00:00:00.000Z'),
-        zenScore: 0, // API 側では calculateZenScore を使うのでここは無視される
         userId: 'user-alice-12345',
-        user: { name: 'Alice' },
-      },
-      {
+        name: 'Alice',
         wordsPerMinute: 210,
         accuracy: 97,
         createdAt: new Date('2025-12-03T00:00:00.000Z'),
-        zenScore: 0,
-        userId: 'user-alice-12345',
-        user: { name: 'Alice' },
+        zenScore: 203.7,
       },
-      // Bob: 1 プレイ
       {
+        userId: 'user-bob-67890',
+        name: null,
         wordsPerMinute: 180,
         accuracy: 96,
         createdAt: new Date('2025-12-01T00:00:00.000Z'),
-        zenScore: 0,
-        userId: 'user-bob-67890',
-        user: { name: null },
+        zenScore: 172.8,
       },
     ]);
 
@@ -172,6 +165,7 @@ describe('Rankings API', () => {
     const req = makeReq('http://localhost/api/rankings?mode=users');
     const res = await GET(req);
 
+    expect(mockQueryRawUnsafe()).toHaveBeenCalledTimes(1);
     expect(res.status).toBe(200);
     const json = await res.json();
     // ユーザーごとに 1 件ずつになっていること
@@ -206,5 +200,16 @@ describe('Rankings API', () => {
     // 7日分引いた日時になっていること（多少の誤差を許容）
     const expected = Date.now() - 7 * 24 * 60 * 60 * 1000;
     expect(Math.abs(gte!.getTime() - expected)).toBeLessThan(1000); // ±1s
+  });
+
+  it('passes timeframe and limit to users query', async () => {
+    mockQueryRawUnsafe().mockResolvedValueOnce([]);
+
+    const GET = await getHandler();
+    const req = makeReq('http://localhost/api/rankings?timeframe=week&limit=10&mode=users');
+    const res = await GET(req);
+
+    expect(res.status).toBe(200);
+    expect(mockQueryRawUnsafe()).toHaveBeenCalledTimes(1);
   });
 });

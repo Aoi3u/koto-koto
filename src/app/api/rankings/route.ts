@@ -128,64 +128,83 @@ export const GET = async (req: Request) => {
     return NextResponse.json({ results: payload }, { status: 200 });
   }
 
-  // ユーザーランキング: 各ユーザーについて「1つの実際のプレイ」を代表値として選ぶ
-  // ここでは timeframe 内の全プレイを対象にして、ZenScore（計算関数）ベースで「そのユーザーのベストラン」を選ぶ。
-  const allResults = await prisma.gameResult.findMany({
-    where,
-    select: {
-      wordsPerMinute: true,
-      accuracy: true,
-      createdAt: true,
-      userId: true,
-      user: { select: { name: true } },
-    },
-  });
-
-  type UserBest = {
+  // ユーザーランキング: ユーザーごとのベストランを DB 側で選定して転送量を削減
+  type UserBestRow = {
     userId: string;
     name: string | null;
-    wpm: number;
+    wordsPerMinute: number;
     accuracy: number;
     createdAt: Date;
     zenScore: number;
   };
 
-  const bestByUser = new Map<string, UserBest>();
-
-  for (const result of allResults) {
-    const zenScore = calculateZenScore(result.wordsPerMinute, result.accuracy);
-    const existing = bestByUser.get(result.userId);
-
-    if (!existing) {
-      bestByUser.set(result.userId, {
-        userId: result.userId,
-        name: result.user?.name ?? null,
-        wpm: result.wordsPerMinute,
-        accuracy: result.accuracy,
-        createdAt: result.createdAt,
-        zenScore,
-      });
-      continue;
-    }
-
-    if (
-      zenScore > existing.zenScore ||
-      (zenScore === existing.zenScore && result.createdAt > existing.createdAt)
-    ) {
-      bestByUser.set(result.userId, {
-        userId: result.userId,
-        name: result.user?.name ?? null,
-        wpm: result.wordsPerMinute,
-        accuracy: result.accuracy,
-        createdAt: result.createdAt,
-        zenScore,
-      });
-    }
-  }
-
-  const sortedBest = Array.from(bestByUser.values()).sort((a, b) => b.zenScore - a.zenScore);
-
-  const topUsers = sortedBest.slice(0, limit);
+  const topUsers = gte
+    ? await prisma.$queryRawUnsafe<UserBestRow[]>(
+        `
+      WITH ranked AS (
+        SELECT
+          gr."userId",
+          u."name",
+          gr."wordsPerMinute",
+          gr."accuracy",
+          gr."createdAt",
+          gr."zenScore",
+          ROW_NUMBER() OVER (
+            PARTITION BY gr."userId"
+            ORDER BY gr."zenScore" DESC, gr."createdAt" DESC
+          ) AS rn
+        FROM "GameResult" gr
+        LEFT JOIN "User" u ON u."id" = gr."userId"
+        WHERE gr."zenScore" IS NOT NULL
+          AND gr."createdAt" >= $1
+      )
+      SELECT
+        ranked."userId",
+        ranked."name",
+        ranked."wordsPerMinute",
+        ranked."accuracy",
+        ranked."createdAt",
+        ranked."zenScore"
+      FROM ranked
+      WHERE ranked.rn = 1
+      ORDER BY ranked."zenScore" DESC
+      LIMIT $2
+      `,
+        gte,
+        limit
+      )
+    : await prisma.$queryRawUnsafe<UserBestRow[]>(
+        `
+      WITH ranked AS (
+        SELECT
+          gr."userId",
+          u."name",
+          gr."wordsPerMinute",
+          gr."accuracy",
+          gr."createdAt",
+          gr."zenScore",
+          ROW_NUMBER() OVER (
+            PARTITION BY gr."userId"
+            ORDER BY gr."zenScore" DESC, gr."createdAt" DESC
+          ) AS rn
+        FROM "GameResult" gr
+        LEFT JOIN "User" u ON u."id" = gr."userId"
+        WHERE gr."zenScore" IS NOT NULL
+      )
+      SELECT
+        ranked."userId",
+        ranked."name",
+        ranked."wordsPerMinute",
+        ranked."accuracy",
+        ranked."createdAt",
+        ranked."zenScore"
+      FROM ranked
+      WHERE ranked.rn = 1
+      ORDER BY ranked."zenScore" DESC
+      LIMIT $1
+      `,
+        limit
+      );
 
   // 競技スタイルの順位付け（同点は同順位、次順位は人数ぶん飛ばす）
   let lastZenScore: number | null = null;
@@ -204,12 +223,12 @@ export const GET = async (req: Request) => {
       rank = lastRank;
     }
 
-    const rankResult = calculateRank(result.wpm, result.accuracy);
+    const rankResult = calculateRank(result.wordsPerMinute, result.accuracy);
     const displayName = result.name ?? generateAnonymousHandle(result.userId);
 
     return {
       rank,
-      wpm: result.wpm,
+      wpm: result.wordsPerMinute,
       accuracy: result.accuracy,
       createdAt: result.createdAt,
       zenScore: result.zenScore,

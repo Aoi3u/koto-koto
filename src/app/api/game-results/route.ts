@@ -86,7 +86,7 @@ export const GET = async () => {
     session?.user && 'id' in session.user ? (session.user as { id?: string }).id : undefined;
   if (!userId) return unauthorized();
 
-  // Fetch all results for analytics (stats, trends, streaks)
+  // Fetch once: full history for analytics + top slice for display
   const allResults = await prisma.gameResult.findMany({
     where: { userId },
     orderBy: { createdAt: 'desc' },
@@ -101,23 +101,7 @@ export const GET = async () => {
       difficulty: true,
     },
   });
-
-  // Fetch limited results for display list
-  const displayResults = await prisma.gameResult.findMany({
-    where: { userId },
-    orderBy: { createdAt: 'desc' },
-    take: DISPLAY_LIMIT,
-    select: {
-      id: true,
-      createdAt: true,
-      wordsPerMinute: true,
-      accuracy: true,
-      totalCharacters: true,
-      correctCharacters: true,
-      totalTime: true,
-      difficulty: true,
-    },
-  });
+  const displayResults = allResults.slice(0, DISPLAY_LIMIT);
 
   return NextResponse.json(
     {
