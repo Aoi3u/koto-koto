@@ -7,7 +7,14 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Edit2, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
+import SegmentedControl from '@/components/ui/SegmentedControl';
+import PillActionButton from '@/components/ui/PillActionButton';
 import { useThemePalette } from '@/contexts/SeasonalContext';
+
+const authModeOptions: Array<{ value: 'login' | 'register'; label: string }> = [
+  { value: 'login', label: 'Login' },
+  { value: 'register', label: 'Register' },
+];
 
 export default function AuthPage() {
   const { data: session, status, update } = useSession();
@@ -24,8 +31,6 @@ export default function AuthPage() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState('');
   const [updatingName, setUpdatingName] = useState(false);
-
-  const toggleMode = () => setMode((m) => (m === 'login' ? 'register' : 'login'));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -179,13 +184,13 @@ export default function AuthPage() {
                       autoFocus
                     />
                     <div className="flex gap-3 justify-center">
-                      <button
+                      <PillActionButton
                         onClick={handleUpdateName}
                         disabled={updatingName || !newName.trim()}
                         className="px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-off-white font-zen-old-mincho tracking-widest transition-all duration-300 disabled:opacity-50 text-xs border border-white/10"
                       >
                         {updatingName ? 'SAVING...' : 'SAVE'}
-                      </button>
+                      </PillActionButton>
                       <button
                         onClick={() => {
                           setIsEditingName(false);
@@ -235,6 +240,19 @@ export default function AuthPage() {
           </motion.div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="flex justify-center">
+              <SegmentedControl
+                ariaLabel="Switch authentication mode"
+                value={mode}
+                options={authModeOptions}
+                onChange={setMode}
+                className="inline-flex rounded-full border border-white/15 bg-white/5 p-1 text-[10px] uppercase tracking-[0.2em]"
+                itemClassName="px-4 py-1.5 rounded-full transition-colors"
+                activeItemClassName="bg-off-white text-zen-dark"
+                inactiveItemClassName="text-subtle-gray hover:text-off-white"
+              />
+            </div>
+
             <AnimatePresence mode="wait">
               {mode === 'register' && (
                 <motion.div
@@ -289,7 +307,7 @@ export default function AuthPage() {
             </div>
 
             <div className="pt-4 flex flex-col items-center gap-4">
-              <button
+              <PillActionButton
                 type="submit"
                 disabled={loading}
                 className="w-full py-3 rounded-full bg-white/5 hover:bg-white/10 text-off-white font-zen-old-mincho tracking-widest transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed border border-white/10"
@@ -298,7 +316,7 @@ export default function AuthPage() {
                 }}
               >
                 {loading ? 'PROCESSING...' : mode === 'login' ? 'ENTER' : 'JOIN'}
-              </button>
+              </PillActionButton>
 
               {/* Divider */}
               <div className="relative w-full py-2">
@@ -313,7 +331,7 @@ export default function AuthPage() {
               </div>
 
               {/* Google Sign In Button */}
-              <button
+              <PillActionButton
                 type="button"
                 onClick={() => signIn('google', { callbackUrl: '/results' })}
                 disabled={loading}
@@ -341,15 +359,7 @@ export default function AuthPage() {
                   />
                 </svg>
                 CONTINUE WITH GOOGLE
-              </button>
-
-              <button
-                type="button"
-                onClick={toggleMode}
-                className="text-xs text-subtle-gray hover:text-off-white transition-colors tracking-wider font-zen-old-mincho"
-              >
-                {mode === 'login' ? 'Create an account' : 'Already have an account?'}
-              </button>
+              </PillActionButton>
             </div>
 
             {/* Back to Game */}

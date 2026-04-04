@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Flag } from 'lucide-react';
 import { formatTime } from '../../../lib/formatters';
 import { useSeasonalTheme, useThemePalette } from '../../../contexts/SeasonalContext';
+import ChipButton from '@/components/ui/ChipButton';
 
 interface GameHeaderProps {
   elapsedTime: number;
@@ -58,13 +59,13 @@ export default function GameHeader({
       {/* Right: Progress / End Endless */}
       <div className="flex flex-col items-end gap-2 pointer-events-auto">
         {isEndlessMode && onFinishEndless && (
-          <button
+          <ChipButton
             onClick={onFinishEndless}
-            className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1 text-[10px] tracking-widest uppercase font-inter text-off-white/80 hover:text-off-white hover:border-white/35 transition-colors duration-300"
+            className="gap-1.5 border-white/15 px-3 py-1 text-[10px] tracking-widest text-off-white/80 hover:text-off-white hover:border-white/35"
           >
             <Flag className="w-3 h-3" />
             End
-          </button>
+          </ChipButton>
         )}
         <div className="flex flex-col items-end">
           <span className="text-[10px] tracking-[0.3em] uppercase mb-1 opacity-60 font-zen-old-mincho">

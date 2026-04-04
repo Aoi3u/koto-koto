@@ -6,6 +6,7 @@ import { RefreshCw } from 'lucide-react';
 import { useSeasonalTheme } from '../../../contexts/SeasonalContext';
 import { getTopMistypedKeys } from '../utils/endlessAdvice';
 import { buildSessionMetrics } from '../utils/sessionMetrics';
+import PillActionButton from '@/components/ui/PillActionButton';
 
 type EndlessResultScreenProps = {
   correctKeyCount: number;
@@ -138,7 +139,7 @@ export default function EndlessResultScreen({
         </div>
       </div>
 
-      <button
+      <PillActionButton
         onClick={onRestart}
         autoFocus
         className="group relative px-8 py-3 md:px-10 md:py-4 overflow-hidden rounded-full font-inter font-bold tracking-widest transition-colors duration-300"
@@ -151,7 +152,7 @@ export default function EndlessResultScreen({
         <span className="relative z-10 flex items-center gap-2 text-sm md:text-base">
           <RefreshCw className="w-3 h-3 md:w-4 md:h-4" /> PLAY AGAIN
         </span>
-      </button>
+      </PillActionButton>
     </motion.div>
   );
 }

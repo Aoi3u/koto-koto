@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSeasonalTheme, useThemePalette } from '../../../contexts/SeasonalContext';
+import ChipButton from '@/components/ui/ChipButton';
+import SegmentedControl from '@/components/ui/SegmentedControl';
 import type { GameMode } from '../hooks/useGameSession';
 
 interface TitleScreenProps {
@@ -15,6 +17,10 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
   const seasonalTheme = useSeasonalTheme();
   const { palette } = useThemePalette('dynamic');
   const [showModePanel, setShowModePanel] = useState(false);
+  const modeOptions: Array<{ value: GameMode; label: string }> = [
+    { value: 'classic', label: 'Classic' },
+    { value: 'word-endless', label: 'Word Endless' },
+  ];
 
   return (
     <motion.div
@@ -43,10 +49,9 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
       </p>
 
       <div className="mt-12 flex flex-col items-center gap-3">
-        <button
-          type="button"
+        <ChipButton
           onClick={() => setShowModePanel((prev) => !prev)}
-          className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-2 text-[10px] tracking-[0.22em] uppercase font-inter text-off-white/75 hover:text-off-white hover:border-white/35 transition-colors duration-300"
+          className="gap-2 border-white/20 bg-white/5 px-5 py-2 text-[10px] tracking-[0.22em] text-off-white/75 hover:text-off-white hover:border-white/35"
           aria-expanded={showModePanel}
           aria-controls="mode-panel"
         >
@@ -59,37 +64,21 @@ export default function TitleScreen({ selectedMode, onModeChange, onStart }: Tit
             ▶
           </motion.span>
           Mode
-        </button>
+        </ChipButton>
 
         {showModePanel && (
           <div>
-            <div
+            <SegmentedControl
               id="mode-panel"
+              ariaLabel="Select game mode"
+              value={selectedMode}
+              options={modeOptions}
+              onChange={onModeChange}
               className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1 backdrop-blur-sm"
-            >
-              <button
-                type="button"
-                onClick={() => onModeChange('classic')}
-                className={`px-4 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase font-inter transition-colors duration-300 ${
-                  selectedMode === 'classic'
-                    ? 'bg-white/20 text-off-white'
-                    : 'text-off-white/60 hover:text-off-white/85'
-                }`}
-              >
-                Classic
-              </button>
-              <button
-                type="button"
-                onClick={() => onModeChange('word-endless')}
-                className={`px-4 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase font-inter transition-colors duration-300 ${
-                  selectedMode === 'word-endless'
-                    ? 'bg-white/20 text-off-white'
-                    : 'text-off-white/60 hover:text-off-white/85'
-                }`}
-              >
-                Word Endless
-              </button>
-            </div>
+              itemClassName="px-4 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase font-inter transition-colors duration-300"
+              activeItemClassName="bg-white/20 text-off-white"
+              inactiveItemClassName="text-off-white/60 hover:text-off-white/85"
+            />
             <p className="mt-4 text-[11px] font-inter tracking-widest text-off-white/60">
               {selectedMode === 'classic'
                 ? '10 sentences • result saved'

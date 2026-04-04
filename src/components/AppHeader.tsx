@@ -5,6 +5,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, VolumeX, LogOut, User, History as HistoryIcon, X, Trophy } from 'lucide-react';
+import IconActionButton from '@/components/ui/IconActionButton';
 import { useThemePalette } from '@/contexts/SeasonalContext';
 import { useSoundContext } from '@/contexts/SoundContext';
 import type { KeyboardSoundProfile } from '@/features/game/hooks/useSound';
@@ -53,39 +54,26 @@ export default function AppHeader() {
 
       {/* Right Side Actions */}
       <div className="pointer-events-auto flex items-center gap-2">
-        <Link
-          href="/results?tab=history"
-          className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
-          aria-label="History"
-        >
+        <IconActionButton href="/results?tab=history" ariaLabel="History">
           <HistoryIcon className="w-5 h-5" />
-        </Link>
-        <Link
-          href="/results?tab=rankings"
-          className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
-          aria-label="Leaderboard"
-        >
+        </IconActionButton>
+        <IconActionButton href="/results?tab=rankings" ariaLabel="Leaderboard">
           <Trophy className="w-5 h-5" />
-        </Link>
-        <Link
+        </IconActionButton>
+        <IconActionButton
           href="/auth"
-          className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
-          aria-label={status === 'authenticated' ? 'Profile' : 'Sign In'}
+          ariaLabel={status === 'authenticated' ? 'Profile' : 'Sign In'}
         >
           <User className="w-5 h-5" />
-        </Link>
+        </IconActionButton>
 
         {/* Settings Button */}
         <div className="relative" ref={menuRef}>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white"
-            aria-label="Settings"
-          >
+          <IconActionButton onClick={() => setIsOpen(!isOpen)} ariaLabel="Settings">
             <Settings
               className={`w-5 h-5 transition-transform duration-500 ${isOpen ? 'rotate-90' : ''}`}
             />
-          </button>
+          </IconActionButton>
 
           <AnimatePresence>
             {isOpen && (
