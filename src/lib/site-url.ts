@@ -5,8 +5,23 @@ function normalizeUrl(value: string): string {
 }
 
 export function getSiteUrl(): string {
-  const url = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.NEXTAUTH_URL ?? LOCALHOST_URL;
-  return normalizeUrl(url);
+  const candidates = [process.env.NEXT_PUBLIC_SITE_URL, process.env.NEXTAUTH_URL, LOCALHOST_URL];
+
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    const normalized = normalizeUrl(candidate);
+    if (!normalized) continue;
+
+    try {
+      // Validate URL format and return normalized value when valid.
+      new URL(normalized);
+      return normalized;
+    } catch {
+      // Try next candidate.
+    }
+  }
+
+  return LOCALHOST_URL;
 }
 
 export function absoluteUrl(path: string): string {
