@@ -18,6 +18,46 @@ This project includes third-party materials under open source licenses.
 - 本プロジェクトでの利用: `public/audio/` 内のキーボード音声素材には、当該リポジトリ由来または着想を得たファイルを含みます。
 - 改変: ゲーム内再生向けに、リネーム、トリミング、音量調整等を行っている場合があります。
 
+### Audio Source Mapping (Folder-level)
+
+The table below tracks folder-level provenance for keyboard sound profiles currently shipped in this repository.
+
+| Folder                   | Source        | Relation            | Local processing                           |
+| ------------------------ | ------------- | ------------------- | ------------------------------------------ |
+| `public/audio/alpaca`    | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/blackink`  | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/bluealps`  | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/boxnavy`   | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/buckling`  | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/cream`     | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/holypanda` | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/mxblack`   | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/mxblue`    | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/mxbrown`   | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/redink`    | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/topre`     | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+| `public/audio/turquoise` | `tplai/kbsim` | Derived or inspired | Rename/trim/volume normalization as needed |
+
+### 音声ソース対応表（フォルダ単位）
+
+下表は、本リポジトリで配布しているキーボード音声プロファイルのフォルダ単位の由来管理表です。
+
+| フォルダ                 | 出典          | 関係           | ローカル加工                                 |
+| ------------------------ | ------------- | -------------- | -------------------------------------------- |
+| `public/audio/alpaca`    | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/blackink`  | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/bluealps`  | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/boxnavy`   | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/buckling`  | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/cream`     | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/holypanda` | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/mxblack`   | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/mxblue`    | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/mxbrown`   | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/redink`    | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/topre`     | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+| `public/audio/turquoise` | `tplai/kbsim` | 由来または着想 | 必要に応じてリネーム・トリミング・音量正規化 |
+
 ### MIT License (tplai/kbsim)
 
 MIT License

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
-const CONTACT_URL = 'https://github.com/Aoi3u/koto-koto/issues';
+const GENERAL_CONTACT_URL = 'https://github.com/Aoi3u/koto-koto/issues';
+const PRIVATE_CONTACT_URL = 'https://github.com/Aoi3u/koto-koto/security/advisories/new';
 
 export const metadata: Metadata = {
   title: 'Terms of Service | Koto-Koto',
@@ -38,7 +39,7 @@ const sections = [
   },
   {
     title: '8. Contact',
-    body: 'For legal or policy questions, contact the operator via the official GitHub Issues page linked below.',
+    body: 'General legal inquiries can be sent via GitHub Issues. Requests that contain personal information or sensitive details must be sent through the private reporting channel linked below.',
   },
 ] as const;
 
@@ -73,7 +74,7 @@ const sectionsJa = [
   },
   {
     title: '8. お問い合わせ',
-    body: '法務またはポリシーに関するお問い合わせは、下記の公式GitHub Issuesページからご連絡ください。',
+    body: '一般的な法務問い合わせはGitHub Issuesで受け付けます。個人情報や機微情報を含む申請は、下記の非公開報告窓口からご連絡ください。',
   },
 ] as const;
 
@@ -83,6 +84,10 @@ export default function TermsPage() {
       <div className="mx-auto w-full max-w-4xl rounded-2xl border border-white/10 bg-black/30 p-6 md:p-10 backdrop-blur">
         <h1 className="text-3xl md:text-4xl tracking-wide font-semibold">Terms of Service</h1>
         <p className="mt-3 text-sm text-subtle-gray">Effective date: 2026-04-06</p>
+        <p className="mt-2 text-sm text-subtle-gray">
+          The English and Japanese versions are intended to have equal legal effect. If wording
+          differs, both versions shall be interpreted in good faith to reflect the same intent.
+        </p>
 
         <div className="mt-8 space-y-6">
           {sections.map((section) => (
@@ -96,7 +101,7 @@ export default function TermsPage() {
         <section className="mt-12 border-t border-white/10 pt-8">
           <h2 className="text-2xl md:text-3xl tracking-wide font-semibold">利用規約（日本語版）</h2>
           <p className="mt-3 text-sm text-subtle-gray">
-            英語版を主文とし、日本語版は参考訳です。解釈に差異がある場合は英語版を優先します。
+            英語版と日本語版は同等の効力を有することを意図しています。文言差異がある場合は、同一の趣旨に沿って誠実に解釈されます。
           </p>
 
           <div className="mt-8 space-y-6">
@@ -110,12 +115,22 @@ export default function TermsPage() {
         </section>
 
         <p className="mt-10 text-xs text-subtle-gray">
-          Contact:{' '}
+          General legal contact:{' '}
           <a
-            href={CONTACT_URL}
+            href={GENERAL_CONTACT_URL}
             className="underline decoration-white/30 underline-offset-4 hover:decoration-white"
           >
-            {CONTACT_URL}
+            {GENERAL_CONTACT_URL}
+          </a>
+        </p>
+
+        <p className="mt-2 text-xs text-subtle-gray">
+          Private contact for sensitive reports:{' '}
+          <a
+            href={PRIVATE_CONTACT_URL}
+            className="underline decoration-white/30 underline-offset-4 hover:decoration-white"
+          >
+            {PRIVATE_CONTACT_URL}
           </a>
         </p>
 

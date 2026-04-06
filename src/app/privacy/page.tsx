@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
-const CONTACT_URL = 'https://github.com/Aoi3u/koto-koto/issues';
+const GENERAL_CONTACT_URL = 'https://github.com/Aoi3u/koto-koto/issues';
+const PRIVATE_CONTACT_URL = 'https://github.com/Aoi3u/koto-koto/security/advisories/new';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | Koto-Koto',
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 const sections = [
   {
     title: '1. Information We Collect',
-    body: 'We may collect account information (such as email and display name), gameplay records (score, accuracy, timestamps), and technical data (IP address, user agent, device information).',
+    body: 'We collect account data (email, display name, password hash for credentials login, and optional profile image), authentication metadata (OAuth/account/session records), gameplay records (WPM, accuracy, keystrokes, elapsed time, difficulty, zen score, timestamps), and technical data used for abuse prevention (IP-related request identifier and user-agent class where available).',
   },
   {
     title: '2. Purpose of Use',
@@ -22,22 +23,26 @@ const sections = [
   },
   {
     title: '4. Third-Party Services',
-    body: 'Authentication and hosting may rely on third-party providers. Their data handling is governed by their own privacy policies.',
+    body: 'We use Google OAuth (when enabled), Supabase-hosted PostgreSQL via Prisma, and cloud hosting/CDN providers for app delivery. These providers process data under their own terms and privacy policies.',
   },
   {
     title: '5. Data Retention',
-    body: 'Personal data is retained only for as long as necessary for the service purpose or legal requirements, then deleted or anonymized.',
+    body: 'Account and gameplay data are retained while the account is active, and are deleted within 30 days after a validated deletion request unless a longer retention period is required by law. Registration abuse-prevention counters are held in memory and expire automatically within approximately 25 minutes.',
   },
   {
-    title: '6. Disclosure and Sharing',
+    title: '6. International Transfer',
+    body: 'Because service providers operate globally, data may be processed outside Japan. We select providers with contractual and technical safeguards appropriate to the service context.',
+  },
+  {
+    title: '7. Disclosure and Sharing',
     body: 'We do not sell personal information. Data may be shared where required by law or to protect rights, safety, and service security.',
   },
   {
-    title: '7. Your Rights',
-    body: 'You may request access, correction, deletion, or account closure according to applicable laws and operational constraints.',
+    title: '8. Your Rights and Request Procedure',
+    body: 'You may request access, correction, deletion, or account closure. For requests containing personal data, use the private reporting channel listed below and include your account email and request details. We aim to respond within 30 days after identity verification.',
   },
   {
-    title: '8. Policy Changes',
+    title: '9. Policy Changes',
     body: 'This policy may be updated when needed. Material changes will be reflected with an updated effective date.',
   },
 ] as const;
@@ -45,7 +50,7 @@ const sections = [
 const sectionsJa = [
   {
     title: '1. 取得する情報',
-    body: 'アカウント情報（メールアドレス、表示名等）、ゲームプレイ記録（スコア、正確率、日時等）、技術情報（IPアドレス、ユーザーエージェント、端末情報等）を取得する場合があります。',
+    body: 'アカウント情報（メールアドレス、表示名、メール/パスワード認証時のパスワードハッシュ、任意のプロフィール画像）、認証メタデータ（OAuth/アカウント/セッション記録）、ゲームプレイ記録（WPM、正確率、キー入力数、経過時間、難易度、Zen Score、タイムスタンプ）、および不正利用対策に必要な技術情報（IP由来の識別子、取得可能な範囲のユーザーエージェント区分）を取得します。',
   },
   {
     title: '2. 利用目的',
@@ -57,22 +62,26 @@ const sectionsJa = [
   },
   {
     title: '4. 外部サービス',
-    body: '認証・ホスティング等で第三者サービスを利用する場合があります。これらのデータ取扱いは各提供者のポリシーに従います。',
+    body: 'Google OAuth（有効時）、Prisma経由のSupabase PostgreSQL、および配信のためのクラウドホスティング/CDNを利用します。これらの提供者におけるデータ取扱いは各社の規約・ポリシーに従います。',
   },
   {
     title: '5. 保存期間',
-    body: '個人データは、利用目的達成または法令遵守に必要な期間に限り保存し、その後削除または匿名化します。',
+    body: 'アカウント情報とプレイ記録はアカウント有効期間中保持し、本人確認を伴う削除請求の受理後30日以内に削除します（法令上の保存義務がある場合を除く）。登録APIの不正対策カウンタはメモリ上で管理され、概ね25分以内に自動消去されます。',
   },
   {
-    title: '6. 第三者提供',
+    title: '6. 国外移転',
+    body: '利用するサービス提供者はグローバルに運用されているため、データが日本国外で処理される場合があります。契約上・技術上の保護措置を考慮して提供者を選定します。',
+  },
+  {
+    title: '7. 第三者提供',
     body: '個人情報を販売することはありません。法令に基づく場合、権利・安全・サービス保護のために必要な範囲で開示することがあります。',
   },
   {
-    title: '7. 利用者の権利',
-    body: '法令および運用上の制約に従い、開示、訂正、削除、アカウント閉鎖等を請求できます。',
+    title: '8. 利用者の権利と請求手順',
+    body: '法令および運用上の制約に従い、開示、訂正、削除、アカウント閉鎖等を請求できます。個人情報を含む請求は下記の非公開報告窓口を利用し、アカウントメールアドレスと請求内容を記載してください。本人確認後、原則30日以内の回答を目指します。',
   },
   {
-    title: '8. 改定',
+    title: '9. 改定',
     body: '本ポリシーは必要に応じて改定されます。重要な変更がある場合は、施行日を更新して反映します。',
   },
 ] as const;
@@ -83,6 +92,10 @@ export default function PrivacyPage() {
       <div className="mx-auto w-full max-w-4xl rounded-2xl border border-white/10 bg-black/30 p-6 md:p-10 backdrop-blur">
         <h1 className="text-3xl md:text-4xl tracking-wide font-semibold">Privacy Policy</h1>
         <p className="mt-3 text-sm text-subtle-gray">Effective date: 2026-04-06</p>
+        <p className="mt-2 text-sm text-subtle-gray">
+          The English and Japanese versions are intended to have equal legal effect. If wording
+          differs, both versions shall be interpreted in good faith to reflect the same intent.
+        </p>
 
         <div className="mt-8 space-y-6">
           {sections.map((section) => (
@@ -98,7 +111,7 @@ export default function PrivacyPage() {
             プライバシーポリシー（日本語版）
           </h2>
           <p className="mt-3 text-sm text-subtle-gray">
-            英語版を主文とし、日本語版は参考訳です。解釈に差異がある場合は英語版を優先します。
+            英語版と日本語版は同等の効力を有することを意図しています。文言差異がある場合は、同一の趣旨に沿って誠実に解釈されます。
           </p>
 
           <div className="mt-8 space-y-6">
@@ -112,12 +125,22 @@ export default function PrivacyPage() {
         </section>
 
         <p className="mt-10 text-xs text-subtle-gray">
-          Contact for personal data requests:{' '}
+          Private contact for personal data requests:{' '}
           <a
-            href={CONTACT_URL}
+            href={PRIVATE_CONTACT_URL}
             className="underline decoration-white/30 underline-offset-4 hover:decoration-white"
           >
-            {CONTACT_URL}
+            {PRIVATE_CONTACT_URL}
+          </a>
+        </p>
+
+        <p className="mt-2 text-xs text-subtle-gray">
+          General legal/policy contact:{' '}
+          <a
+            href={GENERAL_CONTACT_URL}
+            className="underline decoration-white/30 underline-offset-4 hover:decoration-white"
+          >
+            {GENERAL_CONTACT_URL}
           </a>
         </p>
       </div>
