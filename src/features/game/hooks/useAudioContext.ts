@@ -8,7 +8,7 @@ export default function useAudioContext() {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Initialize AudioContext on mount - state updates are intentional here
+    let mounted = true;
     let success = false;
     try {
       const AudioContextClass =
@@ -28,13 +28,15 @@ export default function useAudioContext() {
       console.error('Failed to initialize AudioContext:', error);
     }
 
-    // Schedule state updates to avoid synchronous setState in effect
-    Promise.resolve().then(() => {
+    if (mounted) {
+      // This hook must publish initialization result immediately after attempting context creation.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHasAudioSupport(success);
       setIsReady(success);
-    });
+    }
 
     return () => {
+      mounted = false;
       if (audioContextRef.current) {
         audioContextRef.current.close().catch((error) => {
           console.warn('Failed to close AudioContext:', error);
