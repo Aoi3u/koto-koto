@@ -1,14 +1,18 @@
 'use client';
 
 import { Laptop } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import useDeviceType from '../hooks/useDeviceType';
 import { useThemePalette } from '../contexts/SeasonalContext';
 
 export default function MobileBlocker() {
   const { isMobile } = useDeviceType();
   const { palette } = useThemePalette('stable');
+  const pathname = usePathname();
 
-  if (!isMobile) return null;
+  const isLegalPage = pathname === '/terms' || pathname === '/privacy' || pathname === '/licenses';
+
+  if (!isMobile || isLegalPage) return null;
 
   return (
     <div className="fixed inset-0 z-9999 bg-zen-dark flex flex-col items-center justify-center p-8 text-center text-off-white">
