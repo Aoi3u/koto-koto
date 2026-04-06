@@ -66,7 +66,7 @@ export const GET = async (req: Request) => {
   }
 
   const problems: Sentence[] = sampled
-    .map((problem, index) => {
+    .map((problem: TypingProblemRow, index: number) => {
       const id =
         mode === 'classic' ? problem.problemKey : `${problem.problemKey}-${Date.now()}-${index}`;
       const payload: Sentence = {

@@ -96,7 +96,7 @@ export const GET = async (req: Request) => {
     let lastRank = 0;
     let position = 0;
 
-    const payload = results.map((result) => {
+    const payload = results.map((result: (typeof results)[0]) => {
       position += 1;
       // 表示・ランク判定用の ZenScore は常に計算関数から求める
       const zenScore = calculateZenScore(result.wordsPerMinute, result.accuracy);
@@ -211,7 +211,7 @@ export const GET = async (req: Request) => {
   let lastRank = 0;
   let position = 0;
 
-  const payload = topUsers.map((result) => {
+  const payload = topUsers.map((result: UserBestRow) => {
     position += 1;
 
     let rank: number;

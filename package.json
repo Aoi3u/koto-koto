@@ -22,7 +22,7 @@
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "bcryptjs": "^3.0.3",
-    "framer-motion": "^12.23.26",
+    "framer-motion": "^12.38.0",
     "lucide-react": "^0.561.0",
     "next": "16.0.10",
     "next-auth": "^4.24.13",
