@@ -4,7 +4,18 @@ import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, VolumeX, LogOut, User, History as HistoryIcon, X, Trophy } from 'lucide-react';
+import {
+  Settings,
+  VolumeX,
+  LogOut,
+  User,
+  History as HistoryIcon,
+  X,
+  Trophy,
+  ScrollText,
+  ShieldCheck,
+  FileText,
+} from 'lucide-react';
 import IconActionButton from '@/components/ui/IconActionButton';
 import { useThemePalette } from '@/contexts/SeasonalContext';
 import { useSoundContext } from '@/contexts/SoundContext';
@@ -123,7 +134,7 @@ export default function AppHeader() {
                       </span>
                       {!hasAudioSupport && <VolumeX className="w-3 h-3 text-red-400" />}
                     </div>
-                    <div className="grid grid-cols-1 gap-1 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
+                    <div className="grid grid-cols-1 gap-1 max-h-30 overflow-y-auto pr-1 custom-scrollbar">
                       {profiles.map((profile) => (
                         <button
                           key={profile}
@@ -146,6 +157,33 @@ export default function AppHeader() {
                       ))}
                     </div>
                   </div>
+
+                  <Link
+                    href="/terms"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                  >
+                    <ScrollText className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
+                    <span className="font-zen-old-mincho tracking-wider">Terms</span>
+                  </Link>
+
+                  <Link
+                    href="/privacy"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
+                    <span className="font-zen-old-mincho tracking-wider">Privacy</span>
+                  </Link>
+
+                  <Link
+                    href="/licenses"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                  >
+                    <FileText className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
+                    <span className="font-zen-old-mincho tracking-wider">Licenses</span>
+                  </Link>
 
                   {/* Sign Out (only if authenticated) */}
                   {status === 'authenticated' && (

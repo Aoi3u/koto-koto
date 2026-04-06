@@ -73,3 +73,11 @@ For detailed technical documentation, see:
 - [ARCHITECTURE.md](ARCHITECTURE.md) - System architecture and design patterns
 - [Project Structure](ARCHITECTURE.md#プロジェクト構造) - Directory organization
 - [API Documentation](ARCHITECTURE.md#api-endpoints) - API endpoints reference
+
+## ⚖️ Legal
+
+- [LICENSE](LICENSE) - Project license (MIT)
+- [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) - Third-party attributions and notices
+- [Terms of Service](/terms)
+- [Privacy Policy](/privacy)
+- [Licenses](/licenses)
