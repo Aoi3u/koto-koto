@@ -15,6 +15,7 @@ import {
   ScrollText,
   ShieldCheck,
   FileText,
+  Info,
 } from 'lucide-react';
 import IconActionButton from '@/components/ui/IconActionButton';
 import { useThemePalette } from '@/contexts/SeasonalContext';
@@ -126,37 +127,14 @@ export default function AppHeader() {
 
                   <div className="my-2 border-t border-white/5" />
 
-                  {/* Sound Settings */}
-                  <div className="px-3 py-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs text-subtle-gray font-zen-old-mincho tracking-wider">
-                        Keyboard Sound
-                      </span>
-                      {!hasAudioSupport && <VolumeX className="w-3 h-3 text-red-400" />}
-                    </div>
-                    <div className="grid grid-cols-1 gap-1 max-h-30 overflow-y-auto pr-1 custom-scrollbar">
-                      {profiles.map((profile) => (
-                        <button
-                          key={profile}
-                          onClick={() => changeProfile(profile)}
-                          disabled={!hasAudioSupport || isProfileLoading}
-                          className={`flex items-center justify-between px-2 py-1.5 rounded text-xs transition-all ${
-                            currentProfile === profile
-                              ? 'bg-white/10 text-off-white'
-                              : 'text-subtle-gray hover:bg-white/5 hover:text-off-white'
-                          }`}
-                        >
-                          <span>{availableProfiles[profile].name}</span>
-                          {currentProfile === profile && (
-                            <div
-                              className="w-1.5 h-1.5 rounded-full"
-                              style={{ backgroundColor: palette.primary }}
-                            />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  <Link
+                    href="/about"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                  >
+                    <Info className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
+                    <span className="font-zen-old-mincho tracking-wider">About</span>
+                  </Link>
 
                   <Link
                     href="/terms"
@@ -184,6 +162,38 @@ export default function AppHeader() {
                     <FileText className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
                     <span className="font-zen-old-mincho tracking-wider">Licenses</span>
                   </Link>
+
+                  {/* Sound Settings */}
+                  <div className="px-3 py-2">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-subtle-gray font-zen-old-mincho tracking-wider">
+                        Keyboard Sound
+                      </span>
+                      {!hasAudioSupport && <VolumeX className="w-3 h-3 text-red-400" />}
+                    </div>
+                    <div className="grid grid-cols-1 gap-1 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
+                      {profiles.map((profile) => (
+                        <button
+                          key={profile}
+                          onClick={() => changeProfile(profile)}
+                          disabled={!hasAudioSupport || isProfileLoading}
+                          className={`flex items-center justify-between px-2 py-1.5 rounded text-xs transition-all ${
+                            currentProfile === profile
+                              ? 'bg-white/10 text-off-white'
+                              : 'text-subtle-gray hover:bg-white/5 hover:text-off-white'
+                          }`}
+                        >
+                          <span>{availableProfiles[profile].name}</span>
+                          {currentProfile === profile && (
+                            <div
+                              className="w-1.5 h-1.5 rounded-full"
+                              style={{ backgroundColor: palette.primary }}
+                            />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
                   {/* Sign Out (only if authenticated) */}
                   {status === 'authenticated' && (

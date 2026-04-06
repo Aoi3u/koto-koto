@@ -30,6 +30,13 @@ describe('site-url', () => {
     expect(getSiteUrl()).toBe('http://localhost:3000');
   });
 
+  test('getSiteUrl ignores empty and invalid env values', () => {
+    process.env.NEXT_PUBLIC_SITE_URL = '';
+    process.env.NEXTAUTH_URL = 'not-a-url';
+
+    expect(getSiteUrl()).toBe('http://localhost:3000');
+  });
+
   test('absoluteUrl normalizes both prefixed and non-prefixed paths', () => {
     process.env.NEXT_PUBLIC_SITE_URL = 'https://example.com';
 
