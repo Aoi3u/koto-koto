@@ -4,6 +4,9 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Licenses | Koto-Koto',
   description: 'Open source and third-party license notices used by Koto-Koto',
+  alternates: {
+    canonical: '/licenses',
+  },
 };
 
 export default function LicensesPage() {

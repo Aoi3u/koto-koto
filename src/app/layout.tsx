@@ -4,6 +4,7 @@ import './globals.css';
 import MobileBlocker from '@/components/MobileBlocker';
 import Providers from '@/components/Providers';
 import AppHeader from '@/components/AppHeader';
+import { getSiteUrl } from '@/lib/site-url';
 
 const zenOldMincho = Zen_Old_Mincho({
   weight: ['400', '500', '700', '900'],
@@ -15,6 +16,17 @@ const zenOldMincho = Zen_Old_Mincho({
 export const metadata: Metadata = {
   title: 'Koto-Koto',
   description: 'A digital Zen garden typing experience.',
+  metadataBase: new URL(getSiteUrl()),
+  alternates: {
+    canonical: '/',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+  },
 };
 
 export default function RootLayout({
