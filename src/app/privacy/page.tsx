@@ -6,6 +6,9 @@ const PRIVATE_CONTACT_URL = 'https://github.com/Aoi3u/koto-koto/security/advisor
 export const metadata: Metadata = {
   title: 'Privacy Policy | Koto-Koto',
   description: 'Koto-Koto Privacy Policy',
+  alternates: {
+    canonical: '/privacy',
+  },
 };
 
 const sections = [
