@@ -3,6 +3,42 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
+interface PasswordValidationResult {
+  valid: boolean;
+  error?: string;
+}
+
+/**
+ * Validates password strength for new registration.
+ * Requirements:
+ * - At least 12 characters
+ * - At least one uppercase letter (A-Z)
+ * - At least one digit (0-9)
+ * - At least one special character (!@#$%^&*)
+ */
+function validatePassword(password: string): PasswordValidationResult {
+  if (password.length < 12) {
+    return { valid: false, error: 'Password must be at least 12 characters' };
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    return { valid: false, error: 'Password must contain at least one uppercase letter' };
+  }
+
+  if (!/[0-9]/.test(password)) {
+    return { valid: false, error: 'Password must contain at least one digit' };
+  }
+
+  if (!/[!@#$%^&*]/.test(password)) {
+    return {
+      valid: false,
+      error: 'Password must contain at least one special character (!@#$%^&*)',
+    };
+  }
+
+  return { valid: true };
+}
+
 export const POST = async (req: Request) => {
   // Rate limiting: max 5 registration attempts per IP per 15 minutes
   const ip = getClientIp(req);
@@ -33,8 +69,10 @@ export const POST = async (req: Request) => {
     return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
   }
 
-  if (password.length < 6) {
-    return NextResponse.json({ error: 'Password must be at least 6 characters' }, { status: 400 });
+  // Validate password strength for new registration
+  const passwordValidation = validatePassword(password);
+  if (!passwordValidation.valid) {
+    return NextResponse.json({ error: passwordValidation.error }, { status: 400 });
   }
 
   const existing = await prisma.user.findUnique({ where: { email } });
