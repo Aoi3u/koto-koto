@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { Prisma } from '@prisma/client';
 import { sentences } from '../src/data/sentences';
 import { WORD_POOL } from '../src/data/words';
 import { validateProblemSeedRecords, type ProblemSeedRecord } from '../src/lib/problemPool';
@@ -50,7 +51,7 @@ async function main() {
   prismaClient = await importPrismaClient();
 
   await prismaClient.$transaction(
-    async (tx) => {
+    async (tx: Prisma.TransactionClient) => {
       for (const record of records) {
         const dbMode = record.mode === 'classic' ? 'CLASSIC' : 'WORD_ENDLESS';
         await tx.$executeRawUnsafe(
