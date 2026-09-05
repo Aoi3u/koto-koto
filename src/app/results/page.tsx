@@ -57,6 +57,13 @@ function ResultsPageContent() {
   const [timeframe, setTimeframe] = useState<'all' | 'week' | 'month' | 'day'>('all');
   const [limit, setLimit] = useState<number>(50);
 
+  // Client-side cache of rankings responses keyed by mode/timeframe/limit, so
+  // switching back to a filter combination already seen this session shows
+  // results instantly instead of a "Loading..." flash, while still
+  // revalidating in the background to keep the board fresh.
+  const rankingsCacheRef = useRef<Map<string, RankingItem[]>>(new Map());
+  const rankingsRequestIdRef = useRef(0);
+
   // Scroll detection refs
   const historyScrollRef = useRef<HTMLDivElement>(null);
   const rankingsScrollRef = useRef<HTMLDivElement>(null);
@@ -137,7 +144,17 @@ function ResultsPageContent() {
   }, [session?.user, addToast]);
 
   const fetchRankings = useCallback(async () => {
-    setRankings((prev) => ({ ...prev, loading: true, error: null }));
+    const cacheKey = `${rankingMode}:${timeframe}:${limit}`;
+    const cached = rankingsCacheRef.current.get(cacheKey);
+    const requestId = ++rankingsRequestIdRef.current;
+
+    if (cached) {
+      // Show the cached view immediately; still revalidate below.
+      setRankings({ loading: false, error: null, data: cached });
+    } else {
+      setRankings((prev) => ({ ...prev, loading: true, error: null }));
+    }
+
     try {
       const params = new URLSearchParams({
         timeframe,
@@ -147,8 +164,18 @@ function ResultsPageContent() {
       const res = await fetch(`/api/rankings?${params.toString()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error('Failed to fetch rankings');
       const body = await res.json();
-      setRankings({ loading: false, error: null, data: body.results ?? [] });
+      if (requestId !== rankingsRequestIdRef.current) return; // superseded by a newer request
+
+      const data: RankingItem[] = body.results ?? [];
+      rankingsCacheRef.current.set(cacheKey, data);
+      setRankings({ loading: false, error: null, data });
     } catch {
+      if (requestId !== rankingsRequestIdRef.current) return;
+
+      // If we already have a cached view on screen, keep it and fail
+      // silently in the background rather than replacing it with an error.
+      if (cached) return;
+
       setRankings({ loading: false, error: 'Failed to load rankings', data: [] });
       addToast('Failed to load rankings', 'error');
     }
