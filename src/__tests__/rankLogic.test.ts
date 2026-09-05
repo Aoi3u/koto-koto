@@ -38,4 +38,13 @@ describe('rankLogic', () => {
     const r = calculateRank(50, 90); // 45
     expect(Math.round(r.score)).toBe(45);
   });
+
+  test('every threshold in the ladder resolves to its own grade/title/color at acc=100', () => {
+    for (const [key, threshold] of Object.entries(RANK_THRESHOLDS)) {
+      const result = calculateRank(threshold.score, 100);
+      expect(result.grade).toBe(threshold.grade);
+      expect(result.title).toBe(threshold.title);
+      expect(result.color).toBe(THEME.rankColors[key as keyof typeof THEME.rankColors]);
+    }
+  });
 });
