@@ -1,4 +1,6 @@
 import { prisma } from '../lib/prisma';
+import { getServerSession } from 'next-auth';
+import { __clearCacheForTests } from '../lib/cache';
 const makeReq = (url: string) => ({ url }) as unknown as Request;
 
 jest.mock('next/server', () => ({
@@ -53,6 +55,7 @@ describe('Rankings API', () => {
     jest.setSystemTime(new Date('2025-12-30T12:00:00.000Z'));
     mockFindMany().mockReset();
     mockQueryRawUnsafe().mockReset();
+    __clearCacheForTests();
   });
 
   afterEach(() => {
@@ -211,5 +214,66 @@ describe('Rankings API', () => {
 
     expect(res.status).toBe(200);
     expect(mockQueryRawUnsafe()).toHaveBeenCalledTimes(1);
+  });
+
+  describe('response caching', () => {
+    it('serves a repeat request for the same mode/timeframe/limit from cache', async () => {
+      mockFindMany().mockResolvedValueOnce([
+        {
+          wordsPerMinute: 200,
+          accuracy: 95,
+          zenScore: 190,
+          createdAt: new Date('2025-12-01T00:00:00.000Z'),
+          userId: 'user-alice-12345',
+          user: { name: 'Alice' },
+        },
+      ]);
+
+      const GET = await getHandler();
+      const first = await GET(makeReq('http://localhost/api/rankings?mode=runs'));
+      const second = await GET(makeReq('http://localhost/api/rankings?mode=runs'));
+
+      expect(mockFindMany()).toHaveBeenCalledTimes(1);
+      expect((await first.json()).results).toEqual((await second.json()).results);
+    });
+
+    it('does not reuse the cache across different mode/timeframe/limit combinations', async () => {
+      mockFindMany().mockResolvedValueOnce([]);
+      mockFindMany().mockResolvedValueOnce([]);
+
+      const GET = await getHandler();
+      await GET(makeReq('http://localhost/api/rankings?mode=runs&limit=10'));
+      await GET(makeReq('http://localhost/api/rankings?mode=runs&limit=20'));
+
+      expect(mockFindMany()).toHaveBeenCalledTimes(2);
+    });
+
+    it('still computes isSelf per requester even when the row data is cached', async () => {
+      mockFindMany().mockResolvedValueOnce([
+        {
+          wordsPerMinute: 200,
+          accuracy: 95,
+          zenScore: 190,
+          createdAt: new Date('2025-12-01T00:00:00.000Z'),
+          userId: 'user-alice-12345',
+          user: { name: 'Alice' },
+        },
+      ]);
+
+      const GET = await getHandler();
+
+      (getServerSession as jest.Mock).mockResolvedValueOnce(null);
+      const anonRes = await GET(makeReq('http://localhost/api/rankings?mode=runs'));
+      expect((await anonRes.json()).results[0].isSelf).toBe(false);
+
+      (getServerSession as jest.Mock).mockResolvedValueOnce({
+        user: { id: 'user-alice-12345' },
+      });
+      const selfRes = await GET(makeReq('http://localhost/api/rankings?mode=runs'));
+      expect((await selfRes.json()).results[0].isSelf).toBe(true);
+
+      // Row data itself came from the cache both times.
+      expect(mockFindMany()).toHaveBeenCalledTimes(1);
+    });
   });
 });
