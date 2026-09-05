@@ -13,3 +13,6 @@ pnpm-lock.yaml
 *.env
 *.env.local
 *.env.*.local
+
+# Vendored skill scripts, not project source
+.claude/skills/
