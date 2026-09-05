@@ -50,6 +50,7 @@ export default function UnderlineTabs<T extends string>({
             aria-selected={isActive}
             onClick={() => onChange(option.value)}
             className={joinClassNames(
+              'transition-transform duration-150 ease-out active:scale-95',
               itemClassName,
               isActive ? activeItemClassName : inactiveItemClassName
             )}

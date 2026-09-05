@@ -25,7 +25,7 @@ function joinClassNames(...classes: Array<string | undefined>) {
 }
 
 const baseClassName =
-  'inline-flex items-center justify-center p-2 rounded-full transition-colors duration-300 hover:bg-white/5 text-subtle-gray hover:text-off-white';
+  'inline-flex items-center justify-center p-2 rounded-full transition-[color,background-color,transform] duration-200 ease-out hover:bg-white/5 active:scale-90 text-subtle-gray hover:text-off-white';
 
 export default function IconActionButton(props: IconActionButtonProps) {
   const className = joinClassNames(baseClassName, props.className);

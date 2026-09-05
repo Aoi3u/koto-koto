@@ -11,7 +11,7 @@ export default function ChipButton({ className, type = 'button', ...props }: Chi
     <button
       type={type}
       className={joinClassNames(
-        'inline-flex items-center rounded-full border uppercase font-inter transition-colors duration-300',
+        'inline-flex items-center rounded-full border uppercase font-inter transition-[color,background-color,border-color,transform] duration-200 ease-out active:scale-[0.97]',
         className
       )}
       {...props}

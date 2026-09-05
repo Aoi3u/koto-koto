@@ -15,7 +15,7 @@ export default function PillActionButton({
     <button
       type={type}
       className={joinClassNames(
-        'rounded-full transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed',
+        'rounded-full transition-[color,background-color,border-color,box-shadow,transform] duration-200 ease-out active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100',
         className
       )}
       {...props}
