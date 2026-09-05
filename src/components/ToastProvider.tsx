@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useMemo, useState, useCallback } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 export type ToastKind = 'success' | 'error' | 'info';
 
@@ -29,6 +30,7 @@ export function useToast() {
 
 export default function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const prefersReducedMotion = useReducedMotion();
 
   const remove = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -49,29 +51,48 @@ export default function ToastProvider({ children }: { children: React.ReactNode 
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="fixed bottom-6 left-6 right-6 md:bottom-auto md:top-20 md:right-6 md:left-auto z-[200] flex flex-col gap-3 text-sm">
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className="backdrop-blur-md rounded-lg px-4 py-3 shadow-lg border text-off-white transition-colors"
-            style={{
-              backgroundColor:
-                toast.kind === 'success'
-                  ? 'rgba(52, 211, 153, 0.12)'
-                  : toast.kind === 'error'
-                    ? 'rgba(248, 113, 113, 0.12)'
-                    : 'rgba(255, 255, 255, 0.08)',
-              borderColor:
-                toast.kind === 'success'
-                  ? 'rgba(52, 211, 153, 0.35)'
-                  : toast.kind === 'error'
-                    ? 'rgba(248, 113, 113, 0.35)'
-                    : 'rgba(255, 255, 255, 0.18)',
-            }}
-          >
-            <div className="font-zen-old-mincho tracking-wide leading-snug">{toast.message}</div>
-          </div>
-        ))}
+      <div className="fixed bottom-6 left-6 right-6 md:bottom-auto md:top-20 md:right-6 md:left-auto z-200 flex flex-col gap-3 text-sm">
+        <AnimatePresence initial={false}>
+          {toasts.map((toast) => (
+            <motion.div
+              key={toast.id}
+              layout
+              initial={
+                prefersReducedMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, scale: 0.9, filter: 'blur(6px)', y: 8 }
+              }
+              animate={
+                prefersReducedMotion
+                  ? { opacity: 1 }
+                  : { opacity: 1, scale: 1, filter: 'blur(0px)', y: 0 }
+              }
+              exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 8 }}
+              transition={
+                prefersReducedMotion
+                  ? { duration: 0.15 }
+                  : { type: 'spring', bounce: 0, duration: 0.4 }
+              }
+              className="backdrop-blur-md rounded-lg px-4 py-3 shadow-lg border text-off-white"
+              style={{
+                backgroundColor:
+                  toast.kind === 'success'
+                    ? 'rgba(52, 211, 153, 0.12)'
+                    : toast.kind === 'error'
+                      ? 'rgba(248, 113, 113, 0.12)'
+                      : 'rgba(255, 255, 255, 0.08)',
+                borderColor:
+                  toast.kind === 'success'
+                    ? 'rgba(52, 211, 153, 0.35)'
+                    : toast.kind === 'error'
+                      ? 'rgba(248, 113, 113, 0.35)'
+                      : 'rgba(255, 255, 255, 0.18)',
+              }}
+            >
+              <div className="font-zen-old-mincho tracking-wide leading-snug">{toast.message}</div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );
