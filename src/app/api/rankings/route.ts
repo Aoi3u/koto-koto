@@ -4,9 +4,17 @@ import { prisma } from '@/lib/prisma';
 import { calculateRank } from '@/features/result/utils/rankLogic';
 import { calculateZenScore } from '@/lib/gameUtils';
 import { authOptions } from '@/lib/auth';
+import { getOrSetCache } from '@/lib/cache';
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 200;
+
+// Rankings are identical for every requester (aside from the per-viewer
+// `isSelf` flag, applied after the cache read below), so the underlying
+// query result can be shared across requests for a short window. This
+// smooths out DB load during bursts of traffic without letting the board
+// go noticeably stale.
+const RANKINGS_CACHE_TTL_MS = 20_000;
 
 const badRequest = (message: string) => NextResponse.json({ error: message }, { status: 400 });
 
@@ -53,91 +61,87 @@ const generateAnonymousHandle = (userId: string): string => {
   return `Player_${shortId}`;
 };
 
-export const GET = async (req: Request) => {
-  const { searchParams } = new URL(req.url);
-  const session = await getServerSession(authOptions);
-  const currentUserId = session?.user?.id;
+// Cacheable ranking row: everything needed for the response except `isSelf`,
+// which depends on the requesting user and is attached after the cache read.
+// `userId` is kept only to compute `isSelf` and is stripped before responding.
+type CachedRankingRow = {
+  rank: number;
+  wpm: number;
+  accuracy: number;
+  createdAt: Date;
+  zenScore: number;
+  grade: string;
+  title: string;
+  color: string;
+  user: string;
+  userId: string;
+};
 
-  const limit = parseLimit(searchParams.get('limit'));
-  if (!limit) return badRequest('Invalid limit');
+const fetchRunsRanking = async (
+  where: Record<string, unknown>,
+  limit: number
+): Promise<CachedRankingRow[]> => {
+  // 戦績ランキング: 1プレイ = 1行
+  const results = await prisma.gameResult.findMany({
+    where,
+    orderBy: { zenScore: 'desc' },
+    take: limit,
+    select: {
+      wordsPerMinute: true,
+      accuracy: true,
+      createdAt: true,
+      zenScore: true,
+      userId: true,
+      user: { select: { name: true } },
+    },
+  });
 
-  const timeframe = parseTimeframe(searchParams.get('timeframe'));
-  if (!timeframe) return badRequest('Invalid timeframe');
+  // 競技スタイルの順位付け（同点は同順位、次順位は人数ぶん飛ばす）
+  let lastZenScore: number | null = null;
+  let lastRank = 0;
+  let position = 0;
 
-  const mode = parseMode(searchParams.get('mode'));
-  if (!mode) return badRequest('Invalid mode');
+  return results.map((result: (typeof results)[0]) => {
+    position += 1;
+    // 表示・ランク判定用の ZenScore は常に計算関数から求める
+    const zenScore = calculateZenScore(result.wordsPerMinute, result.accuracy);
 
-  const gte = timeframeToDate(timeframe);
+    let rank: number;
+    if (lastZenScore === null || zenScore < lastZenScore) {
+      rank = position;
+      lastRank = rank;
+      lastZenScore = zenScore;
+    } else {
+      rank = lastRank;
+    }
 
-  // 共通の where 句
-  const where = {
-    zenScore: { not: null },
-    ...(gte ? { createdAt: { gte } } : {}),
-  } as const;
+    const rankResult = calculateRank(result.wordsPerMinute, result.accuracy);
+    return {
+      rank,
+      wpm: result.wordsPerMinute,
+      accuracy: result.accuracy,
+      createdAt: result.createdAt,
+      zenScore,
+      grade: rankResult.grade,
+      title: rankResult.title,
+      color: rankResult.color,
+      user: result.user?.name ?? generateAnonymousHandle(result.userId),
+      userId: result.userId,
+    };
+  });
+};
 
-  if (mode === 'runs') {
-    // 戦績ランキング: 1プレイ = 1行
-    const results = await prisma.gameResult.findMany({
-      where,
-      orderBy: { zenScore: 'desc' },
-      take: limit,
-      select: {
-        wordsPerMinute: true,
-        accuracy: true,
-        createdAt: true,
-        zenScore: true,
-        userId: true,
-        user: { select: { name: true } },
-      },
-    });
+type UserBestRow = {
+  userId: string;
+  name: string | null;
+  wordsPerMinute: number;
+  accuracy: number;
+  createdAt: Date;
+  zenScore: number;
+};
 
-    // 競技スタイルの順位付け（同点は同順位、次順位は人数ぶん飛ばす）
-    let lastZenScore: number | null = null;
-    let lastRank = 0;
-    let position = 0;
-
-    const payload = results.map((result: (typeof results)[0]) => {
-      position += 1;
-      // 表示・ランク判定用の ZenScore は常に計算関数から求める
-      const zenScore = calculateZenScore(result.wordsPerMinute, result.accuracy);
-
-      let rank: number;
-      if (lastZenScore === null || zenScore < lastZenScore) {
-        rank = position;
-        lastRank = rank;
-        lastZenScore = zenScore;
-      } else {
-        rank = lastRank;
-      }
-
-      const rankResult = calculateRank(result.wordsPerMinute, result.accuracy);
-      return {
-        rank,
-        wpm: result.wordsPerMinute,
-        accuracy: result.accuracy,
-        createdAt: result.createdAt,
-        zenScore,
-        grade: rankResult.grade,
-        title: rankResult.title,
-        color: rankResult.color,
-        user: result.user?.name ?? generateAnonymousHandle(result.userId),
-        isSelf: currentUserId ? result.userId === currentUserId : false,
-      };
-    });
-
-    return NextResponse.json({ results: payload }, { status: 200 });
-  }
-
+const fetchUsersRanking = async (gte: Date | null, limit: number): Promise<CachedRankingRow[]> => {
   // ユーザーランキング: ユーザーごとのベストランを DB 側で選定して転送量を削減
-  type UserBestRow = {
-    userId: string;
-    name: string | null;
-    wordsPerMinute: number;
-    accuracy: number;
-    createdAt: Date;
-    zenScore: number;
-  };
-
   const topUsers = gte
     ? await prisma.$queryRawUnsafe<UserBestRow[]>(
         `
@@ -211,7 +215,7 @@ export const GET = async (req: Request) => {
   let lastRank = 0;
   let position = 0;
 
-  const payload = topUsers.map((result: UserBestRow) => {
+  return topUsers.map((result: UserBestRow) => {
     position += 1;
 
     let rank: number;
@@ -236,9 +240,43 @@ export const GET = async (req: Request) => {
       title: rankResult.title,
       color: rankResult.color,
       user: displayName,
-      isSelf: currentUserId ? result.userId === currentUserId : false,
+      userId: result.userId,
     };
   });
+};
 
-  return NextResponse.json({ results: payload }, { status: 200 });
+export const GET = async (req: Request) => {
+  const { searchParams } = new URL(req.url);
+  const session = await getServerSession(authOptions);
+  const currentUserId = session?.user?.id;
+
+  const limit = parseLimit(searchParams.get('limit'));
+  if (!limit) return badRequest('Invalid limit');
+
+  const timeframe = parseTimeframe(searchParams.get('timeframe'));
+  if (!timeframe) return badRequest('Invalid timeframe');
+
+  const mode = parseMode(searchParams.get('mode'));
+  if (!mode) return badRequest('Invalid mode');
+
+  const gte = timeframeToDate(timeframe);
+
+  const cacheKey = `rankings:${mode}:${timeframe}:${limit}`;
+  const cachedRows = await getOrSetCache(cacheKey, RANKINGS_CACHE_TTL_MS, () => {
+    if (mode === 'runs') {
+      const where = {
+        zenScore: { not: null },
+        ...(gte ? { createdAt: { gte } } : {}),
+      } as const;
+      return fetchRunsRanking(where, limit);
+    }
+    return fetchUsersRanking(gte, limit);
+  });
+
+  const results = cachedRows.map(({ userId, ...row }) => ({
+    ...row,
+    isSelf: currentUserId ? userId === currentUserId : false,
+  }));
+
+  return NextResponse.json({ results }, { status: 200 });
 };
