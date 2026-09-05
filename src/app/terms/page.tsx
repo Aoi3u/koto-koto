@@ -84,7 +84,7 @@ const sectionsJa = [
 export default function TermsPage() {
   return (
     <main className="h-screen overflow-y-auto pt-28 pb-16 px-6 md:px-12">
-      <div className="mx-auto w-full max-w-4xl rounded-2xl border border-white/10 bg-black/30 p-6 md:p-10 backdrop-blur">
+      <div className="mx-auto w-full max-w-2xl rounded-2xl border border-white/10 bg-black/30 p-6 md:p-10 backdrop-blur">
         <h1 className="text-3xl md:text-4xl tracking-tight font-semibold">Terms of Service</h1>
         <p className="mt-3 text-sm text-subtle-gray">Effective date: 2026-04-06</p>
         <p className="mt-2 text-sm text-subtle-gray">
