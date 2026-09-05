@@ -40,7 +40,7 @@ export default function TitleScreen({
         Japanese Zen Typing
       </p>
       <h1
-        className="text-6xl md:text-8xl font-thin tracking-widest text-transparent bg-clip-text opacity-90 transition-all duration-1000"
+        className="text-6xl md:text-8xl font-thin tracking-[-0.01em] md:tracking-[-0.02em] text-transparent bg-clip-text opacity-90 transition-all duration-1000"
         style={{
           backgroundImage: `linear-gradient(to bottom, ${palette.text}, ${palette.primary})`,
         }}
@@ -79,7 +79,7 @@ export default function TitleScreen({
         <button
           onClick={onStart}
           disabled={isLoading}
-          className="group relative px-8 py-3 overflow-hidden rounded-full transition-all duration-500 disabled:opacity-60 disabled:cursor-not-allowed"
+          className="group relative px-8 py-3 overflow-hidden rounded-full transition-[color,background-color,opacity,transform] duration-300 ease-out active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
         >
           <span
             className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"

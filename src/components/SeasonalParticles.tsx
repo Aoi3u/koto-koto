@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 interface SeasonalParticle {
   id: number;
@@ -37,6 +37,7 @@ export default function SeasonalParticles({ emoji, color, count = 15 }: Seasonal
   // SSR と CSR の初期出力差分を避けるため、初期は空配列を描画し、
   // クライアントマウント後にランダム生成する
   const [particles, setParticles] = useState<SeasonalParticle[]>([]);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     setParticles(generateParticles(count));
@@ -58,6 +59,14 @@ export default function SeasonalParticles({ emoji, color, count = 15 }: Seasonal
     }),
     [] // animation variants are static
   );
+
+  // A full-viewport field of continuously drifting particles is exactly the
+  // kind of ambient motion prefers-reduced-motion asks us to drop. Gated on
+  // particles.length (not prefersReducedMotion alone): that hook resolves
+  // synchronously on the client, ahead of the server's render, so branching
+  // on it directly would mismatch during hydration. particles.length stays
+  // 0 through hydration either way, so this only takes effect afterward.
+  if (particles.length > 0 && prefersReducedMotion) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">

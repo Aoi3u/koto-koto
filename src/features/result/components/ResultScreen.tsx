@@ -77,7 +77,7 @@ export default function ResultScreen({
       </motion.div>
 
       {/* Title Display */}
-      <h1 className="text-lg md:text-xl font-zen-old-mincho font-bold mb-5 md:mb-6 text-off-white tracking-widest opacity-90 text-center">
+      <h1 className="text-lg md:text-xl font-zen-old-mincho font-bold mb-5 md:mb-6 text-off-white tracking-wide opacity-90 text-center">
         {title}
       </h1>
 
@@ -176,8 +176,9 @@ export default function ResultScreen({
             </span>
             <span className="text-base md:text-lg font-inter mt-1">{maxCombo}</span>
           </div>
-          <div
-            className="bg-white/5 rounded-lg p-2.5 md:p-3 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-all duration-300 border"
+          <button
+            type="button"
+            className="bg-white/5 rounded-lg p-2.5 md:p-3 flex flex-col items-center hover:bg-white/10 transition-[background-color,transform] duration-200 ease-out active:scale-95 border"
             style={{
               borderColor: `${seasonalTheme.colors.primary}20`,
             }}
@@ -187,7 +188,7 @@ export default function ResultScreen({
               Share
             </span>
             <Share2 className="w-4 h-4 mt-1 transition-colors duration-1000" />
-          </div>
+          </button>
         </div>
       </div>
 

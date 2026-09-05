@@ -44,6 +44,7 @@ export default function SegmentedControl<T extends string>({
             onClick={() => onChange(option.value)}
             aria-pressed={isActive}
             className={joinClassNames(
+              'transition-transform duration-150 ease-out active:scale-90',
               itemClassName,
               isActive ? activeItemClassName : inactiveItemClassName
             )}

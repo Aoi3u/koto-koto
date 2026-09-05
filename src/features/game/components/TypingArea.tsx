@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Sentence } from '../../../data/sentences';
 import { useThemePalette } from '../../../contexts/SeasonalContext';
 
@@ -25,6 +25,7 @@ export default function TypingArea({
   ripple,
 }: TypingAreaProps) {
   const { palette } = useThemePalette('stable');
+  const prefersReducedMotion = useReducedMotion();
 
   if (!currentWord) return null;
 
@@ -32,11 +33,21 @@ export default function TypingArea({
   const display = currentWord.display;
 
   // Dynamic Font Sizing (Based on Kanji/Display length)
+  // Tracking scales inversely with size (tighter as the glyphs get bigger),
+  // rather than one fixed letter-spacing for every length of sentence.
   const displayLength = display.length;
   let textSizeClass = 'text-5xl';
-  if (displayLength > 20) textSizeClass = 'text-2xl';
-  else if (displayLength > 12) textSizeClass = 'text-3xl';
-  else if (displayLength > 8) textSizeClass = 'text-4xl';
+  let textTrackingClass = 'tracking-tight';
+  if (displayLength > 20) {
+    textSizeClass = 'text-2xl';
+    textTrackingClass = 'tracking-wide';
+  } else if (displayLength > 12) {
+    textSizeClass = 'text-3xl';
+    textTrackingClass = 'tracking-normal';
+  } else if (displayLength > 8) {
+    textSizeClass = 'text-4xl';
+    textTrackingClass = 'tracking-normal';
+  }
 
   // Dynamic Reading Size (use reading length so short kanji with long readings scale down)
   const readingLength = currentWord.reading?.length ?? displayLength;
@@ -52,12 +63,25 @@ export default function TypingArea({
             : 'text-2xl';
   const kanaMaxWidthClass = readingLength > 45 ? 'max-w-6xl' : 'max-w-5xl';
   const kanaLineHeightClass = readingLength > 35 ? 'leading-tight' : 'leading-relaxed';
-  const kanaTrackingClass = readingLength > 35 ? 'tracking-wide' : 'tracking-widest';
+  // Same inverse relationship as textTrackingClass above: the largest kana
+  // (short readings) gets tighter tracking, the smallest gets more room.
+  const kanaTrackingClass =
+    readingLength > 45
+      ? 'tracking-wide'
+      : readingLength > 25
+        ? 'tracking-normal'
+        : 'tracking-tight';
 
   return (
     <motion.div
       className={`relative w-full text-center mt-12 ${shake ? 'animate-shake' : ''}`}
-      animate={shake ? { x: [-10, 10, -10, 10, 0] } : {}}
+      animate={
+        shake
+          ? prefersReducedMotion
+            ? { opacity: [1, 0.5, 1] }
+            : { x: [-10, 10, -10, 10, 0] }
+          : {}
+      }
       transition={{ duration: 0.3 }}
     >
       <div className="flex flex-col items-center justify-center space-y-8">
@@ -66,7 +90,7 @@ export default function TypingArea({
           key={currentWord.id}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`${textSizeClass} font-zen-old-mincho font-bold tracking-widest leading-relaxed wrap-break-word whitespace-pre-wrap max-w-5xl transition-all duration-1000`}
+          className={`${textSizeClass} ${textTrackingClass} font-zen-old-mincho font-bold leading-relaxed wrap-break-word whitespace-pre-wrap max-w-5xl transition-all duration-1000`}
           style={{
             color: palette.text,
             textShadow: `0 0 30px ${palette.glow}`,
@@ -99,18 +123,22 @@ export default function TypingArea({
                   textShadow: `0 0 15px ${palette.glow}`,
                   opacity: 0.5,
                 }}
-                animate={{
-                  textShadow: [
-                    `0 0 10px ${palette.glow}`,
-                    `0 0 20px ${palette.glow}`,
-                    `0 0 10px ${palette.glow}`,
-                  ],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
+                animate={
+                  prefersReducedMotion
+                    ? { textShadow: `0 0 15px ${palette.glow}` }
+                    : {
+                        textShadow: [
+                          `0 0 10px ${palette.glow}`,
+                          `0 0 20px ${palette.glow}`,
+                          `0 0 10px ${palette.glow}`,
+                        ],
+                      }
+                }
+                transition={
+                  prefersReducedMotion
+                    ? { duration: 0.3 }
+                    : { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+                }
               >
                 {remainingTarget[0]}
                 {/* Caret - Absolute Positioned */}
@@ -120,8 +148,10 @@ export default function TypingArea({
                     backgroundColor: palette.accent,
                     boxShadow: `0 0 10px ${palette.accent}`,
                   }}
-                  animate={{ opacity: [1, 0.5, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
+                  animate={prefersReducedMotion ? { opacity: 1 } : { opacity: [1, 0.5, 1] }}
+                  transition={
+                    prefersReducedMotion ? { duration: 0 } : { duration: 1, repeat: Infinity }
+                  }
                 />
               </motion.span>
               {/* Future Characters (Dimmed) */}
