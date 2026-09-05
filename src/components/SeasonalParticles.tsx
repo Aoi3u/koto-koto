@@ -61,8 +61,12 @@ export default function SeasonalParticles({ emoji, color, count = 15 }: Seasonal
   );
 
   // A full-viewport field of continuously drifting particles is exactly the
-  // kind of ambient motion prefers-reduced-motion asks us to drop.
-  if (prefersReducedMotion) return null;
+  // kind of ambient motion prefers-reduced-motion asks us to drop. Gated on
+  // particles.length (not prefersReducedMotion alone): that hook resolves
+  // synchronously on the client, ahead of the server's render, so branching
+  // on it directly would mismatch during hydration. particles.length stays
+  // 0 through hydration either way, so this only takes effect afterward.
+  if (particles.length > 0 && prefersReducedMotion) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
