@@ -77,6 +77,28 @@ export function rateLimit(identifier: string, config: RateLimitConfig): NextResp
 }
 
 /**
+ * Extract IP address from a plain headers record (e.g. NextAuth's
+ * `RequestInternal.headers`, which is not a `Headers` instance).
+ * Checks X-Forwarded-For, X-Real-IP headers and falls back to 'unknown'.
+ */
+export function getClientIpFromHeaders(
+  headers: Record<string, unknown> | undefined | null
+): string {
+  const forwardedFor = headers?.['x-forwarded-for'];
+  if (typeof forwardedFor === 'string' && forwardedFor.length > 0) {
+    return forwardedFor.split(',')[0].trim();
+  }
+
+  const realIp = headers?.['x-real-ip'];
+  if (typeof realIp === 'string' && realIp.length > 0) {
+    return realIp.trim();
+  }
+
+  // Fallback for development
+  return 'unknown';
+}
+
+/**
  * Extract IP address from request
  * Checks X-Forwarded-For, X-Real-IP headers and falls back to connection IP
  */

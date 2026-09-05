@@ -4,9 +4,17 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { GameResultFlexibleSchema } from '@/lib/validation/game';
 import { calculateZenScore } from '@/lib/gameUtils';
+import { rateLimit } from '@/lib/rate-limit';
 
 // Display limit for the results list
 const DISPLAY_LIMIT = 100;
+
+// Result submissions: max 20 per user per 5 minutes, to curb scripted/spammed leaderboard entries.
+const SUBMIT_RATE_LIMIT = {
+  maxRequests: 20,
+  windowMs: 5 * 60 * 1000,
+  message: 'Too many result submissions, please slow down.',
+} as const;
 
 const unauthorized = () => NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 const badRequest = (message: string) => NextResponse.json({ error: message }, { status: 400 });
@@ -36,6 +44,9 @@ export const POST = async (req: Request) => {
   const userId =
     session?.user && 'id' in session.user ? (session.user as { id?: string }).id : undefined;
   if (!userId) return unauthorized();
+
+  const limited = rateLimit(`game-results:${userId}`, SUBMIT_RATE_LIMIT);
+  if (limited) return limited;
 
   let json: unknown;
   try {
