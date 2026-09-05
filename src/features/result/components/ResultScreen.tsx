@@ -7,6 +7,7 @@ import { useSeasonalTheme } from '../../../contexts/SeasonalContext';
 import { calculateZenScore } from '../../../lib/formatters';
 import { buildSessionMetrics } from '../utils/sessionMetrics';
 import PillActionButton from '@/components/ui/PillActionButton';
+import { useToast } from '@/components/ToastProvider';
 
 interface ResultScreenProps {
   correctKeyCount: number;
@@ -24,6 +25,7 @@ export default function ResultScreen({
   onRestart,
 }: ResultScreenProps) {
   const seasonalTheme = useSeasonalTheme();
+  const { addToast } = useToast();
 
   const { totalKeystrokes, netWpm, kpm, timeStr, accuracy } = buildSessionMetrics(
     correctKeyCount,
@@ -34,10 +36,20 @@ export default function ResultScreen({
   const { grade, title, color } = calculateRank(netWpm, accuracy);
   const zenScore = calculateZenScore(netWpm, accuracy);
 
-  const handleShare = () => {
+  const handleShare = async () => {
     const text = `Koto-Koto Evaluation Result\n━━━━━━━━━━━━━━━━━━\nRank: ${grade} "${title}"\nZen Score: ${zenScore}\nWPM: ${netWpm} / ACC: ${accuracy}%\n━━━━━━━━━━━━━━━━━━\nVerify your limits!\nhttps://koto-koto.vercel.app/`;
-    navigator.clipboard.writeText(text);
-    alert('Result copied to clipboard!');
+
+    if (!navigator.clipboard) {
+      addToast('Clipboard is not available in this browser.', 'error');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(text);
+      addToast('Result copied to clipboard!', 'success');
+    } catch {
+      addToast('Failed to copy result to clipboard.', 'error');
+    }
   };
 
   return (
