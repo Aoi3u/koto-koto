@@ -41,6 +41,16 @@ export default function AppHeader() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Never trap the user in an overlay: Escape always offers a way out.
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setIsOpen(false);
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
   const userLabel = session?.user?.name ?? session?.user?.email ?? 'Guest';
   const profiles = Object.keys(availableProfiles) as KeyboardSoundProfile[];
 
@@ -93,8 +103,8 @@ export default function AppHeader() {
                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="absolute top-full right-0 mt-4 w-72 rounded-lg backdrop-blur-xl border shadow-2xl overflow-hidden"
+                transition={{ type: 'spring', bounce: 0, duration: 0.35 }}
+                className="absolute top-full right-0 mt-4 w-72 rounded-lg backdrop-blur-xl border shadow-2xl overflow-hidden origin-top-right"
                 style={{
                   backgroundColor: 'rgba(15, 20, 25, 0.9)',
                   borderColor: 'rgba(255, 255, 255, 0.1)',
@@ -108,7 +118,8 @@ export default function AppHeader() {
                   </span>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="text-subtle-gray hover:text-off-white"
+                    aria-label="Close settings"
+                    className="text-subtle-gray hover:text-off-white transition-transform duration-150 ease-out active:scale-90"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -119,7 +130,7 @@ export default function AppHeader() {
                   <Link
                     href="/auth"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-[color,background-color,transform] duration-150 ease-out active:scale-[0.98] group"
                   >
                     <User className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
                     <span className="font-zen-old-mincho tracking-wider">Account</span>
@@ -130,7 +141,7 @@ export default function AppHeader() {
                   <Link
                     href="/about"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-[color,background-color,transform] duration-150 ease-out active:scale-[0.98] group"
                   >
                     <Info className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
                     <span className="font-zen-old-mincho tracking-wider">About</span>
@@ -139,7 +150,7 @@ export default function AppHeader() {
                   <Link
                     href="/terms"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-[color,background-color,transform] duration-150 ease-out active:scale-[0.98] group"
                   >
                     <ScrollText className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
                     <span className="font-zen-old-mincho tracking-wider">Terms</span>
@@ -148,7 +159,7 @@ export default function AppHeader() {
                   <Link
                     href="/privacy"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-[color,background-color,transform] duration-150 ease-out active:scale-[0.98] group"
                   >
                     <ShieldCheck className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
                     <span className="font-zen-old-mincho tracking-wider">Privacy</span>
@@ -157,7 +168,7 @@ export default function AppHeader() {
                   <Link
                     href="/licenses"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-colors group"
+                    className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-sm text-off-white transition-[color,background-color,transform] duration-150 ease-out active:scale-[0.98] group"
                   >
                     <FileText className="w-4 h-4 text-subtle-gray group-hover:text-off-white" />
                     <span className="font-zen-old-mincho tracking-wider">Licenses</span>
@@ -177,7 +188,7 @@ export default function AppHeader() {
                           key={profile}
                           onClick={() => changeProfile(profile)}
                           disabled={!hasAudioSupport || isProfileLoading}
-                          className={`flex items-center justify-between px-2 py-1.5 rounded text-xs transition-all ${
+                          className={`flex items-center justify-between px-2 py-1.5 rounded text-xs transition-[color,background-color,transform] duration-150 ease-out active:scale-[0.97] ${
                             currentProfile === profile
                               ? 'bg-white/10 text-off-white'
                               : 'text-subtle-gray hover:bg-white/5 hover:text-off-white'
@@ -201,7 +212,7 @@ export default function AppHeader() {
                       <div className="my-2 border-t border-white/5" />
                       <button
                         onClick={() => signOut({ callbackUrl: '/' })}
-                        className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-red-500/10 text-sm text-red-200 transition-colors group"
+                        className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-red-500/10 text-sm text-red-200 transition-[color,background-color,transform] duration-150 ease-out active:scale-[0.98] group"
                       >
                         <LogOut className="w-4 h-4 opacity-70 group-hover:opacity-100" />
                         <span className="font-zen-old-mincho tracking-wider">Sign Out</span>
