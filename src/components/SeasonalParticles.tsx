@@ -40,9 +40,8 @@ export default function SeasonalParticles({ emoji, color, count = 15 }: Seasonal
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
     setParticles(generateParticles(count));
-  }, [count, prefersReducedMotion]);
+  }, [count]);
 
   // Memoize animation variants to prevent unnecessary motion.div re-renders
   const animationVariants = useMemo(
@@ -60,6 +59,10 @@ export default function SeasonalParticles({ emoji, color, count = 15 }: Seasonal
     }),
     [] // animation variants are static
   );
+
+  // A full-viewport field of continuously drifting particles is exactly the
+  // kind of ambient motion prefers-reduced-motion asks us to drop.
+  if (prefersReducedMotion) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
