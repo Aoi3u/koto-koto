@@ -40,7 +40,7 @@ export default function TitleScreen({
         Japanese Zen Typing
       </p>
       <h1
-        className="text-6xl md:text-8xl font-thin tracking-widest text-transparent bg-clip-text opacity-90 transition-all duration-1000"
+        className="text-6xl md:text-8xl font-thin tracking-[-0.01em] md:tracking-[-0.02em] text-transparent bg-clip-text opacity-90 transition-all duration-1000"
         style={{
           backgroundImage: `linear-gradient(to bottom, ${palette.text}, ${palette.primary})`,
         }}

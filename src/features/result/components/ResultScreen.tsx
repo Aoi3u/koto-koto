@@ -65,7 +65,7 @@ export default function ResultScreen({
       </motion.div>
 
       {/* Title Display */}
-      <h1 className="text-lg md:text-xl font-zen-old-mincho font-bold mb-5 md:mb-6 text-off-white tracking-widest opacity-90 text-center">
+      <h1 className="text-lg md:text-xl font-zen-old-mincho font-bold mb-5 md:mb-6 text-off-white tracking-wide opacity-90 text-center">
         {title}
       </h1>
 

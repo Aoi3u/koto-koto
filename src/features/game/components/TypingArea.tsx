@@ -33,11 +33,21 @@ export default function TypingArea({
   const display = currentWord.display;
 
   // Dynamic Font Sizing (Based on Kanji/Display length)
+  // Tracking scales inversely with size (tighter as the glyphs get bigger),
+  // rather than one fixed letter-spacing for every length of sentence.
   const displayLength = display.length;
   let textSizeClass = 'text-5xl';
-  if (displayLength > 20) textSizeClass = 'text-2xl';
-  else if (displayLength > 12) textSizeClass = 'text-3xl';
-  else if (displayLength > 8) textSizeClass = 'text-4xl';
+  let textTrackingClass = 'tracking-tight';
+  if (displayLength > 20) {
+    textSizeClass = 'text-2xl';
+    textTrackingClass = 'tracking-wide';
+  } else if (displayLength > 12) {
+    textSizeClass = 'text-3xl';
+    textTrackingClass = 'tracking-normal';
+  } else if (displayLength > 8) {
+    textSizeClass = 'text-4xl';
+    textTrackingClass = 'tracking-normal';
+  }
 
   // Dynamic Reading Size (use reading length so short kanji with long readings scale down)
   const readingLength = currentWord.reading?.length ?? displayLength;
@@ -53,7 +63,10 @@ export default function TypingArea({
             : 'text-2xl';
   const kanaMaxWidthClass = readingLength > 45 ? 'max-w-6xl' : 'max-w-5xl';
   const kanaLineHeightClass = readingLength > 35 ? 'leading-tight' : 'leading-relaxed';
-  const kanaTrackingClass = readingLength > 35 ? 'tracking-wide' : 'tracking-widest';
+  // Same inverse relationship as textTrackingClass above: the largest kana
+  // (short readings) gets tighter tracking, the smallest gets more room.
+  const kanaTrackingClass =
+    readingLength > 45 ? 'tracking-wide' : readingLength > 25 ? 'tracking-normal' : 'tracking-tight';
 
   return (
     <motion.div
@@ -73,7 +86,7 @@ export default function TypingArea({
           key={currentWord.id}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`${textSizeClass} font-zen-old-mincho font-bold tracking-widest leading-relaxed wrap-break-word whitespace-pre-wrap max-w-5xl transition-all duration-1000`}
+          className={`${textSizeClass} ${textTrackingClass} font-zen-old-mincho font-bold leading-relaxed wrap-break-word whitespace-pre-wrap max-w-5xl transition-all duration-1000`}
           style={{
             color: palette.text,
             textShadow: `0 0 30px ${palette.glow}`,

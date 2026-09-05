@@ -54,7 +54,7 @@ export default function EndlessResultScreen({
       <h2 className="text-xs md:text-sm font-inter tracking-[0.3em] text-subtle-gray mb-2 md:mb-4 uppercase">
         Session Complete
       </h2>
-      <h1 className="text-xl md:text-2xl font-zen-old-mincho font-bold mb-5 md:mb-6 text-off-white tracking-widest opacity-90 text-center">
+      <h1 className="text-xl md:text-2xl font-zen-old-mincho font-bold mb-5 md:mb-6 text-off-white tracking-wide opacity-90 text-center">
         Endless Mode
       </h1>
 
