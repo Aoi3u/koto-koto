@@ -102,7 +102,11 @@ export default function TitleScreen({
           <motion.div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-px w-0 bg-off-white/50 group-hover:w-1/2 transition-all duration-500" />
         </button>
         {errorMessage && (
-          <p role="alert" aria-live="polite" className="text-xs font-inter text-red-300 tracking-wide">
+          <p
+            role="alert"
+            aria-live="polite"
+            className="text-xs font-inter text-red-300 tracking-wide"
+          >
             {errorMessage}
           </p>
         )}
