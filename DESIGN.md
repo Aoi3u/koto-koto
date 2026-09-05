@@ -123,7 +123,7 @@ The palette is almost monochrome at rest — dark neutral surfaces and off-white
 
 **The Tinted Border Rule.** Surfaces themselves stay neutral (`bg-white/5`–`bg-white/10` glass on `#1a1a1a`); the seasonal accent shows up only as a border tint (`{primary}30`, i.e. ~19% alpha), a glow (`box-shadow`/`text-shadow` using the season's `glow` rgba), or a small indicator dot — never as a large fill. This is what lets four unrelated hues (pink, cyan, orange, ice-blue) share one interface without it ever feeling "skinned."
 
-**The One Voice Rule.** Off-white is the only text/icon color anywhere in the app; hierarchy is built with opacity (`/60`, `/85`) and size, not with a second neutral gray-on-gray scale.
+**The One Voice Rule.** Off-white is the only text/icon color anywhere in the app; hierarchy is built with opacity (`/60`, `/85`) and size, not with a second neutral gray-on-gray scale. The one sanctioned exception is functional toast state: `ToastProvider` tints a toast's fill/border green (`rgba(52,211,153,…)`) for success or red (`rgba(248,113,113,…)`) for error, independent of the active season — a transient system message, not part of the seasonal identity, is allowed its own fixed semantic color.
 
 ## Typography
 

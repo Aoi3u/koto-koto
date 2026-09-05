@@ -16,6 +16,38 @@ const authModeOptions: Array<{ value: 'login' | 'register'; label: string }> = [
   { value: 'register', label: 'Register' },
 ];
 
+const PASSWORD_REQUIREMENTS_HINT =
+  '12+ characters · 1 uppercase letter · 1 number · 1 symbol (!@#$%^&*)';
+
+/**
+ * Mirrors the server's validatePassword() (src/app/api/auth/register/route.ts) so a weak
+ * password is rejected before the request ever leaves the browser, instead of round-tripping
+ * through the anti-enumeration register endpoint (which always returns 200) and only failing
+ * later at sign-in with an opaque NextAuth error code.
+ */
+function getPasswordRequirementError(password: string): string | null {
+  if (password.length < 12) return 'Password must be at least 12 characters.';
+  if (!/[A-Z]/.test(password)) return 'Password must contain at least one uppercase letter.';
+  if (!/[0-9]/.test(password)) return 'Password must contain at least one digit.';
+  if (!/[!@#$%^&*]/.test(password)) {
+    return 'Password must contain at least one symbol (!@#$%^&*).';
+  }
+  return null;
+}
+
+/**
+ * The register endpoint always responds 200 with the same generic message to prevent user
+ * enumeration, so a post-registration sign-in failure here can only mean the email was already
+ * taken (password/email shape are validated before this point). We nudge toward the right
+ * action without confirming that outright, in the same conditional voice the register endpoint
+ * itself uses ("if the email is not registered...").
+ */
+function describeAuthError(mode: 'login' | 'register'): string {
+  return mode === 'register'
+    ? "We couldn't finish signing you in. If you already have an account with this email, try signing in instead."
+    : 'Incorrect email or password.';
+}
+
 export default function AuthPage() {
   const { data: session, status, update } = useSession();
   const router = useRouter();
@@ -56,19 +88,27 @@ export default function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
+
+    if (mode === 'register') {
+      const passwordError = getPasswordRequirementError(password);
+      if (passwordError) {
+        addToast(passwordError, 'error');
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
       if (mode === 'register') {
-        const res = await fetch('/api/auth/register', {
+        await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password, name }),
         });
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(body.error || 'Failed to register');
-        }
+        // The register endpoint always responds 200 with a generic message to avoid
+        // leaking whether the email was already registered; the sign-in attempt below
+        // is the only real signal of whether the account is now usable.
       }
 
       const result = await signIn('credentials', {
@@ -78,7 +118,7 @@ export default function AuthPage() {
       });
 
       if (result?.error) {
-        throw new Error(result.error);
+        throw new Error(describeAuthError(mode));
       }
 
       addToast(mode === 'register' ? 'Welcome, account created' : 'Signed in', 'success');
@@ -148,11 +188,13 @@ export default function AuthPage() {
             <div>
               <p className="text-[11px] uppercase tracking-[0.3em] text-subtle-gray">Account</p>
               <h2 className="mt-1.5 text-xl font-zen-old-mincho text-off-white">
-                {status === 'authenticated'
-                  ? 'Profile'
-                  : mode === 'login'
-                    ? 'Sign in'
-                    : 'Create account'}
+                {status === 'loading'
+                  ? 'Account'
+                  : status === 'authenticated'
+                    ? 'Profile'
+                    : mode === 'login'
+                      ? 'Sign in'
+                      : 'Create account'}
               </h2>
             </div>
             <div
@@ -164,7 +206,13 @@ export default function AuthPage() {
           </div>
 
           <div>
-            {status === 'authenticated' ? (
+            {status === 'loading' ? (
+              <div className="space-y-4" aria-hidden="true">
+                <div className="h-4 w-1/3 animate-pulse rounded-full bg-white/5" />
+                <div className="h-14 w-full animate-pulse rounded-2xl bg-white/5" />
+                <div className="h-14 w-full animate-pulse rounded-2xl bg-white/5" />
+              </div>
+            ) : status === 'authenticated' ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                 <div className="flex items-center gap-4 border-b border-white/10 pb-4">
                   <div
@@ -285,10 +333,14 @@ export default function AuthPage() {
                       className="overflow-hidden"
                     >
                       <div className="space-y-2">
-                        <label className="text-[11px] uppercase tracking-[0.28em] text-subtle-gray">
+                        <label
+                          htmlFor="auth-name"
+                          className="text-[11px] uppercase tracking-[0.28em] text-subtle-gray"
+                        >
                           Display name
                         </label>
                         <input
+                          id="auth-name"
                           className={fieldBaseClassName}
                           style={{ caretColor: palette.primary }}
                           onFocus={handleFieldFocus}
@@ -304,10 +356,14 @@ export default function AuthPage() {
                 </AnimatePresence>
 
                 <div className="space-y-2">
-                  <label className="text-[11px] uppercase tracking-[0.28em] text-subtle-gray">
+                  <label
+                    htmlFor="auth-email"
+                    className="text-[11px] uppercase tracking-[0.28em] text-subtle-gray"
+                  >
                     Email
                   </label>
                   <input
+                    id="auth-email"
                     className={fieldBaseClassName}
                     style={{ caretColor: palette.primary }}
                     onFocus={handleFieldFocus}
@@ -322,10 +378,14 @@ export default function AuthPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[11px] uppercase tracking-[0.28em] text-subtle-gray">
+                  <label
+                    htmlFor="auth-password"
+                    className="text-[11px] uppercase tracking-[0.28em] text-subtle-gray"
+                  >
                     Password
                   </label>
                   <input
+                    id="auth-password"
                     className={fieldBaseClassName}
                     style={{ caretColor: palette.primary }}
                     onFocus={handleFieldFocus}
@@ -335,8 +395,14 @@ export default function AuthPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
                     autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+                    aria-describedby={mode === 'register' ? 'auth-password-hint' : undefined}
                     required
                   />
+                  {mode === 'register' && (
+                    <p id="auth-password-hint" className="text-[11px] text-subtle-gray/80">
+                      {PASSWORD_REQUIREMENTS_HINT}
+                    </p>
+                  )}
                 </div>
 
                 <div className="pt-2 flex flex-col items-center gap-4">
