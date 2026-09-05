@@ -167,7 +167,7 @@ export default function TypingArea({
 
         {/* Source / Citation */}
         {currentWord.meta && (
-          <div className="mt-1 max-w-4xl w-full mx-auto text-right text-[10px] md:text-xs text-white/40">
+          <div className="mt-1 max-w-4xl w-full mx-auto text-right text-[11px] md:text-xs text-white/40">
             出典:{' '}
             {currentWord.meta.author && <span className="mr-1">{currentWord.meta.author}</span>}
             {currentWord.meta.title && <span>『{currentWord.meta.title}』</span>}

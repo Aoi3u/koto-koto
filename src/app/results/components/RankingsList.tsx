@@ -76,12 +76,12 @@ export default function RankingsList({
               <div className="flex items-center gap-2">
                 <div className="text-off-white font-zen-old-mincho truncate">{item.user}</div>
                 {isSelf && (
-                  <span className="px-2 py-0.5 text-[10px] font-mono rounded-full bg-white/10 border border-white/15">
+                  <span className="px-2 py-0.5 text-[11px] font-mono rounded-full bg-white/10 border border-white/15">
                     You
                   </span>
                 )}
               </div>
-              <div className="text-[10px] text-subtle-gray">
+              <div className="text-[11px] text-subtle-gray">
                 {new Date(item.createdAt).toLocaleDateString()}
               </div>
             </div>
@@ -96,10 +96,10 @@ export default function RankingsList({
               <div className="text-sm text-off-white font-mono font-semibold cursor-help">
                 {item.zenScore}
               </div>
-              <div className="text-[10px] text-subtle-gray uppercase">Zen Score</div>
+              <div className="text-[11px] text-subtle-gray uppercase">Zen Score</div>
               {/* Tooltip for Zen Score */}
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-                <div className="text-[10px] text-off-white font-mono mb-1">
+                <div className="text-[11px] text-off-white font-mono mb-1">
                   Zen Score = WPM × Accuracy ÷ 100
                 </div>
                 <div className="text-[9px] text-subtle-gray font-mono">
@@ -111,10 +111,10 @@ export default function RankingsList({
               <div className="text-xl font-light font-inter text-off-white cursor-help">
                 {item.wpm}
               </div>
-              <div className="text-[10px] text-subtle-gray uppercase">WPM</div>
+              <div className="text-[11px] text-subtle-gray uppercase">WPM</div>
               {/* Tooltip for WPM */}
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-                <div className="text-[10px] text-off-white font-mono text-center">
+                <div className="text-[11px] text-off-white font-mono text-center">
                   WPM = (Correct Keys ÷ 5) ÷ Minutes
                 </div>
               </div>
