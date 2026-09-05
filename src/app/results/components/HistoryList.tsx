@@ -52,7 +52,7 @@ export default function HistoryList({
                 <div className={`text-lg font-bold font-zen-old-mincho ${rankResult.color}`}>
                   {rankResult.grade}
                 </div>
-                <div className="text-[9px] text-subtle-gray leading-tight tracking-wider uppercase line-clamp-1">
+                <div className="text-[11px] text-subtle-gray leading-tight tracking-wider uppercase line-clamp-1">
                   {rankResult.title}
                 </div>
               </div>
@@ -68,32 +68,40 @@ export default function HistoryList({
             </div>
 
             <div className="flex items-center gap-6 text-right">
-              <div className="hidden sm:block relative group/zen">
-                <div className="text-sm text-off-white font-mono font-bold cursor-help">
+              <div className="relative group/zen focus-within:z-10">
+                <button
+                  type="button"
+                  aria-label={`Zen Score ${zenScore}, calculated as WPM ${item.wpm} times accuracy ${item.accuracy}% divided by 100`}
+                  className="text-xl font-mono font-bold text-off-white cursor-help focus:outline-none"
+                >
                   {zenScore}
-                </div>
+                </button>
                 <div className="text-[11px] text-subtle-gray uppercase">Zen Score</div>
                 {/* Tooltip for Zen Score */}
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible focus-within:opacity-100 focus-within:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
                   <div className="text-[11px] text-off-white font-mono mb-1">
                     Zen Score = WPM × Accuracy ÷ 100
                   </div>
-                  <div className="text-[9px] text-subtle-gray font-mono">
+                  <div className="text-[11px] text-subtle-gray font-mono">
                     = {item.wpm} × {item.accuracy}% ÷ 100
                   </div>
                 </div>
               </div>
-              <div className="relative group/wpm">
-                <div className="text-xl font-light font-inter text-off-white cursor-help">
+              <div className="hidden sm:block relative group/wpm focus-within:z-10">
+                <button
+                  type="button"
+                  aria-label={`WPM ${item.wpm}, calculated as ${item.correctKeystrokes} correct keystrokes divided by 5, divided by ${(item.elapsedTime / 60).toFixed(2)} minutes`}
+                  className="text-sm font-inter text-subtle-gray cursor-help focus:outline-none"
+                >
                   {item.wpm}
-                </div>
+                </button>
                 <div className="text-[11px] text-subtle-gray uppercase">WPM</div>
                 {/* Tooltip for WPM */}
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible focus-within:opacity-100 focus-within:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
                   <div className="text-[11px] text-off-white font-mono mb-1">
                     WPM = (Correct Keys ÷ 5) ÷ Minutes
                   </div>
-                  <div className="text-[9px] text-subtle-gray font-mono">
+                  <div className="text-[11px] text-subtle-gray font-mono">
                     = ({item.correctKeystrokes} ÷ 5) ÷ {(item.elapsedTime / 60).toFixed(2)}m
                   </div>
                 </div>

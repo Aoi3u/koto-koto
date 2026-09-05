@@ -11,7 +11,7 @@ export default function HistoryStatsGrid({ stats }: { stats: HistoryStats }) {
       {/* Hero Stats - Zen Score */}
       <div
         className="col-span-2 row-span-2 bg-white/5 border rounded-xl p-6 flex flex-col justify-center items-center relative overflow-hidden group transition-all duration-300 hover:bg-white/10"
-        style={{ borderColor: 'rgba(255,255,255,0.1)' }}
+        style={{ borderColor: `${adjustedColors.primary}30` }}
       >
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700"
@@ -27,7 +27,7 @@ export default function HistoryStatsGrid({ stats }: { stats: HistoryStats }) {
             {stats.bestZenScore}
           </div>
           {stats.bestZenRank && (
-            <div className={`text-md font-bold mb-1 ${stats.bestZenRank.color}`}>
+            <div className={`text-base font-bold mb-1 ${stats.bestZenRank.color}`}>
               {stats.bestZenRank.grade}{' '}
               <span className="opacity-70 text-sm font-normal">・ {stats.bestZenRank.title}</span>
             </div>

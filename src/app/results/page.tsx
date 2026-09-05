@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/components/ToastProvider';
+import PillActionButton from '@/components/ui/PillActionButton';
 import UnderlineTabs from '@/components/ui/UnderlineTabs';
 import { useThemePalette } from '@/contexts/SeasonalContext';
 import CustomSelect from './components/CustomSelect';
@@ -220,9 +221,28 @@ function ResultsPageContent() {
       );
     }
     if (history.loading) return <div className="text-subtle-gray text-sm py-8">Loading...</div>;
-    if (history.error) return <div className="text-subtle-gray text-sm py-8">{history.error}</div>;
+    if (history.error)
+      return (
+        <div className="text-center py-16 space-y-4">
+          <p className="text-subtle-gray text-sm">{history.error}</p>
+          <PillActionButton
+            onClick={fetchHistory}
+            className="border border-white/15 bg-white/10 px-5 py-2 text-xs uppercase tracking-[0.2em] text-off-white hover:bg-white/18"
+          >
+            Try again
+          </PillActionButton>
+        </div>
+      );
     if (history.data.length === 0)
-      return <div className="text-subtle-gray text-sm py-8">No results yet.</div>;
+      return (
+        <div className="text-center py-16">
+          <p className="text-subtle-gray text-sm">No results yet.</p>
+          <p className="text-subtle-gray/60 text-xs mt-2">
+            Only Classic mode saves a result — Word Endless runs are tallied locally and never
+            saved.
+          </p>
+        </div>
+      );
 
     return (
       <div className="space-y-8">
@@ -236,14 +256,32 @@ function ResultsPageContent() {
         />
       </div>
     );
-  }, [history, status, historyScrollState, handleScroll, historyStats, historyChartData]);
+  }, [
+    history,
+    status,
+    historyScrollState,
+    handleScroll,
+    historyStats,
+    historyChartData,
+    fetchHistory,
+  ]);
 
   const rankingsContent = useMemo(() => {
     if (rankings.loading) return <div className="text-subtle-gray text-sm py-8">Loading...</div>;
     if (rankings.error)
-      return <div className="text-subtle-gray text-sm py-8">{rankings.error}</div>;
+      return (
+        <div className="text-center py-16 space-y-4">
+          <p className="text-subtle-gray text-sm">{rankings.error}</p>
+          <PillActionButton
+            onClick={fetchRankings}
+            className="border border-white/15 bg-white/10 px-5 py-2 text-xs uppercase tracking-[0.2em] text-off-white hover:bg-white/18"
+          >
+            Try again
+          </PillActionButton>
+        </div>
+      );
     if (rankings.data.length === 0)
-      return <div className="text-subtle-gray text-sm py-8">No rankings yet.</div>;
+      return <div className="text-subtle-gray text-sm py-8 text-center">No rankings yet.</div>;
 
     return (
       <RankingsList
@@ -253,7 +291,7 @@ function ResultsPageContent() {
         onScroll={(e) => handleScroll(e, true)}
       />
     );
-  }, [rankings, rankingsScrollState, handleScroll]);
+  }, [rankings, rankingsScrollState, handleScroll, fetchRankings]);
 
   return (
     <main className="min-h-screen bg-zen-dark pt-32 pb-16 px-4 md:px-8">
@@ -265,7 +303,7 @@ function ResultsPageContent() {
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-subtle-gray text-xs uppercase tracking-[0.4em] mb-2"
+              className="text-subtle-gray text-xs uppercase tracking-[0.3em] mb-2"
             >
               Performance
             </motion.p>
@@ -338,12 +376,15 @@ function ResultsPageContent() {
                   />
                   <CustomSelect
                     value={limit}
-                    options={limitOptions.map((l) => ({ value: l, label: `${l} rows` }))}
+                    options={limitOptions.map((l) => ({ value: l, label: `Top ${l}` }))}
                     onChange={(val) => setLimit(val)}
                     label="Show"
                   />
                 </div>
               </div>
+              <p className="text-subtle-gray/50 text-xs -mt-4">
+                Equal Zen Scores share the same rank.
+              </p>
               {rankingsContent}
             </motion.div>
           )}

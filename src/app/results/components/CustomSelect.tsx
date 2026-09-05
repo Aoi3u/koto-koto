@@ -30,12 +30,23 @@ export default function CustomSelect<T extends string | number>({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
   const selectedLabel = options.find((opt) => opt.value === value)?.label;
 
   return (
     <div className="relative" ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
         className="flex items-center gap-2 text-xs text-subtle-gray hover:text-off-white transition-colors py-1 border-b border-transparent"
         style={{
           borderColor: isOpen ? palette.primary : 'rgba(0, 0, 0, 0)',
@@ -53,12 +64,15 @@ export default function CustomSelect<T extends string | number>({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 5, scale: 0.95 }}
             transition={{ duration: 0.1 }}
+            role="listbox"
             className="absolute top-full right-0 mt-2 min-w-30 bg-zen-dark/90 backdrop-blur-md border border-white/10 rounded-md shadow-xl overflow-hidden z-50"
             style={{ borderColor: 'rgba(255,255,255,0.1)' }}
           >
             {options.map((opt) => (
               <button
                 key={String(opt.value)}
+                role="option"
+                aria-selected={value === opt.value}
                 onClick={() => {
                   onChange(opt.value);
                   setIsOpen(false);

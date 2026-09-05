@@ -34,16 +34,22 @@ export default function RankingsList({
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.02 }}
-            className={`flex items-center p-3 rounded-md border transition-all duration-300 ${
-              item.rank === 1
-                ? 'bg-yellow-700/20 border-yellow-700/30'
-                : item.rank === 2
-                  ? 'bg-white/10 border-white/20'
-                  : item.rank === 3
-                    ? 'bg-orange-700/20 border-orange-700/30'
-                    : 'bg-transparent border-transparent hover:bg-white/5 hover:border-white/20'
+            className={`flex items-center p-3 rounded-lg border transition-all duration-300 ${
+              item.rank > 3
+                ? 'bg-transparent border-transparent hover:bg-white/5 hover:border-white/20'
+                : ''
             } ${isSelf ? 'relative' : ''}`}
             style={{
+              ...(item.rank === 1
+                ? { backgroundColor: `${palette.primary}25`, borderColor: `${palette.primary}45` }
+                : item.rank === 2
+                  ? {
+                      backgroundColor: `${palette.secondary}20`,
+                      borderColor: `${palette.secondary}35`,
+                    }
+                  : item.rank === 3
+                    ? { backgroundColor: `${palette.accent}20`, borderColor: `${palette.accent}35` }
+                    : {}),
               ...(item.rank > 3
                 ? {
                     borderColor: 'rgba(0, 0, 0, 0)',
@@ -92,28 +98,36 @@ export default function RankingsList({
                 </div>
               </div>
             )}
-            <div className="w-16 text-right hidden sm:block relative group/zen">
-              <div className="text-sm text-off-white font-mono font-semibold cursor-help">
+            <div className="w-16 text-right relative group/zen focus-within:z-10">
+              <button
+                type="button"
+                aria-label={`Zen Score ${item.zenScore}, calculated as WPM ${item.wpm} times accuracy ${item.accuracy}% divided by 100`}
+                className="text-xl font-mono font-semibold text-off-white cursor-help focus:outline-none"
+              >
                 {item.zenScore}
-              </div>
+              </button>
               <div className="text-[11px] text-subtle-gray uppercase">Zen Score</div>
               {/* Tooltip for Zen Score */}
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible focus-within:opacity-100 focus-within:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
                 <div className="text-[11px] text-off-white font-mono mb-1">
                   Zen Score = WPM × Accuracy ÷ 100
                 </div>
-                <div className="text-[9px] text-subtle-gray font-mono">
+                <div className="text-[11px] text-subtle-gray font-mono">
                   = {item.wpm} × {item.accuracy}% ÷ 100
                 </div>
               </div>
             </div>
-            <div className="w-16 text-right relative group/wpm">
-              <div className="text-xl font-light font-inter text-off-white cursor-help">
+            <div className="w-16 text-right hidden sm:block relative group/wpm focus-within:z-10">
+              <button
+                type="button"
+                aria-label={`WPM ${item.wpm}, calculated as correct keystrokes divided by 5, divided by minutes played`}
+                className="text-sm font-inter text-subtle-gray cursor-help focus:outline-none"
+              >
                 {item.wpm}
-              </div>
+              </button>
               <div className="text-[11px] text-subtle-gray uppercase">WPM</div>
               {/* Tooltip for WPM */}
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible focus-within:opacity-100 focus-within:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
                 <div className="text-[11px] text-off-white font-mono text-center">
                   WPM = (Correct Keys ÷ 5) ÷ Minutes
                 </div>

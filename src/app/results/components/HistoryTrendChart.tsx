@@ -94,7 +94,7 @@ export default function HistoryTrendChart({ data }: { data: HistoryChartPoint[] 
               dataKey="zenScore"
               stroke={chartColors.zenScore}
               strokeWidth={3}
-              activeDot={{ r: 6, fill: chartColors.zenScore, stroke: '#fff', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: chartColors.zenScore, stroke: '#efefef', strokeWidth: 2 }}
               dot={false}
               name="Zen Score"
               animationDuration={1500}
