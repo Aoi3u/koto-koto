@@ -119,11 +119,13 @@ button:disabled,
   opacity: 1;
 }
 
-/* Visible, consistent focus affordance for keyboard navigation. */
+/* Visible, consistent focus affordance for keyboard navigation.
+   No border-radius here: that would override each element's own shape
+   (e.g. a rounded-full pill button) the moment it gains focus. Modern
+   browsers already clip the outline to the element's actual radius. */
 :focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.7);
   outline-offset: 3px;
-  border-radius: 4px;
 }
 
 /* Respect the OS-level reduced motion preference: keep feedback, drop the
