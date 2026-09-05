@@ -93,7 +93,7 @@ export default function PrivacyPage() {
   return (
     <main className="h-screen overflow-y-auto pt-28 pb-16 px-6 md:px-12">
       <div className="mx-auto w-full max-w-4xl rounded-2xl border border-white/10 bg-black/30 p-6 md:p-10 backdrop-blur">
-        <h1 className="text-3xl md:text-4xl tracking-wide font-semibold">Privacy Policy</h1>
+        <h1 className="text-3xl md:text-4xl tracking-tight font-semibold">Privacy Policy</h1>
         <p className="mt-3 text-sm text-subtle-gray">Effective date: 2026-04-06</p>
         <p className="mt-2 text-sm text-subtle-gray">
           The English and Japanese versions are intended to have equal legal effect. If wording
@@ -110,7 +110,7 @@ export default function PrivacyPage() {
         </div>
 
         <section className="mt-12 border-t border-white/10 pt-8">
-          <h2 className="text-2xl md:text-3xl tracking-wide font-semibold">
+          <h2 className="text-2xl md:text-3xl tracking-normal font-semibold">
             プライバシーポリシー（日本語版）
           </h2>
           <p className="mt-3 text-sm text-subtle-gray">

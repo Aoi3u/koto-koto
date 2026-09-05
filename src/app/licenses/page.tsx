@@ -13,7 +13,7 @@ export default function LicensesPage() {
   return (
     <main className="h-screen overflow-y-auto pt-28 pb-16 px-6 md:px-12">
       <div className="mx-auto w-full max-w-4xl rounded-2xl border border-white/10 bg-black/30 p-6 md:p-10 backdrop-blur">
-        <h1 className="text-3xl md:text-4xl tracking-wide font-semibold">Licenses</h1>
+        <h1 className="text-3xl md:text-4xl tracking-tight font-semibold">Licenses</h1>
         <p className="mt-3 text-sm leading-6 text-off-white/90">
           Koto-Koto is distributed under the MIT License. Third-party components and assets are used
           under their respective licenses.
@@ -62,7 +62,7 @@ export default function LicensesPage() {
         </section>
 
         <section className="mt-12 border-t border-white/10 pt-8">
-          <h2 className="text-2xl md:text-3xl tracking-wide font-semibold">
+          <h2 className="text-2xl md:text-3xl tracking-normal font-semibold">
             ライセンス（日本語版）
           </h2>
           <p className="mt-3 text-sm leading-6 text-off-white/90">

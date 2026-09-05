@@ -14,7 +14,7 @@ export default function AboutPage() {
   return (
     <main className="h-screen overflow-y-auto pt-28 pb-16 px-6 md:px-12">
       <div className="mx-auto w-full max-w-4xl rounded-2xl border border-white/10 bg-black/30 p-6 md:p-10 backdrop-blur">
-        <h1 className="text-3xl md:text-4xl tracking-wide font-semibold">About Koto-Koto</h1>
+        <h1 className="text-3xl md:text-4xl tracking-tight font-semibold">About Koto-Koto</h1>
         <p className="mt-3 text-sm leading-6 text-off-white/90">
           Koto-Koto is a web-based Japanese typing game designed for focused and repeatable
           practice. The experience combines calm visual presentation, responsive key input, and a
@@ -60,7 +60,7 @@ export default function AboutPage() {
         </section>
 
         <section className="mt-12 border-t border-white/10 pt-8">
-          <h2 className="text-2xl md:text-3xl tracking-wide font-semibold">Koto-Koto について</h2>
+          <h2 className="text-2xl md:text-3xl tracking-normal font-semibold">Koto-Koto について</h2>
           <p className="mt-3 text-sm leading-6 text-off-white/90">
             Koto-Kotoは、集中して反復練習できるように設計したWebベースの日本語タイピングゲームです。静かな
             ビジュアル表現と反応性の高い入力処理、メカニカルキーボード風のサウンドを組み合わせています。

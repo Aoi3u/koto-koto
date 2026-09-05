@@ -6,7 +6,7 @@ export default function NotFound() {
       <div className="noise-overlay" />
       <section className="relative z-10 w-full max-w-xl rounded-2xl border border-white/10 bg-black/30 p-8 backdrop-blur text-center">
         <p className="text-xs uppercase tracking-[0.24em] text-subtle-gray">404 Not Found</p>
-        <h1 className="mt-3 text-2xl md:text-3xl font-semibold tracking-wide">
+        <h1 className="mt-3 text-2xl md:text-3xl font-semibold tracking-normal">
           The page could not be found.
         </h1>
         <p className="mt-4 text-sm md:text-base text-off-white/80 leading-relaxed">
