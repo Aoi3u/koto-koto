@@ -45,4 +45,3 @@ next-env.d.ts
 # claude code (local-only artifacts)
 .claude/settings.local.json
 .claude/skills/impeccable/scripts/bin/
-.claude/agents/
