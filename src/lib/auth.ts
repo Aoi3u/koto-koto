@@ -5,6 +5,13 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
+import { rateLimit, getClientIpFromHeaders } from '@/lib/rate-limit';
+
+// Login attempts: max 10 per IP per 15 minutes, to slow down credential brute-forcing.
+const LOGIN_RATE_LIMIT = {
+  maxRequests: 10,
+  windowMs: 15 * 60 * 1000,
+} as const;
 
 /**
  * Validates that required environment variables are set for authentication
@@ -87,10 +94,14 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         const email = credentials?.email;
         const password = credentials?.password;
         if (!email || !password) return null;
+
+        const ip = getClientIpFromHeaders(req.headers);
+        const limited = rateLimit(`login:${ip}`, LOGIN_RATE_LIMIT);
+        if (limited) return null;
 
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user || !user.password) return null;
