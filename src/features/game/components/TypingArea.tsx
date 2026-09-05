@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Sentence } from '../../../data/sentences';
 import { useThemePalette } from '../../../contexts/SeasonalContext';
 
@@ -25,6 +25,7 @@ export default function TypingArea({
   ripple,
 }: TypingAreaProps) {
   const { palette } = useThemePalette('stable');
+  const prefersReducedMotion = useReducedMotion();
 
   if (!currentWord) return null;
 
@@ -57,7 +58,9 @@ export default function TypingArea({
   return (
     <motion.div
       className={`relative w-full text-center mt-12 ${shake ? 'animate-shake' : ''}`}
-      animate={shake ? { x: [-10, 10, -10, 10, 0] } : {}}
+      animate={
+        shake ? (prefersReducedMotion ? { opacity: [1, 0.5, 1] } : { x: [-10, 10, -10, 10, 0] }) : {}
+      }
       transition={{ duration: 0.3 }}
     >
       <div className="flex flex-col items-center justify-center space-y-8">
@@ -99,18 +102,22 @@ export default function TypingArea({
                   textShadow: `0 0 15px ${palette.glow}`,
                   opacity: 0.5,
                 }}
-                animate={{
-                  textShadow: [
-                    `0 0 10px ${palette.glow}`,
-                    `0 0 20px ${palette.glow}`,
-                    `0 0 10px ${palette.glow}`,
-                  ],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
+                animate={
+                  prefersReducedMotion
+                    ? { textShadow: `0 0 15px ${palette.glow}` }
+                    : {
+                        textShadow: [
+                          `0 0 10px ${palette.glow}`,
+                          `0 0 20px ${palette.glow}`,
+                          `0 0 10px ${palette.glow}`,
+                        ],
+                      }
+                }
+                transition={
+                  prefersReducedMotion
+                    ? { duration: 0.3 }
+                    : { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+                }
               >
                 {remainingTarget[0]}
                 {/* Caret - Absolute Positioned */}
@@ -120,8 +127,10 @@ export default function TypingArea({
                     backgroundColor: palette.accent,
                     boxShadow: `0 0 10px ${palette.accent}`,
                   }}
-                  animate={{ opacity: [1, 0.5, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
+                  animate={prefersReducedMotion ? { opacity: 1 } : { opacity: [1, 0.5, 1] }}
+                  transition={
+                    prefersReducedMotion ? { duration: 0 } : { duration: 1, repeat: Infinity }
+                  }
                 />
               </motion.span>
               {/* Future Characters (Dimmed) */}

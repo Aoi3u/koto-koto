@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 interface SeasonalParticle {
   id: number;
@@ -37,10 +37,12 @@ export default function SeasonalParticles({ emoji, color, count = 15 }: Seasonal
   // SSR と CSR の初期出力差分を避けるため、初期は空配列を描画し、
   // クライアントマウント後にランダム生成する
   const [particles, setParticles] = useState<SeasonalParticle[]>([]);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
     setParticles(generateParticles(count));
-  }, [count]);
+  }, [count, prefersReducedMotion]);
 
   // Memoize animation variants to prevent unnecessary motion.div re-renders
   const animationVariants = useMemo(
