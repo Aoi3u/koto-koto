@@ -41,6 +41,23 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        // Keyboard sound effects (public/audio/**): a fixed, rarely-changed
+        // set of ~150 files that useKeySound preloads on the client. Without
+        // an explicit Cache-Control, Next's static file server only issues
+        // a revalidatable cache, so every repeat visit re-requests every
+        // file (with a 304 round-trip). Long-lived immutable caching lets
+        // the browser skip the network entirely on return visits, so sound
+        // is ready sooner. If a file's content ever needs to change, give it
+        // a new filename rather than overwriting the old one in place.
+        source: '/audio/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
     ];
   },
 };
