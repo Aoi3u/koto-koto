@@ -118,3 +118,36 @@ button:disabled,
 .scroll-container.has-scroll-bottom::after {
   opacity: 1;
 }
+
+/* Visible, consistent focus affordance for keyboard navigation. */
+:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Respect the OS-level reduced motion preference: keep feedback, drop the
+   decorative motion (loops, parallax, large slides) that can trigger discomfort. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Respect reduced-transparency: drop the blur on glass surfaces so content
+   behind them stops competing with foreground text. */
+@media (prefers-reduced-transparency: reduce) {
+  .noise-overlay {
+    display: none;
+  }
+
+  [class*='backdrop-blur'] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
