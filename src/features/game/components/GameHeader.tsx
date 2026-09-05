@@ -37,7 +37,7 @@ export default function GameHeader({
       {/* Left: Back to Title */}
       <button
         onClick={onQuit}
-        className="pointer-events-auto flex items-center gap-2 text-subtle-gray hover:text-off-white transition-colors duration-300 group"
+        className="pointer-events-auto flex items-center gap-2 text-subtle-gray hover:text-off-white transition-[color,transform] duration-200 ease-out active:scale-95 group"
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
         <span className="text-xs font-zen-old-mincho tracking-widest uppercase">Title</span>

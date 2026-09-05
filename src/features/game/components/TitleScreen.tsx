@@ -79,7 +79,7 @@ export default function TitleScreen({
         <button
           onClick={onStart}
           disabled={isLoading}
-          className="group relative px-8 py-3 overflow-hidden rounded-full transition-all duration-500 disabled:opacity-60 disabled:cursor-not-allowed"
+          className="group relative px-8 py-3 overflow-hidden rounded-full transition-[color,background-color,opacity,transform] duration-300 ease-out active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
         >
           <span
             className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
