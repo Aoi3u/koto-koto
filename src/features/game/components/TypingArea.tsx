@@ -66,7 +66,11 @@ export default function TypingArea({
   // Same inverse relationship as textTrackingClass above: the largest kana
   // (short readings) gets tighter tracking, the smallest gets more room.
   const kanaTrackingClass =
-    readingLength > 45 ? 'tracking-wide' : readingLength > 25 ? 'tracking-normal' : 'tracking-tight';
+    readingLength > 45
+      ? 'tracking-wide'
+      : readingLength > 25
+        ? 'tracking-normal'
+        : 'tracking-tight';
 
   return (
     <motion.div
