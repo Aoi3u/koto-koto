@@ -89,47 +89,37 @@ export default function EndlessResultScreen({
           </span>
         </div>
 
-        <div className="col-span-2 grid grid-cols-3 gap-3">
-          <div
-            className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000"
-            style={{
-              borderColor: `${seasonalTheme.colors.primary}20`,
-            }}
-          >
-            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
+        <div
+          className="col-span-2 grid grid-cols-3 divide-x divide-white/10 border-t border-b transition-colors duration-1000"
+          style={{
+            borderColor: `${seasonalTheme.adjustedColors.primary}15`,
+          }}
+        >
+          <div className="flex flex-col items-center py-2">
+            <span className="text-[10px] text-subtle-gray uppercase tracking-widest">
               Keystrokes
             </span>
-            <span className="text-base md:text-lg font-inter mt-1">
+            <span className="text-sm font-inter mt-1">
               {totalKeystrokes}{' '}
               <span className="text-[11px] text-subtle-gray">
                 ({correctKeyCount}/{errorCount})
               </span>
             </span>
           </div>
-          <div
-            className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000"
-            style={{
-              borderColor: `${seasonalTheme.colors.primary}20`,
-            }}
-          >
-            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
+          <div className="flex flex-col items-center py-2">
+            <span className="text-[10px] text-subtle-gray uppercase tracking-widest">
               Total Time
             </span>
-            <span className="text-base md:text-lg font-inter mt-1 tracking-wider text-off-white">
+            <span className="text-sm font-inter mt-1 tracking-wider text-off-white">
               {timeStr}
             </span>
           </div>
-          <div
-            className="bg-white/5 rounded-lg p-3 md:p-4 flex flex-col items-center border transition-colors duration-1000"
-            style={{
-              borderColor: `${seasonalTheme.adjustedColors.primary}20`,
-            }}
-          >
-            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
+          <div className="flex flex-col items-center py-2">
+            <span className="text-[10px] text-subtle-gray uppercase tracking-widest">
               Frequent Mistypes
             </span>
             {topMistypedKeys.length > 0 ? (
-              <span className="text-base md:text-lg font-inter mt-1 text-center">
+              <span className="text-sm font-inter mt-1 text-center">
                 {topMistypedKeys.map((item) => `${item.key}x${item.count}`).join(', ')}
               </span>
             ) : (

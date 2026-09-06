@@ -31,9 +31,7 @@ export default function HistoryTrendChart({ data }: { data: HistoryChartPoint[] 
           </h3>
           <p className="text-xs text-subtle-gray/60 mt-1">Daily trend of your performance</p>
         </div>
-        <div className="text-xs text-subtle-gray font-mono bg-white/5 px-2 py-1 rounded">
-          {data.length} sessions
-        </div>
+        <div className="text-xs text-subtle-gray/60 font-mono">{data.length} sessions</div>
       </div>
 
       <div className="h-[350px] w-full">
@@ -72,7 +70,6 @@ export default function HistoryTrendChart({ data }: { data: HistoryChartPoint[] 
                 border: `1px solid ${THEME.charts.tooltip.border}`,
                 borderRadius: '8px',
                 fontSize: '12px',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
               }}
               itemStyle={{ padding: 0 }}
               labelStyle={{
