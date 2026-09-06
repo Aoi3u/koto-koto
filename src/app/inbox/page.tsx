@@ -2,9 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import BackNavLink from '@/components/ui/BackNavLink';
 import { useThemePalette } from '@/contexts/SeasonalContext';
 import type { Announcement } from '@/types/announcement';
 
@@ -60,6 +59,7 @@ export default function InboxPage() {
   return (
     <main className="relative min-h-screen overflow-y-auto bg-zen-dark px-4 pb-16 pt-24 md:px-8 md:pt-28">
       <div className="noise-overlay" />
+      <BackNavLink href="/" label="Back to game" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -67,18 +67,6 @@ export default function InboxPage() {
         transition={{ duration: 0.8, ease: 'easeOut' }}
         className="relative z-10 mx-auto w-full max-w-xl space-y-6"
       >
-        <div className="mb-5">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-subtle-gray transition-colors hover:text-off-white group"
-          >
-            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            <span className="text-xs tracking-[0.24em] uppercase font-zen-old-mincho">
-              Back to game
-            </span>
-          </Link>
-        </div>
-
         <div className="flex items-end justify-between gap-4 border-b border-white/10 pb-3">
           <div>
             <p className="text-[11px] uppercase tracking-[0.3em] text-subtle-gray">Inbox</p>
@@ -134,7 +122,7 @@ export default function InboxPage() {
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden"
                       >
-                        <p className="whitespace-pre-wrap py-1 pb-4 pl-[calc(0.375rem+0.75rem)] text-sm leading-6 text-subtle-gray">
+                        <p className="whitespace-pre-wrap py-1 pb-4 pl-4.5 text-sm leading-6 text-subtle-gray">
                           {a.body}
                         </p>
                       </motion.div>
