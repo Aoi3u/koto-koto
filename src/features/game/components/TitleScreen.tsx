@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useSeasonalTheme, useThemePalette } from '../../../contexts/SeasonalContext';
 import SegmentedControl from '@/components/ui/SegmentedControl';
@@ -37,11 +36,11 @@ export default function TitleScreen({
       exit={{ opacity: 0 }}
       className="flex flex-col items-center text-center space-y-8"
     >
-      <p className="mt-12 mb-2 text-base font-inter tracking-[0.2em] text-subtle-gray">
+      <p className="mt-12 mb-2 text-md font-inter tracking-[0.2em] text-subtle-gray">
         Japanese Zen Typing
       </p>
       <h1
-        className="text-6xl md:text-8xl font-thin tracking-[-0.01em] md:tracking-[-0.02em] text-transparent bg-clip-text transition-all duration-1000"
+        className="text-6xl md:text-8xl font-thin tracking-[-0.01em] md:tracking-[-0.02em] text-transparent bg-clip-text opacity-90 transition-all duration-1000"
         style={{
           backgroundImage: `linear-gradient(to bottom, ${palette.text}, ${palette.primary})`,
         }}
@@ -49,7 +48,6 @@ export default function TitleScreen({
         Koto-Koto
       </h1>
       <p
-        lang="ja"
         className="text-xs font-zen-old-mincho transition-colors duration-1000"
         style={{ color: palette.primary }}
       >
@@ -74,12 +72,6 @@ export default function TitleScreen({
               ? '10 sentences • result saved'
               : 'infinite words • no save'}
           </p>
-          <Link
-            href="/about"
-            className="mt-2 inline-block text-[11px] font-inter tracking-wide text-off-white/40 underline decoration-off-white/20 underline-offset-2 transition-colors hover:text-off-white/70"
-          >
-            How it works
-          </Link>
         </div>
       </div>
 
@@ -87,24 +79,22 @@ export default function TitleScreen({
         <button
           onClick={onStart}
           disabled={isLoading}
-          className="group relative px-8 py-3 overflow-hidden rounded-full border border-white/15 bg-white/10 transition-[color,background-color,border-color,opacity,transform] duration-300 ease-out hover:bg-white/15 active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+          className="group relative px-8 py-3 overflow-hidden rounded-full transition-[color,background-color,opacity,transform] duration-300 ease-out active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
         >
           <span
-            className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
+            className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
             style={{ backgroundColor: palette.primary }}
           />
           <span
             className="relative text-sm font-zen-old-mincho tracking-[0.3em] text-off-white transition-all duration-500 group-hover:tracking-[0.4em]"
             style={{ textShadow: `0 0 10px ${palette.glow}` }}
           >
-            {isLoading ? 'PREPARING...' : 'PRESS ENTER TO START'}
+            {isLoading ? 'LOADING PROBLEMS...' : 'PRESS ENTER TO START'}
           </span>
           <motion.div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-px w-0 bg-off-white/50 group-hover:w-1/2 transition-all duration-500" />
         </button>
         {errorMessage && (
-          <p role="alert" aria-live="polite" className="text-xs font-inter text-red-300 tracking-wide">
-            {errorMessage}
-          </p>
+          <p className="text-xs font-inter text-red-300 tracking-wide">{errorMessage}</p>
         )}
       </div>
     </motion.div>

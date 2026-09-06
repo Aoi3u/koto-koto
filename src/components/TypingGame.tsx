@@ -17,23 +17,13 @@ import type { GameResultPayload } from '@/types/game';
 import type { GameMode } from '../features/game/hooks/useGameSession';
 import { buildSessionMetrics } from '../features/result/utils/sessionMetrics';
 
-const SELECTED_MODE_STORAGE_KEY = 'koto-koto:selected-mode';
-
 function TypingGameInner() {
   const seasonalTheme = useSeasonalTheme();
   const { palette } = useThemePalette('stable');
   const { data: session, status } = useSession();
   const { addToast } = useToast();
   const postedRef = useRef(false);
-  const [selectedMode, setSelectedMode] = useState<GameMode>(() => {
-    if (typeof window === 'undefined') return 'classic';
-    const stored = window.localStorage.getItem(SELECTED_MODE_STORAGE_KEY);
-    return stored === 'classic' || stored === 'word-endless' ? stored : 'classic';
-  });
-
-  useEffect(() => {
-    window.localStorage.setItem(SELECTED_MODE_STORAGE_KEY, selectedMode);
-  }, [selectedMode]);
+  const [selectedMode, setSelectedMode] = useState<GameMode>('classic');
 
   const {
     gameState,
