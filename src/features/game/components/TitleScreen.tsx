@@ -1,10 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSeasonalTheme, useThemePalette } from '../../../contexts/SeasonalContext';
 import SegmentedControl from '@/components/ui/SegmentedControl';
 import type { GameMode } from '../hooks/useGameSession';
+
+type ChapterMeta = { number: number; title: string | null; isCurrent: boolean };
+type CurrentChapter = { number: number; title: string | null };
 
 interface TitleScreenProps {
   selectedMode: GameMode;
@@ -28,6 +31,28 @@ export default function TitleScreen({
     { value: 'word-endless', label: 'Word Endless' },
   ];
 
+  const [currentChapter, setCurrentChapter] = useState<CurrentChapter | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/chapters', { cache: 'no-store' });
+        if (!res.ok || cancelled) return;
+        const body = (await res.json()) as { chapters?: ChapterMeta[] };
+        const current = (body.chapters ?? []).find((c) => c.isCurrent);
+        if (!cancelled && current) {
+          setCurrentChapter({ number: current.number, title: current.title });
+        }
+      } catch {
+        // Purely decorative; silently skip if the chapter list can't be loaded.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <motion.div
       key="waiting"
@@ -47,6 +72,19 @@ export default function TitleScreen({
       >
         Koto-Koto
       </h1>
+      {currentChapter && (
+        <p className="text-[11px] font-inter tracking-[0.25em] uppercase text-off-white/70">
+          Chapter {currentChapter.number}
+          {currentChapter.title && (
+            <span
+              className="ml-2 font-zen-old-mincho normal-case tracking-normal"
+              style={{ color: palette.primary }}
+            >
+              {currentChapter.title}
+            </span>
+          )}
+        </p>
+      )}
       <p
         className="text-xs font-zen-old-mincho transition-colors duration-1000"
         style={{ color: palette.primary }}
