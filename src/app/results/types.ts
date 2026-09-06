@@ -7,6 +7,15 @@ export type HistoryItem = {
   correctKeystrokes: number;
   elapsedTime: number;
   difficulty: string;
+  chapterNumber: number;
+};
+
+export type ChapterMeta = {
+  number: number;
+  title: string | null;
+  isCurrent: boolean;
+  startedAt: string;
+  endedAt: string | null;
 };
 
 export type HistoryChartPoint = {

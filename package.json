@@ -16,7 +16,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "db:validate-problem-pool": "tsx scripts/sync-problem-pool.ts --validate-only",
-    "db:sync-problem-pool": "tsx scripts/sync-problem-pool.ts"
+    "db:sync-problem-pool": "tsx scripts/sync-problem-pool.ts",
+    "db:start-new-chapter": "tsx scripts/start-new-chapter.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",

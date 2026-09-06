@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { GameResultFlexibleSchema } from '@/lib/validation/game';
 import { calculateZenScore } from '@/lib/gameUtils';
 import { rateLimit } from '@/lib/rate-limit';
+import { getCurrentChapterId } from '@/lib/chapters';
 
 // Display limit for the results list
 const DISPLAY_LIMIT = 100;
@@ -28,6 +29,7 @@ const mapResult = (result: {
   correctCharacters: number;
   totalTime: number;
   difficulty: string;
+  chapter: { number: number };
 }) => ({
   id: result.id,
   createdAt: result.createdAt,
@@ -37,6 +39,7 @@ const mapResult = (result: {
   correctKeystrokes: result.correctCharacters,
   elapsedTime: result.totalTime,
   difficulty: result.difficulty,
+  chapterNumber: result.chapter.number,
 });
 
 export const POST = async (req: Request) => {
@@ -64,10 +67,12 @@ export const POST = async (req: Request) => {
 
   // Calculate zenScore for leaderboard optimization
   const zenScore = calculateZenScore(wpm, accuracy);
+  const chapterId = await getCurrentChapterId();
 
   const created = await prisma.gameResult.create({
     data: {
       userId,
+      chapterId,
       wordsPerMinute: Math.round(wpm),
       accuracy,
       totalCharacters: Math.round(keystrokes),
@@ -85,6 +90,7 @@ export const POST = async (req: Request) => {
       correctCharacters: true,
       totalTime: true,
       difficulty: true,
+      chapter: { select: { number: true } },
     },
   });
 
@@ -110,6 +116,7 @@ export const GET = async () => {
       correctCharacters: true,
       totalTime: true,
       difficulty: true,
+      chapter: { select: { number: true } },
     },
   });
   const displayResults = allResults.slice(0, DISPLAY_LIMIT);

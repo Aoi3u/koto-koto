@@ -41,7 +41,9 @@ model GameResult {
   id            String    @id @default(cuid())
   userId        String
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  chapterId     String
+  chapter       PoolChapter @relation(fields: [chapterId], references: [id])
+
   wordsPerMinute Int
   accuracy       Float // 0-100
   totalCharacters Int
@@ -49,30 +51,54 @@ model GameResult {
   totalTime      Int // milliseconds
   difficulty     String    @default("normal")
   zenScore       Float? // Calculated as (wordsPerMinute * accuracy / 100) for leaderboard optimization
-  
+
   createdAt     DateTime  @default(now())
 
   @@index([userId])
   @@index([createdAt])
   @@index([zenScore(sort: Desc)])
+  @@index([chapterId])
 }
 
 // Typing problem pool
 model TypingProblem {
   id          String      @id @default(cuid())
   mode        ProblemMode
-  problemKey  String      @unique
+  problemKey  String
   display     String
   reading     String
   author      String?
   title       String?
-  contentHash String      @unique
+  contentHash String
   isActive    Boolean     @default(true)
+  chapterId   String
+  chapter     PoolChapter @relation(fields: [chapterId], references: [id])
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
+  @@unique([chapterId, problemKey])
+  @@unique([chapterId, contentHash])
   @@index([mode, isActive])
   @@index([mode, updatedAt(sort: Desc)])
+}
+
+// 問題プールの世代（章）。問題プールを丸ごと入れ替える際、旧プールと
+// そのプレイ結果を退役させず「章」として区切って保存し、新しい章へ進む。
+// isCurrent は常に1件のみtrueであることが不変条件だが、Prismaは部分ユニーク
+// インデックスを表現できないため、DB制約ではなく scripts/start-new-chapter.ts
+// のトランザクション内で手続き的に保証する。
+model PoolChapter {
+  id        String    @id @default(cuid())
+  number    Int       @unique
+  title     String?
+  isCurrent Boolean   @default(false)
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+
+  problems  TypingProblem[]
+  results   GameResult[]
+
+  @@index([isCurrent])
 }
 
 // NextAuth accounts
