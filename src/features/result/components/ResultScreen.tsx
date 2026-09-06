@@ -7,6 +7,7 @@ import { useSeasonalTheme } from '../../../contexts/SeasonalContext';
 import { calculateZenScore } from '../../../lib/formatters';
 import { buildSessionMetrics } from '../utils/sessionMetrics';
 import PillActionButton from '@/components/ui/PillActionButton';
+import ChipButton from '@/components/ui/ChipButton';
 import { useToast } from '@/components/ToastProvider';
 
 interface ResultScreenProps {
@@ -112,20 +113,18 @@ export default function ResultScreen({
           </span>
         </div>
 
-        {/* Detail Stats Row */}
-        <div className="col-span-2 grid grid-cols-3 gap-3">
-          <div
-            className="bg-white/5 rounded-lg p-2.5 md:p-3 flex flex-col items-center border transition-colors duration-1000 relative group/zen"
-            style={{
-              borderColor: `${seasonalTheme.adjustedColors.primary}20`,
-            }}
-          >
-            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
+        {/* Detail Stats: one grouped strip, not four duplicate cards */}
+        <div
+          className="col-span-2 grid grid-cols-4 divide-x divide-white/10 border-t border-b transition-colors duration-1000"
+          style={{
+            borderColor: `${seasonalTheme.adjustedColors.primary}15`,
+          }}
+        >
+          <div className="relative group/zen flex flex-col items-center py-2">
+            <span className="text-[10px] text-subtle-gray uppercase tracking-widest">
               Zen Score
             </span>
-            <span className="text-base md:text-lg font-inter font-semibold mt-1 cursor-help">
-              {zenScore}
-            </span>
+            <span className="text-sm font-inter font-semibold mt-1 cursor-help">{zenScore}</span>
             {/* Tooltip for Zen Score */}
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
               <div className="text-[11px] text-off-white font-mono mb-1">
@@ -136,76 +135,57 @@ export default function ResultScreen({
               </div>
             </div>
           </div>
-          <div
-            className="bg-white/5 rounded-lg p-2.5 md:p-3 flex flex-col items-center border transition-colors duration-1000"
-            style={{
-              borderColor: `${seasonalTheme.colors.primary}20`,
-            }}
-          >
-            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
+          <div className="flex flex-col items-center py-2">
+            <span className="text-[10px] text-subtle-gray uppercase tracking-widest">
               Keystrokes
             </span>
-            <span className="text-base md:text-lg font-inter mt-1">
+            <span className="text-sm font-inter mt-1">
               {totalKeystrokes}{' '}
               <span className="text-[11px] text-subtle-gray">
                 ({correctKeyCount}/{errorCount})
               </span>
             </span>
           </div>
-          <div
-            className="bg-white/5 rounded-lg p-2.5 md:p-3 flex flex-col items-center border transition-colors duration-1000"
-            style={{
-              borderColor: `${seasonalTheme.colors.primary}20`,
-            }}
-          >
-            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
+          <div className="flex flex-col items-center py-2">
+            <span className="text-[10px] text-subtle-gray uppercase tracking-widest">
               Total Time
             </span>
-            <span className="text-base md:text-lg font-inter mt-1 tracking-wider text-off-white">
+            <span className="text-sm font-inter mt-1 tracking-wider text-off-white">
               {timeStr}
             </span>
           </div>
-          <div
-            className="bg-white/5 rounded-lg p-2.5 md:p-3 flex flex-col items-center border transition-colors duration-1000"
-            style={{
-              borderColor: `${seasonalTheme.adjustedColors.primary}20`,
-            }}
-          >
-            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
+          <div className="flex flex-col items-center py-2">
+            <span className="text-[10px] text-subtle-gray uppercase tracking-widest">
               Max Combo
             </span>
-            <span className="text-base md:text-lg font-inter mt-1">{maxCombo}</span>
+            <span className="text-sm font-inter mt-1">{maxCombo}</span>
           </div>
-          <button
-            type="button"
-            className="bg-white/5 rounded-lg p-2.5 md:p-3 flex flex-col items-center hover:bg-white/10 transition-[background-color,transform] duration-200 ease-out active:scale-95 border"
-            style={{
-              borderColor: `${seasonalTheme.colors.primary}20`,
-            }}
-            onClick={handleShare}
-          >
-            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
-              Share
-            </span>
-            <Share2 className="w-4 h-4 mt-1 transition-colors duration-1000" />
-          </button>
         </div>
       </div>
 
-      <PillActionButton
-        onClick={onRestart}
-        autoFocus
-        className="group relative px-7 py-2.5 md:px-8 md:py-3 overflow-hidden rounded-full font-inter font-bold tracking-widest transition-colors duration-300"
-        style={{
-          backgroundColor: seasonalTheme.colors.primary,
-          color: seasonalTheme.colors.background,
-          boxShadow: `0 0 18px ${seasonalTheme.colors.glow}`,
-        }}
-      >
-        <span className="relative z-10 flex items-center gap-2 text-sm md:text-base">
-          <RefreshCw className="w-3 h-3" /> PLAY AGAIN
-        </span>
-      </PillActionButton>
+      <div className="flex items-center gap-3">
+        <ChipButton
+          onClick={handleShare}
+          className="gap-1.5 px-4 py-2 text-[11px] tracking-widest text-subtle-gray hover:text-off-white border-white/15"
+        >
+          <Share2 className="w-3.5 h-3.5" /> Share
+        </ChipButton>
+
+        <PillActionButton
+          onClick={onRestart}
+          autoFocus
+          className="group relative px-7 py-2.5 md:px-8 md:py-3 overflow-hidden rounded-full font-inter font-bold tracking-widest transition-colors duration-300"
+          style={{
+            backgroundColor: seasonalTheme.colors.primary,
+            color: seasonalTheme.colors.background,
+            boxShadow: `0 0 18px ${seasonalTheme.colors.glow}`,
+          }}
+        >
+          <span className="relative z-10 flex items-center gap-2 text-sm md:text-base">
+            <RefreshCw className="w-3 h-3" /> PLAY AGAIN
+          </span>
+        </PillActionButton>
+      </div>
     </motion.div>
   );
 }
