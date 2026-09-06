@@ -9,11 +9,13 @@ import type { HistoryItem } from '../types';
 
 export default function HistoryList({
   items,
+  showChapterBadge,
   scrollRef,
   scrollState,
   onScroll,
 }: {
   items: HistoryItem[];
+  showChapterBadge?: boolean;
   scrollRef: React.RefObject<HTMLDivElement | null>;
   scrollState: { top: boolean; bottom: boolean };
   onScroll: (event: React.UIEvent<HTMLDivElement>) => void;
@@ -63,6 +65,11 @@ export default function HistoryList({
                     hour: '2-digit',
                     minute: '2-digit',
                   })}
+                  {showChapterBadge && (
+                    <span className="ml-2 px-1.5 py-0.5 text-[9px] uppercase tracking-wider rounded-full bg-white/10 border border-white/15">
+                      Ch.{item.chapterNumber}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

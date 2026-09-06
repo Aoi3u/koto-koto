@@ -13,7 +13,10 @@ import HistoryStatsGrid from './components/HistoryStatsGrid';
 import HistoryTrendChart from './components/HistoryTrendChart';
 import RankingsList from './components/RankingsList';
 import { buildHistoryChart, computeHistoryStats } from './utils/history';
-import type { HistoryItem, RankingItem } from './types';
+import type { ChapterMeta, HistoryItem, RankingItem } from './types';
+
+// Matches the server-side DISPLAY_LIMIT in /api/game-results.
+const HISTORY_DISPLAY_LIMIT = 100;
 
 const timeframeOptions = [
   { value: 'day', label: 'Daily' },
@@ -56,6 +59,16 @@ function ResultsPageContent() {
 
   const [timeframe, setTimeframe] = useState<'all' | 'week' | 'month' | 'day'>('all');
   const [limit, setLimit] = useState<number>(50);
+
+  // Chapter metadata (for both tabs' chapter selectors) and each tab's own
+  // filter state. History defaults to "all chapters" to preserve today's
+  // behavior; Rankings defaults to the current chapter once it's known, so
+  // a pool renewal doesn't leave a retired chapter's scores permanently
+  // sitting atop the board.
+  const [chapters, setChapters] = useState<ChapterMeta[]>([]);
+  const [historyChapterFilter, setHistoryChapterFilter] = useState<'all' | string>('all');
+  const [rankingsChapterFilter, setRankingsChapterFilter] = useState<'all' | string>('all');
+  const rankingsChapterInitialized = useRef(false);
 
   // Client-side cache of rankings responses keyed by mode/timeframe/limit, so
   // switching back to a filter combination already seen this session shows
@@ -115,6 +128,34 @@ function ResultsPageContent() {
     return () => clearTimeout(timer);
   }, [history.data, rankings.data]);
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/chapters', { cache: 'no-store' });
+        if (!res.ok || cancelled) return;
+        const body = await res.json();
+        const list: ChapterMeta[] = body.chapters ?? [];
+        if (cancelled) return;
+        setChapters(list);
+
+        if (!rankingsChapterInitialized.current) {
+          const current = list.find((c) => c.isCurrent);
+          if (current) {
+            rankingsChapterInitialized.current = true;
+            setRankingsChapterFilter(String(current.number));
+          }
+        }
+      } catch {
+        // Chapter selector is a progressive enhancement; silently keep the
+        // "all" defaults if the list can't be loaded.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const fetchHistory = useCallback(async () => {
     if (!session?.user) return;
     setHistory((prev) => ({ ...prev, loading: true, error: null }));
@@ -144,7 +185,7 @@ function ResultsPageContent() {
   }, [session?.user, addToast]);
 
   const fetchRankings = useCallback(async () => {
-    const cacheKey = `${rankingMode}:${timeframe}:${limit}`;
+    const cacheKey = `${rankingMode}:${timeframe}:${rankingsChapterFilter}:${limit}`;
     const cached = rankingsCacheRef.current.get(cacheKey);
     const requestId = ++rankingsRequestIdRef.current;
 
@@ -160,6 +201,7 @@ function ResultsPageContent() {
         timeframe,
         limit: String(limit),
         mode: rankingMode,
+        chapter: rankingsChapterFilter,
       });
       const res = await fetch(`/api/rankings?${params.toString()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error('Failed to fetch rankings');
@@ -179,7 +221,7 @@ function ResultsPageContent() {
       setRankings({ loading: false, error: 'Failed to load rankings', data: [] });
       addToast('Failed to load rankings', 'error');
     }
-  }, [timeframe, limit, rankingMode, addToast]);
+  }, [timeframe, limit, rankingMode, rankingsChapterFilter, addToast]);
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -204,8 +246,44 @@ function ResultsPageContent() {
     };
   }, []);
 
-  const historyStats = useMemo(() => computeHistoryStats(history.allData), [history.allData]);
-  const historyChartData = useMemo(() => buildHistoryChart(history.allData), [history.allData]);
+  // history.data is already capped to the most recent HISTORY_DISPLAY_LIMIT
+  // entries server-side; that cap is taken *before* any chapter filtering,
+  // so filtering it directly would under-populate an older chapter's view
+  // (its entries may not be among the overall most-recent ones). Filter the
+  // full history.allData instead, then re-apply the same display cap.
+  const filteredHistoryAllData = useMemo(() => {
+    if (historyChapterFilter === 'all') return history.allData;
+    const chapterNumber = Number(historyChapterFilter);
+    return history.allData.filter((item) => item.chapterNumber === chapterNumber);
+  }, [history.allData, historyChapterFilter]);
+
+  const filteredHistoryDisplayData = useMemo(
+    () =>
+      historyChapterFilter === 'all'
+        ? history.data
+        : filteredHistoryAllData.slice(0, HISTORY_DISPLAY_LIMIT),
+    [historyChapterFilter, history.data, filteredHistoryAllData]
+  );
+
+  const historyStats = useMemo(
+    () => computeHistoryStats(filteredHistoryAllData),
+    [filteredHistoryAllData]
+  );
+  const historyChartData = useMemo(
+    () => buildHistoryChart(filteredHistoryAllData),
+    [filteredHistoryAllData]
+  );
+
+  const chapterOptions = useMemo(
+    () => [
+      { value: 'all', label: 'All chapters' },
+      ...chapters.map((c) => ({
+        value: String(c.number),
+        label: c.title ?? `Chapter ${c.number}${c.isCurrent ? ' (current)' : ''}`,
+      })),
+    ],
+    [chapters]
+  );
 
   const historyContent = useMemo(() => {
     if (status !== 'authenticated') {
@@ -221,7 +299,7 @@ function ResultsPageContent() {
     }
     if (history.loading) return <div className="text-subtle-gray text-sm py-8">Loading...</div>;
     if (history.error) return <div className="text-subtle-gray text-sm py-8">{history.error}</div>;
-    if (history.data.length === 0)
+    if (filteredHistoryDisplayData.length === 0)
       return <div className="text-subtle-gray text-sm py-8">No results yet.</div>;
 
     return (
@@ -229,14 +307,25 @@ function ResultsPageContent() {
         <HistoryStatsGrid stats={historyStats} />
         <HistoryTrendChart data={historyChartData} />
         <HistoryList
-          items={history.data}
+          items={filteredHistoryDisplayData}
+          showChapterBadge={historyChapterFilter === 'all'}
           scrollRef={historyScrollRef}
           scrollState={historyScrollState}
           onScroll={(e) => handleScroll(e, false)}
         />
       </div>
     );
-  }, [history, status, historyScrollState, handleScroll, historyStats, historyChartData]);
+  }, [
+    history.loading,
+    history.error,
+    status,
+    historyScrollState,
+    handleScroll,
+    historyStats,
+    historyChartData,
+    filteredHistoryDisplayData,
+    historyChapterFilter,
+  ]);
 
   const rankingsContent = useMemo(() => {
     if (rankings.loading) return <div className="text-subtle-gray text-sm py-8">Loading...</div>;
@@ -304,6 +393,16 @@ function ResultsPageContent() {
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
             >
+              {chapters.length > 0 && (
+                <div className="flex justify-end mb-4">
+                  <CustomSelect
+                    value={historyChapterFilter}
+                    options={chapterOptions}
+                    onChange={setHistoryChapterFilter}
+                    label="Chapter"
+                  />
+                </div>
+              )}
               {historyContent}
             </motion.div>
           ) : (
@@ -330,6 +429,14 @@ function ResultsPageContent() {
                   layoutId="ranking-mode-tab-indicator"
                 />
                 <div className="flex gap-6 justify-end">
+                  {chapters.length > 0 && (
+                    <CustomSelect
+                      value={rankingsChapterFilter}
+                      options={chapterOptions}
+                      onChange={setRankingsChapterFilter}
+                      label="Chapter"
+                    />
+                  )}
                   <CustomSelect
                     value={timeframe}
                     options={[...timeframeOptions]}
