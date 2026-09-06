@@ -22,3 +22,12 @@ export async function getCurrentChapterId(): Promise<string> {
     return current.id;
   });
 }
+
+/** Resolves a chapter's id by its number, or null if no such chapter exists. */
+export async function getChapterIdByNumber(number: number): Promise<string | null> {
+  const chapter = await prisma.poolChapter.findUnique({
+    where: { number },
+    select: { id: true },
+  });
+  return chapter?.id ?? null;
+}

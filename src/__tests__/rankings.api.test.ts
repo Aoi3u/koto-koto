@@ -27,6 +27,9 @@ jest.mock('../lib/prisma', () => ({
     gameResult: {
       findMany: jest.fn(),
     },
+    poolChapter: {
+      findUnique: jest.fn(),
+    },
   },
 }));
 
@@ -49,12 +52,14 @@ const getHandler = async () => {
 describe('Rankings API', () => {
   const mockFindMany = () => prisma.gameResult.findMany as jest.Mock;
   const mockQueryRawUnsafe = () => prisma.$queryRawUnsafe as jest.Mock;
+  const mockFindUniqueChapter = () => prisma.poolChapter.findUnique as jest.Mock;
 
   beforeEach(() => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date('2025-12-30T12:00:00.000Z'));
     mockFindMany().mockReset();
     mockQueryRawUnsafe().mockReset();
+    mockFindUniqueChapter().mockReset();
     __clearCacheForTests();
   });
 
@@ -87,6 +92,53 @@ describe('Rankings API', () => {
     expect(res.status).toBe(400);
     const json = await res.json();
     expect(json.error).toMatch(/Invalid mode/);
+  });
+
+  it('returns 400 for a non-numeric chapter', async () => {
+    const GET = await getHandler();
+    const req = makeReq('http://localhost/api/rankings?chapter=abc');
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+    const json = await res.json();
+    expect(json.error).toMatch(/Invalid chapter/);
+  });
+
+  it('returns 400 for a chapter number that does not exist', async () => {
+    mockFindUniqueChapter().mockResolvedValueOnce(null);
+    const GET = await getHandler();
+    const req = makeReq('http://localhost/api/rankings?chapter=99');
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+    const json = await res.json();
+    expect(json.error).toMatch(/Invalid chapter/);
+  });
+
+  it('scopes runs mode to the given chapter', async () => {
+    mockFindUniqueChapter().mockResolvedValueOnce({ id: 'chapter-2-id' });
+    mockFindMany().mockResolvedValueOnce([]);
+
+    const GET = await getHandler();
+    const req = makeReq('http://localhost/api/rankings?mode=runs&chapter=2');
+    await GET(req);
+
+    expect(mockFindUniqueChapter()).toHaveBeenCalledWith({
+      where: { number: 2 },
+      select: { id: true },
+    });
+    const call = mockFindMany().mock.calls[0]?.[0];
+    expect(call.where.chapterId).toBe('chapter-2-id');
+  });
+
+  it('does not filter by chapter when chapter=all (default)', async () => {
+    mockFindMany().mockResolvedValueOnce([]);
+
+    const GET = await getHandler();
+    const req = makeReq('http://localhost/api/rankings?mode=runs&chapter=all');
+    await GET(req);
+
+    expect(mockFindUniqueChapter()).not.toHaveBeenCalled();
+    const call = mockFindMany().mock.calls[0]?.[0];
+    expect(call.where.chapterId).toBeUndefined();
   });
 
   it('uses runs mode (timeframe=all, limit=50) and ranks results', async () => {
@@ -244,6 +296,18 @@ describe('Rankings API', () => {
       const GET = await getHandler();
       await GET(makeReq('http://localhost/api/rankings?mode=runs&limit=10'));
       await GET(makeReq('http://localhost/api/rankings?mode=runs&limit=20'));
+
+      expect(mockFindMany()).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not reuse the cache across different chapter selections', async () => {
+      mockFindUniqueChapter().mockResolvedValueOnce({ id: 'chapter-2-id' });
+      mockFindMany().mockResolvedValueOnce([]);
+      mockFindMany().mockResolvedValueOnce([]);
+
+      const GET = await getHandler();
+      await GET(makeReq('http://localhost/api/rankings?mode=runs&chapter=all'));
+      await GET(makeReq('http://localhost/api/rankings?mode=runs&chapter=2'));
 
       expect(mockFindMany()).toHaveBeenCalledTimes(2);
     });

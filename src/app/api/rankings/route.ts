@@ -5,6 +5,7 @@ import { calculateRank } from '@/features/result/utils/rankLogic';
 import { calculateZenScore } from '@/lib/gameUtils';
 import { authOptions } from '@/lib/auth';
 import { getOrSetCache } from '@/lib/cache';
+import { getChapterIdByNumber } from '@/lib/chapters';
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 200;
@@ -43,6 +44,18 @@ const parseMode = (value: string | null) => {
   const normalized = value.toLowerCase();
   if (normalized === 'users' || normalized === 'runs') return normalized as 'users' | 'runs';
   return null;
+};
+
+// Omitted or "all" means every chapter's results count toward the board
+// (today's behavior, kept as the API default); a specific chapter number
+// scopes it to that chapter only. The frontend defaults its own selector to
+// the current chapter rather than relying on an API-side default, so a
+// pool renewal doesn't silently change what an existing integration sees.
+const parseChapter = (value: string | null): 'all' | number | null => {
+  if (!value || value.toLowerCase() === 'all') return 'all';
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return null;
+  return parsed;
 };
 
 const timeframeToDate = (timeframe: 'all' | 'week' | 'month' | 'day') => {
@@ -140,75 +153,58 @@ type UserBestRow = {
   zenScore: number;
 };
 
-const fetchUsersRanking = async (gte: Date | null, limit: number): Promise<CachedRankingRow[]> => {
+const fetchUsersRanking = async (
+  gte: Date | null,
+  chapterId: string | null,
+  limit: number
+): Promise<CachedRankingRow[]> => {
   // ユーザーランキング: ユーザーごとのベストランを DB 側で選定して転送量を削減
-  const topUsers = gte
-    ? await prisma.$queryRawUnsafe<UserBestRow[]>(
-        `
-      WITH ranked AS (
-        SELECT
-          gr."userId",
-          u."name",
-          gr."wordsPerMinute",
-          gr."accuracy",
-          gr."createdAt",
-          gr."zenScore",
-          ROW_NUMBER() OVER (
-            PARTITION BY gr."userId"
-            ORDER BY gr."zenScore" DESC, gr."createdAt" DESC
-          ) AS rn
-        FROM "GameResult" gr
-        LEFT JOIN "User" u ON u."id" = gr."userId"
-        WHERE gr."zenScore" IS NOT NULL
-          AND gr."createdAt" >= $1
-      )
+  const conditions = ['gr."zenScore" IS NOT NULL'];
+  const params: unknown[] = [];
+
+  if (gte) {
+    params.push(gte);
+    conditions.push(`gr."createdAt" >= $${params.length}`);
+  }
+  if (chapterId) {
+    params.push(chapterId);
+    conditions.push(`gr."chapterId" = $${params.length}`);
+  }
+  params.push(limit);
+  const limitParamIndex = params.length;
+
+  const topUsers = await prisma.$queryRawUnsafe<UserBestRow[]>(
+    `
+    WITH ranked AS (
       SELECT
-        ranked."userId",
-        ranked."name",
-        ranked."wordsPerMinute",
-        ranked."accuracy",
-        ranked."createdAt",
-        ranked."zenScore"
-      FROM ranked
-      WHERE ranked.rn = 1
-      ORDER BY ranked."zenScore" DESC
-      LIMIT $2
-      `,
-        gte,
-        limit
-      )
-    : await prisma.$queryRawUnsafe<UserBestRow[]>(
-        `
-      WITH ranked AS (
-        SELECT
-          gr."userId",
-          u."name",
-          gr."wordsPerMinute",
-          gr."accuracy",
-          gr."createdAt",
-          gr."zenScore",
-          ROW_NUMBER() OVER (
-            PARTITION BY gr."userId"
-            ORDER BY gr."zenScore" DESC, gr."createdAt" DESC
-          ) AS rn
-        FROM "GameResult" gr
-        LEFT JOIN "User" u ON u."id" = gr."userId"
-        WHERE gr."zenScore" IS NOT NULL
-      )
-      SELECT
-        ranked."userId",
-        ranked."name",
-        ranked."wordsPerMinute",
-        ranked."accuracy",
-        ranked."createdAt",
-        ranked."zenScore"
-      FROM ranked
-      WHERE ranked.rn = 1
-      ORDER BY ranked."zenScore" DESC
-      LIMIT $1
-      `,
-        limit
-      );
+        gr."userId",
+        u."name",
+        gr."wordsPerMinute",
+        gr."accuracy",
+        gr."createdAt",
+        gr."zenScore",
+        ROW_NUMBER() OVER (
+          PARTITION BY gr."userId"
+          ORDER BY gr."zenScore" DESC, gr."createdAt" DESC
+        ) AS rn
+      FROM "GameResult" gr
+      LEFT JOIN "User" u ON u."id" = gr."userId"
+      WHERE ${conditions.join(' AND ')}
+    )
+    SELECT
+      ranked."userId",
+      ranked."name",
+      ranked."wordsPerMinute",
+      ranked."accuracy",
+      ranked."createdAt",
+      ranked."zenScore"
+    FROM ranked
+    WHERE ranked.rn = 1
+    ORDER BY ranked."zenScore" DESC
+    LIMIT $${limitParamIndex}
+    `,
+    ...params
+  );
 
   // 競技スタイルの順位付け（同点は同順位、次順位は人数ぶん飛ばす）
   let lastZenScore: number | null = null;
@@ -259,18 +255,25 @@ export const GET = async (req: Request) => {
   const mode = parseMode(searchParams.get('mode'));
   if (!mode) return badRequest('Invalid mode');
 
+  const chapter = parseChapter(searchParams.get('chapter'));
+  if (chapter === null) return badRequest('Invalid chapter');
+
+  const chapterId = chapter === 'all' ? null : await getChapterIdByNumber(chapter);
+  if (chapter !== 'all' && !chapterId) return badRequest('Invalid chapter');
+
   const gte = timeframeToDate(timeframe);
 
-  const cacheKey = `rankings:${mode}:${timeframe}:${limit}`;
+  const cacheKey = `rankings:${mode}:${timeframe}:${chapter}:${limit}`;
   const cachedRows = await getOrSetCache(cacheKey, RANKINGS_CACHE_TTL_MS, () => {
     if (mode === 'runs') {
       const where = {
         zenScore: { not: null },
         ...(gte ? { createdAt: { gte } } : {}),
+        ...(chapterId ? { chapterId } : {}),
       } as const;
       return fetchRunsRanking(where, limit);
     }
-    return fetchUsersRanking(gte, limit);
+    return fetchUsersRanking(gte, chapterId, limit);
   });
 
   const results = cachedRows.map(({ userId, ...row }) => ({
