@@ -25,6 +25,7 @@ model User {
   name          String?
   password      String? // hashed password
   image         String?
+  isAdmin       Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
