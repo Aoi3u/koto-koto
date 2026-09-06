@@ -26,6 +26,8 @@ const eslintConfig = defineConfig([
       'package-lock.json',
       'yarn.lock',
       'pnpm-lock.yaml',
+      // Vendored skill scripts, not project source
+      '.claude/skills/**',
     ],
   },
 ]);

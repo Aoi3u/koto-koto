@@ -45,7 +45,7 @@ export default function GameHeader({
 
       {/* Center: Timer & Season & Time */}
       <div className="flex flex-col items-center">
-        <span className="text-[10px] tracking-[0.3em] uppercase mb-1 opacity-60 font-zen-old-mincho">
+        <span className="text-[11px] tracking-[0.3em] uppercase mb-1 opacity-60 font-zen-old-mincho">
           {seasonalTheme.name.ja} • {seasonalTheme.timeName.ja}
         </span>
         <span
@@ -61,14 +61,14 @@ export default function GameHeader({
         {isEndlessMode && onFinishEndless && (
           <ChipButton
             onClick={onFinishEndless}
-            className="gap-1.5 border-white/15 px-3 py-1 text-[10px] tracking-widest text-off-white/80 hover:text-off-white hover:border-white/35"
+            className="gap-1.5 border-white/15 px-3 py-1 text-[11px] tracking-widest text-off-white/80 hover:text-off-white hover:border-white/35"
           >
             <Flag className="w-3 h-3" />
             End
           </ChipButton>
         )}
         <div className="flex flex-col items-end">
-          <span className="text-[10px] tracking-[0.3em] uppercase mb-1 opacity-60 font-zen-old-mincho">
+          <span className="text-[11px] tracking-[0.3em] uppercase mb-1 opacity-60 font-zen-old-mincho">
             Progress
           </span>
           <span className="text-xl font-inter font-light tracking-wider text-off-white">

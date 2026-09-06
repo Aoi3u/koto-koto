@@ -65,11 +65,11 @@ export default function EndlessResultScreen({
             borderColor: `${seasonalTheme.adjustedColors.primary}30`,
           }}
         >
-          <span className="text-[10px] md:text-xs text-subtle-gray uppercase tracking-widest mb-1 font-medium">
+          <span className="text-[11px] md:text-xs text-subtle-gray uppercase tracking-widest mb-1 font-medium">
             WPM
           </span>
           <span className="text-4xl md:text-6xl font-inter font-light">{netWpm}</span>
-          <span className="text-[10px] text-subtle-gray mt-1 font-inter tracking-wider font-medium">
+          <span className="text-[11px] text-subtle-gray mt-1 font-inter tracking-wider font-medium">
             KPM: {kpm}
           </span>
         </div>
@@ -80,7 +80,7 @@ export default function EndlessResultScreen({
             borderColor: `${seasonalTheme.adjustedColors.primary}30`,
           }}
         >
-          <span className="text-[10px] md:text-xs text-subtle-gray uppercase tracking-widest mb-1 font-medium">
+          <span className="text-[11px] md:text-xs text-subtle-gray uppercase tracking-widest mb-1 font-medium">
             Accuracy
           </span>
           <span className="text-4xl md:text-6xl font-inter font-light">
@@ -96,12 +96,12 @@ export default function EndlessResultScreen({
               borderColor: `${seasonalTheme.colors.primary}20`,
             }}
           >
-            <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
+            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
               Keystrokes
             </span>
             <span className="text-base md:text-lg font-inter mt-1">
               {totalKeystrokes}{' '}
-              <span className="text-[10px] text-subtle-gray">
+              <span className="text-[11px] text-subtle-gray">
                 ({correctKeyCount}/{errorCount})
               </span>
             </span>
@@ -112,7 +112,7 @@ export default function EndlessResultScreen({
               borderColor: `${seasonalTheme.colors.primary}20`,
             }}
           >
-            <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
+            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
               Total Time
             </span>
             <span className="text-base md:text-lg font-inter mt-1 tracking-wider text-off-white">
@@ -125,7 +125,7 @@ export default function EndlessResultScreen({
               borderColor: `${seasonalTheme.adjustedColors.primary}20`,
             }}
           >
-            <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
+            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
               Frequent Mistypes
             </span>
             {topMistypedKeys.length > 0 ? (
@@ -133,7 +133,7 @@ export default function EndlessResultScreen({
                 {topMistypedKeys.map((item) => `${item.key}x${item.count}`).join(', ')}
               </span>
             ) : (
-              <span className="text-[10px] text-subtle-gray mt-2">None</span>
+              <span className="text-[11px] text-subtle-gray mt-2">None</span>
             )}
           </div>
         </div>

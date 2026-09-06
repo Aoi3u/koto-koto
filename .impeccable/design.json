@@ -1,0 +1,536 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-05T12:59:50Z",
+  "title": "Design System: Koto-Koto",
+  "extensions": {
+    "colorMeta": {
+      "zen-dark": {
+        "role": "neutral",
+        "displayName": "Zen Dark",
+        "canonical": "#1a1a1a",
+        "tonalRamp": [
+          "#262626",
+          "#474747",
+          "#696969",
+          "#8a8a8a",
+          "#ababab",
+          "#cccccc",
+          "#e6e6e6",
+          "#f2f2f2"
+        ]
+      },
+      "off-white": {
+        "role": "neutral",
+        "displayName": "Off-White",
+        "canonical": "#efefef",
+        "tonalRamp": [
+          "#262626",
+          "#474747",
+          "#696969",
+          "#8a8a8a",
+          "#ababab",
+          "#cccccc",
+          "#e6e6e6",
+          "#f2f2f2"
+        ]
+      },
+      "subtle-gray": {
+        "role": "neutral",
+        "displayName": "Subtle Gray",
+        "canonical": "#d4d4d8",
+        "tonalRamp": [
+          "#242428",
+          "#44444b",
+          "#63636e",
+          "#84848f",
+          "#a7a7af",
+          "#cacace",
+          "#e4e4e7",
+          "#f2f2f3"
+        ]
+      },
+      "spring-primary": {
+        "role": "primary",
+        "displayName": "Sakura Pink",
+        "canonical": "#fbcfe8",
+        "tonalRamp": [
+          "#47062b",
+          "#840b50",
+          "#c11075",
+          "#ed2697",
+          "#f264b5",
+          "#f7a1d2",
+          "#fbd0e8",
+          "#fde7f4"
+        ]
+      },
+      "spring-secondary": {
+        "role": "secondary",
+        "displayName": "Sakura Light",
+        "canonical": "#fce7f3",
+        "tonalRamp": [
+          "#44082a",
+          "#7f104f",
+          "#ba1774",
+          "#e52e97",
+          "#ec69b4",
+          "#f4a4d2",
+          "#f9d2e8",
+          "#fce8f4"
+        ]
+      },
+      "spring-accent": {
+        "role": "tertiary",
+        "displayName": "Sakura Deep Pink",
+        "canonical": "#ec4899",
+        "tonalRamp": [
+          "#450726",
+          "#810d47",
+          "#bd1468",
+          "#e92a89",
+          "#ef67aa",
+          "#f5a3cb",
+          "#fad1e5",
+          "#fde8f2"
+        ]
+      },
+      "spring-background": {
+        "role": "neutral",
+        "displayName": "Spring Warm Dark",
+        "canonical": "#1a1612",
+        "tonalRamp": [
+          "#2d261f",
+          "#54473a",
+          "#7c6956",
+          "#9f8a74",
+          "#baab9c",
+          "#d5ccc3",
+          "#eae6e1",
+          "#f5f2f0"
+        ]
+      },
+      "spring-text": {
+        "role": "neutral",
+        "displayName": "Spring Petal White",
+        "canonical": "#fef3f2",
+        "tonalRamp": [
+          "#470b05",
+          "#85140a",
+          "#c21e0f",
+          "#ee3625",
+          "#f36f63",
+          "#f8a8a0",
+          "#fbd3d0",
+          "#fde9e7"
+        ]
+      },
+      "spring-glow": {
+        "role": "tertiary",
+        "displayName": "Sakura Glow",
+        "canonical": "rgba(251,207,232,0.4)"
+      },
+      "summer-primary": {
+        "role": "primary",
+        "displayName": "Water Cyan",
+        "canonical": "#67e8f9",
+        "tonalRamp": [
+          "#03414a",
+          "#057a89",
+          "#08b3c9",
+          "#1dddf6",
+          "#5de7f9",
+          "#9df0fb",
+          "#cef8fd",
+          "#e6fbfe"
+        ]
+      },
+      "summer-secondary": {
+        "role": "secondary",
+        "displayName": "Water Light Cyan",
+        "canonical": "#a5f3fc",
+        "tonalRamp": [
+          "#02434a",
+          "#057c8a",
+          "#07b6ca",
+          "#1ce1f7",
+          "#5ce9fa",
+          "#9cf2fc",
+          "#cef8fd",
+          "#e6fcfe"
+        ]
+      },
+      "summer-accent": {
+        "role": "tertiary",
+        "displayName": "Deep Cyan",
+        "canonical": "#06b6d4",
+        "tonalRamp": [
+          "#02404a",
+          "#04778b",
+          "#06afcb",
+          "#1bd8f9",
+          "#5be3fa",
+          "#9ceefc",
+          "#cdf7fe",
+          "#e6fbfe"
+        ]
+      },
+      "summer-background": {
+        "role": "neutral",
+        "displayName": "Summer Cool Dark",
+        "canonical": "#0f1419",
+        "tonalRamp": [
+          "#1d2630",
+          "#364759",
+          "#4e6983",
+          "#6c8aa7",
+          "#96abc0",
+          "#bfccd9",
+          "#dfe6ec",
+          "#eff2f5"
+        ]
+      },
+      "summer-text": {
+        "role": "neutral",
+        "displayName": "Summer Foam White",
+        "canonical": "#f0fdfa",
+        "tonalRamp": [
+          "#094436",
+          "#117e65",
+          "#19b994",
+          "#30e3ba",
+          "#6aebcd",
+          "#a5f3e1",
+          "#d2f9f0",
+          "#e8fcf7"
+        ]
+      },
+      "summer-glow": {
+        "role": "tertiary",
+        "displayName": "Water Glow",
+        "canonical": "rgba(103,232,249,0.3)"
+      },
+      "autumn-primary": {
+        "role": "primary",
+        "displayName": "Maple Orange",
+        "canonical": "#fb923c",
+        "tonalRamp": [
+          "#4b2302",
+          "#8c4103",
+          "#cd5f04",
+          "#fa7f19",
+          "#fca35a",
+          "#fdc79b",
+          "#fee3cd",
+          "#fef1e6"
+        ]
+      },
+      "autumn-secondary": {
+        "role": "secondary",
+        "displayName": "Maple Light Orange",
+        "canonical": "#fed7aa",
+        "tonalRamp": [
+          "#4c2901",
+          "#8d4c02",
+          "#cf7002",
+          "#fc9217",
+          "#fdb159",
+          "#fed09a",
+          "#fee7cd",
+          "#fff3e6"
+        ]
+      },
+      "autumn-accent": {
+        "role": "tertiary",
+        "displayName": "Deep Maple Orange",
+        "canonical": "#ea580c",
+        "tonalRamp": [
+          "#491b04",
+          "#883307",
+          "#c74b0a",
+          "#f46820",
+          "#f7935f",
+          "#fabd9e",
+          "#fddece",
+          "#feefe7"
+        ]
+      },
+      "autumn-background": {
+        "role": "neutral",
+        "displayName": "Autumn Warm Brown",
+        "canonical": "#1c1410",
+        "tonalRamp": [
+          "#31231c",
+          "#5b4134",
+          "#855f4c",
+          "#aa7f6a",
+          "#c2a394",
+          "#dac7be",
+          "#ece3df",
+          "#f6f1ef"
+        ]
+      },
+      "autumn-text": {
+        "role": "neutral",
+        "displayName": "Autumn Ember White",
+        "canonical": "#fef3e2",
+        "tonalRamp": [
+          "#4a2e03",
+          "#8a5605",
+          "#ca7d07",
+          "#f7a11c",
+          "#f9bc5c",
+          "#fcd69c",
+          "#fdebce",
+          "#fef5e6"
+        ]
+      },
+      "autumn-glow": {
+        "role": "tertiary",
+        "displayName": "Maple Glow",
+        "canonical": "rgba(251,146,60,0.3)"
+      },
+      "winter-primary": {
+        "role": "primary",
+        "displayName": "Snow Blue",
+        "canonical": "#e0f2fe",
+        "tonalRamp": [
+          "#022d4a",
+          "#04558a",
+          "#077ccb",
+          "#1ca0f8",
+          "#5cbbfa",
+          "#9cd6fc",
+          "#ceeafd",
+          "#e6f5fe"
+        ]
+      },
+      "winter-secondary": {
+        "role": "secondary",
+        "displayName": "Snow Light Blue",
+        "canonical": "#f0f9ff",
+        "tonalRamp": [
+          "#002e4c",
+          "#00568f",
+          "#007dd1",
+          "#14a1ff",
+          "#57bcff",
+          "#99d6ff",
+          "#ccebff",
+          "#e5f5ff"
+        ]
+      },
+      "winter-accent": {
+        "role": "tertiary",
+        "displayName": "Ice Blue",
+        "canonical": "#0ea5e9",
+        "tonalRamp": [
+          "#043348",
+          "#085f87",
+          "#0c8cc5",
+          "#22b1f2",
+          "#60c7f5",
+          "#9fddf9",
+          "#cfeefc",
+          "#e7f7fe"
+        ]
+      },
+      "winter-background": {
+        "role": "neutral",
+        "displayName": "Winter Cold Dark",
+        "canonical": "#0a0e14",
+        "tonalRamp": [
+          "#1a2433",
+          "#30435f",
+          "#46628b",
+          "#6382b1",
+          "#8fa5c7",
+          "#bbc9dd",
+          "#dde4ee",
+          "#eef1f6"
+        ]
+      },
+      "winter-text": {
+        "role": "neutral",
+        "displayName": "Winter Snow White",
+        "canonical": "#f8fafc",
+        "tonalRamp": [
+          "#172636",
+          "#2b4764",
+          "#3f6992",
+          "#5b8ab9",
+          "#89abcd",
+          "#b8cce0",
+          "#dbe5f0",
+          "#edf2f7"
+        ]
+      },
+      "winter-glow": {
+        "role": "tertiary",
+        "displayName": "Ice Glow",
+        "canonical": "rgba(224,242,254,0.2)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The Koto-Koto wordmark and the result screen's grade letter."
+      },
+      "heading": {
+        "displayName": "Heading",
+        "purpose": "Page-level titles such as \"Records\" or \"About Koto-Koto\"."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Paragraph copy on About/Privacy/Terms/Licenses; falls back to the OS sans-serif stack since no Inter font file is loaded."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Short uppercase micro-labels: tabs, field labels, stat captions."
+      },
+      "numeric": {
+        "displayName": "Numeric",
+        "purpose": "WPM/Zen Score/keystroke figures where digit alignment matters."
+      }
+    },
+    "shadows": [
+      {
+        "name": "seasonal-glow",
+        "value": "0 0 15px-30px var(--season-glow)",
+        "purpose": "Ambient halo behind headings, the timer, and the active grade letter; brightness follows the time of day."
+      },
+      {
+        "name": "focus-glow",
+        "value": "0 0 0 1px color-mix(in srgb, var(--season-primary) 27%, transparent), 0 0 22px color-mix(in srgb, var(--season-glow) 15%, transparent)",
+        "purpose": "Structural depth on a focused input, replacing the default browser focus ring."
+      },
+      {
+        "name": "floating-menu",
+        "value": "0 10px 40px -10px rgba(0,0,0,0.5)",
+        "purpose": "Separates the settings dropdown and toasts from the page behind them; paired with backdrop-blur-xl."
+      }
+    ],
+    "motion": [
+      {
+        "name": "press-scale",
+        "value": "transform 0.15s-0.2s ease-out; active scale 0.90-0.98",
+        "purpose": "Universal instant press feedback on every clickable element; never a color-only hover."
+      },
+      {
+        "name": "panel-spring",
+        "value": "spring, bounce 0, duration 0.35s",
+        "purpose": "Settings menu and other floating panels open/close anchored to their trigger."
+      },
+      {
+        "name": "theme-crossfade",
+        "value": "transition-colors duration-1000",
+        "purpose": "Seasonal/time-of-day palette changes cross-fade over 1s instead of cutting."
+      }
+    ],
+    "breakpoints": [{ "name": "md", "value": "768px" }]
+  },
+  "components": [
+    {
+      "name": "Primary Pill Button",
+      "kind": "button",
+      "refersTo": "button-pill-primary",
+      "description": "Main call-to-action pill (auth submit, share/replay actions).",
+      "html": "<button class=\"ds-btn-primary\">Enter</button>",
+      "css": ".ds-btn-primary { background: rgba(255,255,255,0.10); color: #efefef; border: 1px solid rgba(255,255,255,0.18); border-radius: 9999px; padding: 14px 24px; font-family: 'Zen Old Mincho', serif; font-size: 14px; letter-spacing: 0.2em; text-transform: uppercase; transition: background-color 0.2s ease-out, transform 0.2s ease-out; } .ds-btn-primary:hover { background: rgba(255,255,255,0.18); } .ds-btn-primary:focus-visible { outline: 2px solid rgba(255,255,255,0.7); outline-offset: 3px; } .ds-btn-primary:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Chip Button",
+      "kind": "chip",
+      "refersTo": "button-chip",
+      "description": "Small bordered secondary action, e.g. ending an endless session.",
+      "html": "<button class=\"ds-chip\">Flag  End</button>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: rgba(239,239,239,0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 9999px; padding: 4px 12px; font-family: 'Zen Old Mincho', serif; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s ease-out, border-color 0.2s ease-out, transform 0.2s ease-out; } .ds-chip:hover { color: #efefef; border-color: rgba(255,255,255,0.35); } .ds-chip:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Icon Button",
+      "kind": "button",
+      "refersTo": "button-icon",
+      "description": "Circular icon-only header action (history, leaderboard, profile, settings).",
+      "html": "<button class=\"ds-icon-btn\" aria-label=\"Settings\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z\"/></svg></button>",
+      "css": ".ds-icon-btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px; border-radius: 9999px; color: #d4d4d8; background: transparent; border: none; transition: color 0.2s ease-out, background-color 0.2s ease-out, transform 0.2s ease-out; } .ds-icon-btn:hover { color: #efefef; background: rgba(255,255,255,0.05); } .ds-icon-btn:active { transform: scale(0.90); }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "nav",
+      "refersTo": "segmented-control",
+      "description": "Pill-shaped mode picker, e.g. Classic vs Word Endless.",
+      "html": "<div class=\"ds-segmented\" role=\"group\"><button class=\"ds-segmented-item is-active\">Classic</button><button class=\"ds-segmented-item\">Word Endless</button></div>",
+      "css": ".ds-segmented { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); border-radius: 9999px; padding: 4px; } .ds-segmented-item { border: none; background: transparent; color: rgba(239,239,239,0.6); border-radius: 9999px; padding: 4px 12px; font-family: 'Inter', system-ui, sans-serif; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; transition: background-color 0.3s, color 0.3s, transform 0.15s ease-out; } .ds-segmented-item:hover { color: rgba(239,239,239,0.85); } .ds-segmented-item.is-active { background: rgba(255,255,255,0.2); color: #efefef; } .ds-segmented-item:active { transform: scale(0.90); }"
+    },
+    {
+      "name": "Stat Card",
+      "kind": "card",
+      "refersTo": "stat-card",
+      "description": "Result-screen and rankings metric tile (WPM, Accuracy, Zen Score); border tints with the active season.",
+      "html": "<div class=\"ds-stat-card\"><span class=\"ds-stat-label\">WPM</span><span class=\"ds-stat-value\">87</span></div>",
+      "css": ".ds-stat-card { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(251,146,60,0.19); border-radius: 12px; padding: 16px; backdrop-filter: blur(8px); } .ds-stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: #d4d4d8; margin-bottom: 4px; } .ds-stat-value { font-size: 40px; font-weight: 300; color: #efefef; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Auth form input; border and caret switch to the active season's primary color on focus.",
+      "html": "<input class=\"ds-field\" type=\"email\" placeholder=\"Email address\" />",
+      "css": ".ds-field { width: 100%; border: 1px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.05); border-radius: 16px; padding: 14px 16px; color: #efefef; font-family: 'Zen Old Mincho', serif; font-size: 16px; backdrop-filter: blur(4px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.03); transition: border-color 0.3s, box-shadow 0.3s; } .ds-field::placeholder { color: rgba(255,255,255,0.30); } .ds-field:focus-visible { outline: none; border-color: #fb923c; box-shadow: 0 0 0 1px rgba(251,146,60,0.27), 0 0 22px rgba(251,146,60,0.045); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Digital Zen Garden",
+    "overview": "Koto-Koto is a Japanese typing game staged as a quiet, dark room that changes light with the season (花鳥風月 — flower, bird, wind, moon) and the hour (移ろい — passing time). The interface itself stays deliberately plain: a nearly-black stage, one serif wordmark, and glassy translucent panels. All of the system's expressiveness is spent on a single channel — a seasonal accent color that tints glows, borders, and particles — rather than on layout novelty or decorative chrome. The effect is closer to a lantern in a dark room than a dashboard: the room doesn't change shape, only its light does.\n\nMotion follows the same restraint: interactive elements answer a press with an instant, small scale-down (no bounce, no overshoot), and larger surfaces (the settings panel, toasts) enter with a short critically-damped spring rather than a linear fade. prefers-reduced-motion drops every looping/ambient animation (particles, pulses, carets) while keeping the state cues that carry meaning.",
+    "keyCharacteristics": [
+      "One neutral, near-black material (translucent white on #1a1a1a) carries every screen; color is reserved for the seasonal accent",
+      "Every season x time-of-day combination is a first-class palette, not a filter over one base theme",
+      "Zen Old Mincho is the only voice for headings, labels, and the wordmark — there is no separate UI sans-serif in active use",
+      "Pill shapes (rounded-full) for anything clickable; rounded rectangles only for containers",
+      "Depth comes from blur + translucency (glass), not from drop shadows"
+    ],
+    "rules": [
+      {
+        "name": "The Tinted Border Rule",
+        "body": "Surfaces themselves stay neutral (bg-white/5–bg-white/10 glass on #1a1a1a); the seasonal accent shows up only as a border tint ({primary}30, ~19% alpha), a glow (box-shadow/text-shadow using the season's glow rgba), or a small indicator dot — never as a large fill.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Voice Rule",
+        "body": "Off-white is the only text/icon color anywhere in the app; hierarchy is built with opacity (/60, /85) and size, not with a second neutral gray-on-gray scale.",
+        "section": "colors"
+      },
+      {
+        "name": "The 11px Floor Rule",
+        "body": "No functional label goes below 11px, even in the game's smallest micro-labels.",
+        "section": "typography"
+      },
+      {
+        "name": "The Short-Caps Rule",
+        "body": "uppercase is only applied to labels short enough to read as a shape, not a sentence — never to a full clause or sentence of copy.",
+        "section": "typography"
+      },
+      {
+        "name": "The Glow-Not-Lift Rule",
+        "body": "Shadows in this system color and warm an element; they don't lift it. Reach for backdrop-blur + translucency to imply a surface, and the seasonal glow to imply attention — not a gray drop shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Round-If-Clickable Rule",
+        "body": "If it's a button/tab/chip, it's rounded-full. If it's a card, panel, or input, it's a rounded rectangle. The two languages never swap roles.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do drive every color decision through the season x time-of-day palette (useThemePalette) rather than hardcoding a hex for a \"seasonal\" element.",
+      "Do keep functional/label text at 11px or larger; use text-xs/text-sm for anything a user reads as a sentence.",
+      "Do give every clickable element the instant :active scale-down; a control that only reacts on :hover reads as unfinished in this system.",
+      "Do respect prefers-reduced-motion (drop loops/parallax, keep state-carrying opacity/color changes) and prefers-reduced-transparency (drop backdrop-blur, keep the underlying color) for any new animated or glassy element."
+    ],
+    "donts": [
+      "Don't introduce a second neutral gray scale; off-white + opacity is the only text-hierarchy tool.",
+      "Don't fill a large surface with a saturated seasonal color — the accent is a border/glow/indicator color, not a background color.",
+      "Don't set uppercase on anything longer than a short label; it removes word-shape and hurts readability on full sentences.",
+      "Don't reach for a gray box-shadow to lift a card; use blur + translucency for surface, and the seasonal glow for emphasis."
+    ]
+  }
+}

@@ -146,7 +146,7 @@ export default function AuthPage() {
         <section className="space-y-5">
           <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-3">
             <div>
-              <p className="text-[10px] uppercase tracking-[0.3em] text-subtle-gray">Account</p>
+              <p className="text-[11px] uppercase tracking-[0.3em] text-subtle-gray">Account</p>
               <h2 className="mt-1.5 text-xl font-zen-old-mincho text-off-white">
                 {status === 'authenticated'
                   ? 'Profile'
@@ -156,7 +156,7 @@ export default function AuthPage() {
               </h2>
             </div>
             <div
-              className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-subtle-gray"
+              className="rounded-full border border-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-subtle-gray"
               style={{ boxShadow: `0 0 16px ${palette.glow}10` }}
             >
               {status === 'authenticated' ? 'Connected' : 'Secure'}
@@ -268,7 +268,7 @@ export default function AuthPage() {
                   key={mode}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-center text-[11px] uppercase tracking-[0.16em] text-subtle-gray"
+                  className="text-center text-xs tracking-wide text-subtle-gray"
                 >
                   {mode === 'login'
                     ? 'Welcome back. Your results are waiting.'
@@ -285,7 +285,7 @@ export default function AuthPage() {
                       className="overflow-hidden"
                     >
                       <div className="space-y-2">
-                        <label className="text-[10px] uppercase tracking-[0.28em] text-subtle-gray">
+                        <label className="text-[11px] uppercase tracking-[0.28em] text-subtle-gray">
                           Display name
                         </label>
                         <input
@@ -304,7 +304,7 @@ export default function AuthPage() {
                 </AnimatePresence>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] uppercase tracking-[0.28em] text-subtle-gray">
+                  <label className="text-[11px] uppercase tracking-[0.28em] text-subtle-gray">
                     Email
                   </label>
                   <input
@@ -322,7 +322,7 @@ export default function AuthPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] uppercase tracking-[0.28em] text-subtle-gray">
+                  <label className="text-[11px] uppercase tracking-[0.28em] text-subtle-gray">
                     Password
                   </label>
                   <input
@@ -356,7 +356,7 @@ export default function AuthPage() {
                       <div className="w-full border-t border-white/10" />
                     </div>
                     <div className="relative flex justify-center">
-                      <span className="bg-zen-dark px-3 text-[10px] uppercase tracking-[0.28em] text-subtle-gray font-zen-old-mincho">
+                      <span className="bg-zen-dark px-3 text-[11px] uppercase tracking-[0.28em] text-subtle-gray font-zen-old-mincho">
                         or
                       </span>
                     </div>
@@ -390,7 +390,7 @@ export default function AuthPage() {
                     Continue with Google
                   </PillActionButton>
 
-                  <p className="max-w-sm text-center text-[10px] uppercase tracking-[0.24em] text-subtle-gray">
+                  <p className="max-w-sm text-center text-xs tracking-wide text-subtle-gray">
                     Secure sign-in powered by NextAuth
                   </p>
                 </div>

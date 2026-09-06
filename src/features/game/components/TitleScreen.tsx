@@ -63,11 +63,11 @@ export default function TitleScreen({
             options={modeOptions}
             onChange={onModeChange}
             className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1 backdrop-blur-sm"
-            itemClassName="px-3 py-1 rounded-full text-[10px] tracking-[0.2em] uppercase font-inter transition-colors duration-300"
+            itemClassName="px-3 py-1 rounded-full text-[11px] tracking-[0.2em] uppercase font-inter transition-colors duration-300"
             activeItemClassName="bg-white/20 text-off-white"
             inactiveItemClassName="text-off-white/60 hover:text-off-white/85"
           />
-          <p className="mt-4 text-[11px] font-inter tracking-widest text-off-white/60">
+          <p className="mt-4 text-xs font-inter tracking-widest text-off-white/60">
             {selectedMode === 'classic'
               ? '10 sentences • result saved'
               : 'infinite words • no save'}

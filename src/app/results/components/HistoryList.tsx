@@ -72,10 +72,10 @@ export default function HistoryList({
                 <div className="text-sm text-off-white font-mono font-bold cursor-help">
                   {zenScore}
                 </div>
-                <div className="text-[10px] text-subtle-gray uppercase">Zen Score</div>
+                <div className="text-[11px] text-subtle-gray uppercase">Zen Score</div>
                 {/* Tooltip for Zen Score */}
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-                  <div className="text-[10px] text-off-white font-mono mb-1">
+                  <div className="text-[11px] text-off-white font-mono mb-1">
                     Zen Score = WPM × Accuracy ÷ 100
                   </div>
                   <div className="text-[9px] text-subtle-gray font-mono">
@@ -87,10 +87,10 @@ export default function HistoryList({
                 <div className="text-xl font-light font-inter text-off-white cursor-help">
                   {item.wpm}
                 </div>
-                <div className="text-[10px] text-subtle-gray uppercase">WPM</div>
+                <div className="text-[11px] text-subtle-gray uppercase">WPM</div>
                 {/* Tooltip for WPM */}
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/wpm:opacity-100 group-hover/wpm:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-                  <div className="text-[10px] text-off-white font-mono mb-1">
+                  <div className="text-[11px] text-off-white font-mono mb-1">
                     WPM = (Correct Keys ÷ 5) ÷ Minutes
                   </div>
                   <div className="text-[9px] text-subtle-gray font-mono">

@@ -89,11 +89,11 @@ export default function ResultScreen({
             borderColor: `${seasonalTheme.adjustedColors.primary}30`,
           }}
         >
-          <span className="text-[10px] md:text-xs text-subtle-gray uppercase tracking-widest mb-1 font-medium">
+          <span className="text-[11px] md:text-xs text-subtle-gray uppercase tracking-widest mb-1 font-medium">
             WPM
           </span>
           <span className="text-4xl md:text-6xl font-inter font-light">{netWpm}</span>
-          <span className="text-[10px] text-subtle-gray mt-1 font-inter tracking-wider font-medium">
+          <span className="text-[11px] text-subtle-gray mt-1 font-inter tracking-wider font-medium">
             KPM: {kpm}
           </span>
         </div>
@@ -103,7 +103,7 @@ export default function ResultScreen({
             borderColor: `${seasonalTheme.adjustedColors.primary}30`,
           }}
         >
-          <span className="text-[10px] md:text-xs text-subtle-gray uppercase tracking-widest mb-1 font-medium">
+          <span className="text-[11px] md:text-xs text-subtle-gray uppercase tracking-widest mb-1 font-medium">
             Accuracy
           </span>
           <span className="text-4xl md:text-6xl font-inter font-light">
@@ -120,7 +120,7 @@ export default function ResultScreen({
               borderColor: `${seasonalTheme.adjustedColors.primary}20`,
             }}
           >
-            <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
+            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
               Zen Score
             </span>
             <span className="text-base md:text-lg font-inter font-semibold mt-1 cursor-help">
@@ -128,7 +128,7 @@ export default function ResultScreen({
             </span>
             {/* Tooltip for Zen Score */}
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zen-dark/95 backdrop-blur-md border border-white/20 rounded-md shadow-xl opacity-0 invisible group-hover/zen:opacity-100 group-hover/zen:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
-              <div className="text-[10px] text-off-white font-mono mb-1">
+              <div className="text-[11px] text-off-white font-mono mb-1">
                 Zen Score = WPM × Accuracy ÷ 100
               </div>
               <div className="text-[9px] text-subtle-gray font-mono">
@@ -142,12 +142,12 @@ export default function ResultScreen({
               borderColor: `${seasonalTheme.colors.primary}20`,
             }}
           >
-            <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
+            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
               Keystrokes
             </span>
             <span className="text-base md:text-lg font-inter mt-1">
               {totalKeystrokes}{' '}
-              <span className="text-[10px] text-subtle-gray">
+              <span className="text-[11px] text-subtle-gray">
                 ({correctKeyCount}/{errorCount})
               </span>
             </span>
@@ -158,7 +158,7 @@ export default function ResultScreen({
               borderColor: `${seasonalTheme.colors.primary}20`,
             }}
           >
-            <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
+            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
               Total Time
             </span>
             <span className="text-base md:text-lg font-inter mt-1 tracking-wider text-off-white">
@@ -171,7 +171,7 @@ export default function ResultScreen({
               borderColor: `${seasonalTheme.adjustedColors.primary}20`,
             }}
           >
-            <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
+            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
               Max Combo
             </span>
             <span className="text-base md:text-lg font-inter mt-1">{maxCombo}</span>
@@ -184,7 +184,7 @@ export default function ResultScreen({
             }}
             onClick={handleShare}
           >
-            <span className="text-[8px] md:text-[10px] text-subtle-gray uppercase tracking-widest">
+            <span className="text-[8px] md:text-[11px] text-subtle-gray uppercase tracking-widest">
               Share
             </span>
             <Share2 className="w-4 h-4 mt-1 transition-colors duration-1000" />

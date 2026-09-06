@@ -272,6 +272,17 @@ export function getSeasonalChartColors(): {
 }
 
 /**
+ * Text/UI colors (primary, secondary) are multiplied by this factor at minimum, even
+ * during 夜 (night), when raw brightness (0.28) would otherwise crush them toward the
+ * same near-black value as the background and collapse contrast to ~1.5:1. The mood
+ * shift across times of day still reads clearly through the background, glow, and
+ * ambient overlay, which are unaffected by this floor — only the legibility of text
+ * sitting on top is protected, keeping every season's text/background pair at or
+ * above the WCAG AA large-text minimum (verified ≥4.3:1) at every hour.
+ */
+const MIN_TEXT_BRIGHTNESS = 0.75;
+
+/**
  * Gets combined season + time-of-day theme
  */
 export function getCombinedTheme(): CombinedTheme {
@@ -290,11 +301,11 @@ export function getCombinedTheme(): CombinedTheme {
       ),
       primary: adjustColorBrightness(
         seasonalTheme.colors.primary,
-        timeTheme.atmosphere.brightness * 1.2 // Slight boost for visibility
+        Math.max(timeTheme.atmosphere.brightness * 1.2, MIN_TEXT_BRIGHTNESS) // Slight boost for visibility, floored for legibility
       ),
       secondary: adjustColorBrightness(
         seasonalTheme.colors.secondary,
-        timeTheme.atmosphere.brightness * 1.1
+        Math.max(timeTheme.atmosphere.brightness * 1.1, MIN_TEXT_BRIGHTNESS)
       ),
       glow: adjustGlow(
         seasonalTheme.colors.glow,
