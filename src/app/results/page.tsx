@@ -61,13 +61,13 @@ function ResultsPageContent() {
   const [limit, setLimit] = useState<number>(50);
 
   // Chapter metadata (for both tabs' chapter selectors) and each tab's own
-  // filter state. History defaults to "all chapters" to preserve today's
-  // behavior; Rankings defaults to the current chapter once it's known, so
-  // a pool renewal doesn't leave a retired chapter's scores permanently
-  // sitting atop the board.
+  // filter state. Both tabs default to the current chapter once it's known,
+  // so a pool renewal doesn't leave a retired chapter's scores permanently
+  // sitting atop the view.
   const [chapters, setChapters] = useState<ChapterMeta[]>([]);
   const [historyChapterFilter, setHistoryChapterFilter] = useState<'all' | string>('all');
   const [rankingsChapterFilter, setRankingsChapterFilter] = useState<'all' | string>('all');
+  const historyChapterInitialized = useRef(false);
   const rankingsChapterInitialized = useRef(false);
 
   // Client-side cache of rankings responses keyed by mode/timeframe/limit, so
@@ -139,11 +139,15 @@ function ResultsPageContent() {
         if (cancelled) return;
         setChapters(list);
 
-        if (!rankingsChapterInitialized.current) {
-          const current = list.find((c) => c.isCurrent);
-          if (current) {
+        const current = list.find((c) => c.isCurrent);
+        if (current) {
+          if (!rankingsChapterInitialized.current) {
             rankingsChapterInitialized.current = true;
             setRankingsChapterFilter(String(current.number));
+          }
+          if (!historyChapterInitialized.current) {
+            historyChapterInitialized.current = true;
+            setHistoryChapterFilter(String(current.number));
           }
         }
       } catch {
@@ -279,7 +283,7 @@ function ResultsPageContent() {
       { value: 'all', label: 'All chapters' },
       ...chapters.map((c) => ({
         value: String(c.number),
-        label: c.title ?? `Chapter ${c.number}${c.isCurrent ? ' (current)' : ''}`,
+        label: `Chapter ${c.number}${c.isCurrent ? ' (current)' : ''}`,
       })),
     ],
     [chapters]
