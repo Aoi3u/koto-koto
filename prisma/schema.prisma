@@ -27,13 +27,39 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
+
   // Relations
-  accounts      Account[]
-  sessions      Session[]
-  gameResults   GameResult[]
+  accounts          Account[]
+  sessions          Session[]
+  gameResults       GameResult[]
+  announcementReads AnnouncementRead[]
 
   @@index([email])
+}
+
+// Broadcast messages from the operators, shown to users in their mailbox.
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+
+  reads AnnouncementRead[]
+
+  @@index([createdAt])
+}
+
+// Per-user read state for an announcement.
+model AnnouncementRead {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  announcementId String
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  readAt         DateTime     @default(now())
+
+  @@unique([userId, announcementId])
+  @@index([userId])
 }
 
 // Gaming results

@@ -9,6 +9,7 @@ import {
   VolumeX,
   LogOut,
   User,
+  Mail,
   History as HistoryIcon,
   X,
   Trophy,
@@ -20,6 +21,7 @@ import {
 import IconActionButton from '@/components/ui/IconActionButton';
 import { useThemePalette } from '@/contexts/SeasonalContext';
 import { useSoundContext } from '@/contexts/SoundContext';
+import { useUnreadAnnouncementCount } from '@/hooks/useUnreadAnnouncementCount';
 import type { KeyboardSoundProfile } from '@/features/game/hooks/useSound';
 
 export default function AppHeader() {
@@ -27,6 +29,7 @@ export default function AppHeader() {
   const { palette } = useThemePalette('dynamic');
   const { currentProfile, changeProfile, availableProfiles, hasAudioSupport, isProfileLoading } =
     useSoundContext();
+  const unreadCount = useUnreadAnnouncementCount();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -82,12 +85,19 @@ export default function AppHeader() {
         <IconActionButton href="/results?tab=rankings" ariaLabel="Leaderboard">
           <Trophy className="w-5 h-5" />
         </IconActionButton>
-        <IconActionButton
-          href="/auth"
-          ariaLabel={status === 'authenticated' ? 'Profile' : 'Sign In'}
-        >
-          <User className="w-5 h-5" />
-        </IconActionButton>
+        <div className="relative">
+          <IconActionButton href="/inbox" ariaLabel="Inbox">
+            <Mail className="w-5 h-5" />
+          </IconActionButton>
+          {unreadCount > 0 && (
+            <span
+              className="pointer-events-none absolute top-1 right-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full px-1 font-mono text-[9px] text-zen-dark"
+              style={{ backgroundColor: palette.primary }}
+            >
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </div>
 
         {/* Settings Button */}
         <div className="relative" ref={menuRef}>
