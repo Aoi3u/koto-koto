@@ -1,41 +1,41 @@
 import type { Sentence } from './types';
 
-// 詩歌・俳句 (Poetry - Naturally Short)
+// 詩歌・俳句 (Poetry - 四季を詠んだ句)
 export const poetrySentences: Sentence[] = [
   {
-    id: 'nakahara_yogore_01',
-    display: '汚れっちまった悲しみに。',
-    reading: 'よごれっちまったかなしみに。',
-    meta: { author: '中原中也', title: '山羊の歌' },
+    id: 'basho_okunohosomichi_01',
+    display: '夏草や兵どもが夢の跡。',
+    reading: 'なつくさやつわものどもがゆめのあと。',
+    meta: { author: '松尾芭蕉', title: 'おくのほそ道' },
   },
   {
-    id: 'takuboku_uni_01',
-    display: 'はたらけどはたらけど猶わが生活楽にならざり。',
-    reading: 'はたらけどはたらけどなおわがくらしらくにならざり。',
-    meta: { author: '石川啄木', title: '一握の砂' },
+    id: 'basho_jisei_01',
+    display: '旅に病んで夢は枯野を駆け巡る。',
+    reading: 'たびにやんでゆめはかれのをかけめぐる。',
+    meta: { author: '松尾芭蕉', title: '辞世の句' },
   },
   {
-    id: 'shiki_haiku_01',
-    display: '柿くへば鐘が鳴るなり法隆寺。',
-    reading: 'かきくえばかねがなるなりほうりゅうじ。',
-    meta: { author: '正岡子規', title: '俳句' },
+    id: 'buson_nanohana_01',
+    display: '菜の花や月は東に日は西に。',
+    reading: 'なのはなやつきはひがしにひはにしに。',
+    meta: { author: '与謝蕪村', title: '俳句' },
   },
   {
-    id: 'basho_haiku_01',
-    display: '古池や蛙飛び込む水の音。',
-    reading: 'ふるいけやかわずとびこむみずのおと。',
-    meta: { author: '松尾芭蕉', title: '俳句' },
+    id: 'sodo_hatsugatsuo_01',
+    display: '目には青葉山ほととぎす初鰹。',
+    reading: 'めにはあおばやまほととぎすはつがつお。',
+    meta: { author: '山口素堂', title: '俳句' },
   },
   {
-    id: 'yosano_midare_01',
-    display: '柔肌の熱き血潮に触れもみで。',
-    reading: 'やわはだのあつきちしおにふれもみで。',
-    meta: { author: '与謝野晶子', title: 'みだれ髪' },
+    id: 'issa_suzume_01',
+    display: '雀の子そこのけそこのけお馬が通る。',
+    reading: 'すずめのこそこのけそこのけおうまがとおる。',
+    meta: { author: '小林一茶', title: '俳句' },
   },
   {
-    id: 'miyoshi_yuki_01',
-    display: '太郎を眠らせ、太郎の屋根に雪ふりつむ。',
-    reading: 'たろうをねむらせ、たろうのやねにゆきふりつむ。',
-    meta: { author: '三好達治', title: '雪' },
+    id: 'issa_meigetsu_01',
+    display: '名月を取ってくれろと泣く子かな。',
+    reading: 'めいげつをとってくれろとなくこかな。',
+    meta: { author: '小林一茶', title: '俳句' },
   },
 ];
