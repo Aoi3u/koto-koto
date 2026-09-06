@@ -279,7 +279,7 @@ function ResultsPageContent() {
       { value: 'all', label: 'All chapters' },
       ...chapters.map((c) => ({
         value: String(c.number),
-        label: c.title ?? `Chapter ${c.number}${c.isCurrent ? ' (current)' : ''}`,
+        label: `Chapter ${c.number}${c.isCurrent ? ' (current)' : ''}`,
       })),
     ],
     [chapters]
