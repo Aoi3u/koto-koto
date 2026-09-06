@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import BackNavLink from '@/components/ui/BackNavLink';
 
 const GENERAL_CONTACT_URL = 'https://github.com/Aoi3u/koto-koto/issues';
 const PRIVATE_CONTACT_URL = 'https://github.com/Aoi3u/koto-koto/security/advisories/new';
@@ -84,6 +85,7 @@ const sectionsJa = [
 export default function TermsPage() {
   return (
     <main className="h-screen overflow-y-auto pt-28 pb-16 px-6 md:px-12">
+      <BackNavLink href="/" label="Back to game" />
       <div className="mx-auto w-full max-w-2xl rounded-2xl border border-white/10 bg-black/30 p-6 md:p-10 backdrop-blur">
         <h1 className="text-3xl md:text-4xl tracking-tight font-semibold">Terms of Service</h1>
         <p className="mt-3 text-sm text-subtle-gray">Effective date: 2026-04-06</p>

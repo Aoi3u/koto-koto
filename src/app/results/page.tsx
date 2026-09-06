@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/components/ToastProvider';
+import BackNavLink from '@/components/ui/BackNavLink';
 import UnderlineTabs from '@/components/ui/UnderlineTabs';
 import { useThemePalette } from '@/contexts/SeasonalContext';
 import CustomSelect from './components/CustomSelect';
@@ -351,6 +352,7 @@ function ResultsPageContent() {
   return (
     <main className="min-h-screen bg-zen-dark pt-32 pb-16 px-4 md:px-8">
       <div className="noise-overlay" />
+      <BackNavLink href="/" label="Back to game" />
 
       <div className="max-w-4xl mx-auto relative z-10">
         <header className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">

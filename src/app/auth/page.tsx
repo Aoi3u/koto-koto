@@ -5,8 +5,9 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Edit2 } from 'lucide-react';
+import { Edit2 } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
+import BackNavLink from '@/components/ui/BackNavLink';
 import PillActionButton from '@/components/ui/PillActionButton';
 import UnderlineTabs from '@/components/ui/UnderlineTabs';
 import { useThemePalette } from '@/contexts/SeasonalContext';
@@ -124,6 +125,7 @@ export default function AuthPage() {
   return (
     <main className="relative min-h-screen overflow-y-auto bg-zen-dark px-4 pb-16 pt-24 md:px-8 md:pt-28">
       <div className="noise-overlay" />
+      <BackNavLink href="/" label="Back to game" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -131,18 +133,6 @@ export default function AuthPage() {
         transition={{ duration: 0.8, ease: 'easeOut' }}
         className="relative z-10 mx-auto w-full max-w-md space-y-6"
       >
-        <div className="mb-5">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-subtle-gray transition-colors hover:text-off-white group"
-          >
-            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            <span className="text-xs tracking-[0.24em] uppercase font-zen-old-mincho">
-              Back to game
-            </span>
-          </Link>
-        </div>
-
         <section className="space-y-5">
           <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-3">
             <div>
