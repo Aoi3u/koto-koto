@@ -18,7 +18,8 @@
     "db:validate-problem-pool": "tsx scripts/sync-problem-pool.ts --validate-only",
     "db:sync-problem-pool": "tsx scripts/sync-problem-pool.ts",
     "db:start-new-chapter": "tsx scripts/start-new-chapter.ts",
-    "db:send-announcement": "tsx scripts/send-announcement.ts"
+    "db:send-announcement": "tsx scripts/send-announcement.ts",
+    "db:set-admin": "tsx scripts/set-admin.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
