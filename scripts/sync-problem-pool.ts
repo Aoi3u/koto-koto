@@ -1,9 +1,11 @@
 import 'dotenv/config';
 import { Prisma } from '@prisma/client';
-import { sentences } from '../src/data/sentences';
-import { WORD_POOL } from '../src/data/words';
-import { validateProblemSeedRecords, type ProblemSeedRecord } from '../src/lib/problemPool';
-import { randomUUID } from 'node:crypto';
+import { validateProblemSeedRecords } from '../src/lib/problemPool';
+import {
+  buildSeedRecords,
+  deactivateMissingProblemsInChapter,
+  upsertProblemPoolForChapter,
+} from '../src/lib/problemPoolSync';
 
 const isValidateOnly = process.argv.includes('--validate-only');
 
@@ -13,26 +15,6 @@ async function importPrismaClient() {
 }
 
 let prismaClient: Awaited<ReturnType<typeof importPrismaClient>> | null = null;
-
-const buildSeedRecords = (): ProblemSeedRecord[] => {
-  const classicRecords: ProblemSeedRecord[] = sentences.map((sentence) => ({
-    mode: 'classic',
-    problemKey: sentence.id,
-    display: sentence.display,
-    reading: sentence.reading,
-    author: sentence.meta?.author,
-    title: sentence.meta?.title,
-  }));
-
-  const endlessRecords: ProblemSeedRecord[] = WORD_POOL.map((word, index) => ({
-    mode: 'word-endless',
-    problemKey: `word_${String(index + 1).padStart(4, '0')}`,
-    display: word.display,
-    reading: word.reading,
-  }));
-
-  return [...classicRecords, ...endlessRecords];
-};
 
 async function main() {
   const rawRecords = buildSeedRecords();
@@ -50,48 +32,17 @@ async function main() {
 
   prismaClient = await importPrismaClient();
 
+  const currentChapter = await prismaClient.poolChapter.findFirstOrThrow({
+    where: { isCurrent: true },
+  });
+
   await prismaClient.$transaction(
     async (tx: Prisma.TransactionClient) => {
-      for (const record of records) {
-        const dbMode = record.mode === 'classic' ? 'CLASSIC' : 'WORD_ENDLESS';
-        await tx.$executeRawUnsafe(
-          `
-        INSERT INTO "TypingProblem" (
-          "id", "mode", "problemKey", "display", "reading", "author", "title", "contentHash", "isActive", "createdAt", "updatedAt"
-        )
-        VALUES (
-          $1, $2::"ProblemMode", $3, $4, $5, $6, $7, $8, true, NOW(), NOW()
-        )
-        ON CONFLICT ("problemKey")
-        DO UPDATE SET
-          "mode" = EXCLUDED."mode",
-          "display" = EXCLUDED."display",
-          "reading" = EXCLUDED."reading",
-          "author" = EXCLUDED."author",
-          "title" = EXCLUDED."title",
-          "contentHash" = EXCLUDED."contentHash",
-          "isActive" = true,
-          "updatedAt" = NOW()
-        `,
-          randomUUID(),
-          dbMode,
-          record.problemKey,
-          record.display,
-          record.reading,
-          record.author ?? null,
-          record.title ?? null,
-          record.contentHash
-        );
-      }
-
-      await tx.$executeRawUnsafe(
-        `
-      UPDATE "TypingProblem"
-      SET "isActive" = false,
-          "updatedAt" = NOW()
-      WHERE "problemKey" NOT IN (${records.map((_, index) => `$${index + 1}`).join(', ')})
-      `,
-        ...records.map((record) => record.problemKey)
+      await upsertProblemPoolForChapter(tx, currentChapter.id, records);
+      await deactivateMissingProblemsInChapter(
+        tx,
+        currentChapter.id,
+        records.map((record) => record.problemKey)
       );
     },
     {
@@ -107,7 +58,9 @@ async function main() {
       FROM "TypingProblem"
       WHERE "mode" = 'CLASSIC'::"ProblemMode"
         AND "isActive" = true
-      `
+        AND "chapterId" = $1
+      `,
+      currentChapter.id
     ),
     prismaClient.$queryRawUnsafe<Array<{ count: number }>>(
       `
@@ -115,7 +68,9 @@ async function main() {
       FROM "TypingProblem"
       WHERE "mode" = 'WORD_ENDLESS'::"ProblemMode"
         AND "isActive" = true
-      `
+        AND "chapterId" = $1
+      `,
+      currentChapter.id
     ),
   ]);
 
@@ -123,7 +78,7 @@ async function main() {
   const activeEndless = activeEndlessRows[0]?.count ?? 0;
 
   console.log(
-    `Synced problem pool: active classic=${activeClassic}, active word-endless=${activeEndless}`
+    `Synced problem pool for chapter ${currentChapter.number}: active classic=${activeClassic}, active word-endless=${activeEndless}`
   );
 }
 
