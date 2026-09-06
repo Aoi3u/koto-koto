@@ -41,8 +41,19 @@ src/
 
 - **Canonical source**: `src/data/sentences/` と `src/data/words.ts` が問題データの正本
 - **Validation**: `src/lib/problemPool.ts` で読み仮名の形式、空値、重複キー、重複内容を検証
-- **Sync script**: `scripts/sync-problem-pool.ts` が検証済みデータを `TypingProblem` テーブルへ upsert する
-- **Runtime read path**: ゲーム開始時は `useGameSession` → `/api/problem-pool` → DB の順で取得する
+- **Sync script**: `scripts/sync-problem-pool.ts` が検証済みデータを `TypingProblem` テーブルへ upsert する（現在の章の中でのみ動作。既存キーの typo 修正など、日常の微調整に使う）
+- **Runtime read path**: ゲーム開始時は `useGameSession` → `/api/problem-pool` → DB の順で取得する。`isActive=true` の行のみ配信されるため、実質的に「現在の章に属する問題」だけが返る
+- キャッシュは5分TTL（`src/lib/cache.ts`）なので、章の切り替え直後は最大5分ほど旧章の問題が配信され得る
+
+### 章（チャプター）運用
+
+問題プールを丸ごと入れ替えたいとき、既存の問題とプレイ結果を消さずに「章」として区切って保存し、新しい章へ進むための仕組み。**演出用の「シーズン」**（`src/config/seasons.ts` の春夏秋冬ビジュアルテーマ）とは無関係の、別概念。
+
+- **`PoolChapter`モデル**: `number`（章番号）、`title`（任意ラベル）、`isCurrent`（現在の章かどうか）、`startedAt`/`endedAt` を持つ。`isCurrent=true` の行が常に1件だけであることはDB制約ではなく、`scripts/start-new-chapter.ts` のトランザクション内で手続き的に保証している。
+- **`TypingProblem`/`GameResult`** は共に `chapterId` を持つ。`TypingProblem` の一意性（`problemKey`/`contentHash`）はグローバルではなく章単位になっており、将来の章が同じキー採番方式や同一文面を再利用しても衝突しない。
+- **`npm run db:sync-problem-pool`**: 現在の章の中だけで `src/data` の内容を同期する（typo修正・微調整用）。
+- **`npm run db:start-new-chapter -- --title="..."`**: 章の切り替え（カットオーバー）。現在の章を `isCurrent=false` にして退役させ、新しい章番号（自動採番）を発行し、その時点の `src/data` の内容を新しい章のコンテンツとして投入する。実行前に `src/data/sentences/` と `src/data/words.ts` を新しいコンテンツに差し替えておくこと。
+- **結果・ランキングの章別閲覧**: `/api/chapters` が章一覧を返し、Results ページ（`src/app/results/page.tsx`）の History タブ・Rankings タブ双方に章セレクタがある。History はデフォルトで全章表示、Rankings はデフォルトで現在の章のみを表示する（過去の章のスコアが全期間ランキングの上位に残り続けるのを避けるため）。
 
 ## 設計原則
 
